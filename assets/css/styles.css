@@ -40,10 +40,25 @@ h1, h2, h3, h4, h5, h6 {
 .nav a.active,.nav a:hover{opacity:1; background-color: rgba(0, 0, 0, 0.05);}
 
 .hero{background:linear-gradient(to right, #010245, #3498db);padding:160px 0}
-.hero h1{font-size:64px;line-height:1.1;margin:0 0 24px; text-shadow: 2px 2px 4px rgba(0,0,0,0.2);}
+.hero h1{font-size:4rem;line-height:1.1;margin:0 0 24px; text-shadow: 2px 2px 4px rgba(0,0,0,0.2);}
+
+@media (max-width: 767px) {
+  .hero h1 {
+    font-size: 3rem;
+  }
+}
 h1, h2, h3 { font-family: "DM Serif", serif; font-weight: normal; }
 .hero p{max-width:750px;margin:0 0 32px;color:var(--muted); font-size: 1.2rem;}
 .cta-row{display:flex;gap:16px;flex-wrap:wrap}
+
+p {
+  font-size: 1rem;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
 
 .btn{display:inline-block;padding:16px 32px;border:none;border-radius:40px;text-decoration:none;color:var(--ink);background:#fff; box-shadow: 0 2px 4px rgba(0,0,0,0.1); transition: all 0.3s ease;}
 .btn.primary{background:linear-gradient(to right, #010245, #0a0f2c);color:#fff;border-color:var(--brand); box-shadow: 0 4px 8px rgba(0,0,0,0.2); }
@@ -80,4 +95,13 @@ h1, h2, h3 { font-family: "DM Serif", serif; font-weight: normal; }
   .nav{position:absolute;top:60px;right:0;background:#fff;border-left:1px solid var(--edge);border-bottom:1px solid var(--edge);padding:8px 12px;display:none}
   .nav.open{display:block}
   .nav a{display:block;margin:8px 0}
+  .hero {
+    padding: 80px 0;
+  }
+  .container {
+    padding: 0 16px;
+  }
+  .header-inner{
+    padding: 0 16px;
+  }
 }
