@@ -1,0 +1,83 @@
+/* Wafa Dental starter styles — mobile-first, simple and clean */
+:root{
+  --bg: #0a0f2c;
+  --ink: #0a0f2c;
+  --text: #1f2937;
+  --muted: #6b7280;
+  --card: #ffffff;
+  --brand: #010245;
+  --brand-ink: #ffffff;
+  --edge: #e5e7eb;
+  --font-body: 'Roboto', sans-serif;
+}
+
+*{box-sizing:border-box}
+html,body{margin:0;padding:0; font-family: var(--font-body);}
+body{line-height:1.6;color:var(--text)}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'DM Serif Display', serif;
+    font-weight: normal;
+    color: #010245;
+}
+
+.main-color {
+    color: #010245;
+}
+
+.gradient-background {
+    background: linear-gradient(to right, #010245, #3498db); /* Example gradient */
+}
+
+.container{max-width:1100px;margin:0 auto;padding:0 32px}
+
+.site-header{position:sticky;top:0;background: rgba(0, 0, 0, 0.1); backdrop-filter: blur(10px); border-bottom:1px solid var(--edge);z-index:10; box-shadow: 0 2px 4px rgba(0,0,0,0.1);}
+.header-inner{display:flex;align-items:center;justify-content:space-between;height:80px; padding: 0 32px;}
+.logo{font-weight:800;text-decoration:none;color:var(--ink)}
+.menu-toggle{display:none;background:none;border:none;font-size:22px}
+
+.nav a{margin-left:16px;text-decoration:none;color:var(--ink);opacity:.8; padding: 8px 12px; border-radius: 6px; transition: all 0.2s ease-in-out;}
+.nav a.active,.nav a:hover{opacity:1; background-color: rgba(0, 0, 0, 0.05);}
+
+.hero{background:linear-gradient(to right, #010245, #3498db);padding:160px 0}
+.hero h1{font-size:64px;line-height:1.1;margin:0 0 24px; text-shadow: 2px 2px 4px rgba(0,0,0,0.2);}
+h1, h2, h3 { font-family: "DM Serif", serif; font-weight: normal; }
+.hero p{max-width:750px;margin:0 0 32px;color:var(--muted); font-size: 1.2rem;}
+.cta-row{display:flex;gap:16px;flex-wrap:wrap}
+
+.btn{display:inline-block;padding:16px 32px;border:none;border-radius:40px;text-decoration:none;color:var(--ink);background:#fff; box-shadow: 0 2px 4px rgba(0,0,0,0.1); transition: all 0.3s ease;}
+.btn.primary{background:linear-gradient(to right, #010245, #0a0f2c);color:#fff;border-color:var(--brand); box-shadow: 0 4px 8px rgba(0,0,0,0.2); }
+.btn:hover { transform: translateY(-2px); box-shadow: 0 6px 10px rgba(0,0,0,0.2); }
+
+.features{padding:120px 0}
+.grid-3{display:grid;grid-template-columns:1fr;gap:24px}
+.card{background:var(--card);border:1px solid var(--edge);border-radius:14px;padding:24px;box-shadow:0 1px 2px rgba(0,0,0,.04)}
+
+.highlight{background:#f8fafc;padding:60px 0}
+.checklist{columns:2;gap:32px}
+.checklist li{margin:8px 0}
+
+.page{padding:80px 0}
+.narrow{max-width:720px}
+
+.cards{display:grid;grid-template-columns:1fr;gap:24px}
+.price{font-weight:700}
+
+.site-footer{border-top:1px solid var(--edge);padding:32px 0;background:#fff;margin-top:60px}
+.footer-inner{display:flex;align-items:center;justify-content:space-between;gap:24px}
+.social a{text-decoration:none;color:var(--ink);opacity:.8;margin-left:16px}
+.social a:hover{opacity:1}
+
+/* Responsive */
+@media (min-width:768px){
+  .grid-3{grid-template-columns:repeat(3,1fr)}
+  .cards{grid-template-columns:repeat(3,1fr)}
+  .hero h1{font-size:56px}
+}
+
+@media (max-width:767px){
+  .menu-toggle{display:block}
+  .nav{position:absolute;top:60px;right:0;background:#fff;border-left:1px solid var(--edge);border-bottom:1px solid var(--edge);padding:8px 12px;display:none}
+  .nav.open{display:block}
+  .nav a{display:block;margin:8px 0}
+}
