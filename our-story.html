@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WDC - Our Story</title>
+    <!-- Favicon and Open Graph tags -->
+    <link rel="icon" type="image/png" href="images/favicon.png">
+    <meta property="og:title" content="WAFA Dental Clinic">
+    <meta property="og:description" content="Never Too Late To Improve Your Smile!">
+    <link rel="icon" type="image/x-icon" href="images/favicon.ico" />
+    <meta property="og:image" content="images/og-picture.png">
+    <meta property="og:url" content="https://www.wafadentalclinic.com">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" xintegrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXUxC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        /* Custom Tailwind configuration */
+        :root {
+            --primary-blue: #010245;
+            /* Premium gradient colors */
+            --gradient-start: #04052e;
+            --gradient-middle: #061a70;
+            --gradient-end: #c6d9f5;
+        }
+        
+        /* Custom CSS for the live gradient effect */
+        @keyframes gradient-shift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .gradient-background {
+            background: linear-gradient(-45deg, var(--gradient-start), var(--gradient-middle), var(--gradient-end), var(--gradient-middle));
+            background-size: 600% 600%;
+            animation: gradient-shift 20s ease infinite;
+        }
+
+        /* Custom fonts and utility classes */
+        body {
+            font-family: 'Inter', sans-serif;
+            color: #2D3748;
+            scroll-behavior: smooth;
+            background-color: #F7F7F7;
+        }
+
+        .font-dm-serif {
+            font-family: 'DM Serif Display', serif;
+        }
+        
+        /* Fade-in animation for sections and elements with a smoother feel */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 1.2s cubic-bezier(0.25, 1, 0.5, 1), transform 1.2s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        .fade-in.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Adds a subtle delay for children elements */
+        .fade-in.is-visible > * {
+            transition: opacity 0.8s cubic-bezier(0.25, 1, 0.5, 1), transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+            transition-delay: var(--delay);
+        }
+
+        /* Styling for the new white frosted glass effect */
+        .card-frosted-white {
+            background-color: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+        }
+
+        /* Styles for the premium glass buttons */
+        .button-glass-white {
+            background-color: rgba(255, 255, 255, 0.5); /* Semi-transparent white */
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .button-glass-white:hover {
+            background-color: rgba(255, 255, 255, 0.8);
+            border-color: rgba(255, 255, 255, 0.7);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1), 0 6px 6px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
+        }
+
+        /* Apple-like hover effect for the 'Book Now' button */
+        .book-now-button:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2), 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Apple-like form field styling */
+        .apple-input {
+            border: 1px solid #d1d5db; /* A softer gray border */
+            border-radius: 0.75rem; /* More rounded corners */
+            padding: 0.75rem 1rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05); /* Subtle shadow */
+            transition: all 0.2s ease-in-out;
+        }
+
+        .apple-input:focus {
+            outline: none;
+            border-color: #6366f1; /* A light indigo/blue border on focus */
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2); /* Soft focus ring */
+        }
+        
+        /* Mobile menu animation */
+        #mobile-menu {
+            transition: max-height 0.3s ease-in-out, padding 0.3s ease-in-out;
+            max-height: 0;
+            overflow: hidden;
+        }
+        #mobile-menu.is-open {
+            max-height: 500px; /* A value large enough to contain all content */
+        }
+        /* Mobile menu icon animation */
+        #mobile-menu-button {
+            transition: transform 0.3s ease;
+        }
+        #mobile-menu-button.is-open {
+            transform: rotate(90deg);
+        }
+    </style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary-blue': '#010245',
+                        'accent-blue': '#4c4e9e',
+                        'light-blue': '#9b9bd1',
+                    },
+                },
+            },
+        };
+    </script>
+</head>
+<body class="overflow-x-hidden">
+
+    <!-- Header --> 
+    <header class="sticky top-0 z-50 bg-[#010245] bg-opacity-90 backdrop-blur-md shadow-sm"> 
+        <div class="container mx-auto px-6 py-4 flex items-center justify-between"> 
+            <!-- Logo and Clinic Name as a clickable link --> 
+            <a href="index.html" class="flex items-center space-x-4" aria-label="Home"> 
+                <img src="images/logo.png" alt="WAFA Dental Clinic Logo" class="w-8 h-7 rounded-full" decoding="async">
+                <span class="text-2xl font-bold font-normal text-white tracking-tight font-dm-serif">WAFA Dental Clinic</span> 
+            </a>
+
+            <!-- Desktop Navigation -->
+            <nav class="hidden md:flex items-center space-x-8 flex-nowrap">
+                <a href="index.html#about" class="text-sm text-gray-300 hover:text-white transition-colors duration-200">About</a>
+                <a href="index.html#services" class="text-sm text-gray-300 hover:text-white transition-colors duration-200">Services</a>
+                <a href="index.html#features" class="text-sm text-gray-300 hover:text-white transition-colors duration-200">Our Promise</a>
+                <a href="index.html#contact" class="px-4 py-2 text-sm font-semibold rounded-full shadow-lg button-glass-white text-gray-800 transition-all duration-300 transform hover:scale-105">
+                    Book Now
+                </a>
+            </nav>
+
+            <!-- Mobile Navigation Toggle -->
+            <button id="mobile-menu-button" class="md:hidden focus:outline-none">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+            </button>
+        </div>
+
+        <!-- Mobile Navigation Menu -->
+        <div id="mobile-menu" class="md:hidden bg-[#010245] shadow-lg transition-all duration-300 ease-in-out">
+            <nav class="flex flex-col items-center space-y-4 py-4 px-6">
+                <a href="index.html#about" class="text-sm text-gray-300 hover:text-white transition-colors duration-200" onclick="document.getElementById('mobile-menu').classList.remove('is-open')">About</a>
+                <a href="index.html#services" class="text-sm text-gray-300 hover:text-white transition-colors duration-200" onclick="document.getElementById('mobile-menu').classList.remove('is-open')">Services</a>
+                <a href="index.html#features" class="text-sm text-gray-300 hover:text-white transition-colors duration-200" onclick="document.getElementById('mobile-menu').classList.remove('is-open')">Our Promise</a>
+                <a href="index.html#contact" class="px-5 py-2 font-semibold rounded-full shadow-lg bg-white text-primary-blue transition-all duration-300 transform hover:scale-105" onclick="document.getElementById('mobile-menu').classList.remove('is-open')">
+                    Book Now
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <!-- Our Story Hero Section -->
+        <section id="our-story-hero" class="relative min-h-[50vh] flex items-center justify-center text-center py-20 md:py-32">
+            <!-- Live Gradient Effect -->
+            <div class="absolute inset-0 z-0 gradient-background"></div>
+            
+            <!-- Content Layer -->
+            <div class="relative z-10 container mx-auto px-6 fade-in">
+                <div class="card-frosted-white p-8 md:p-16 rounded-3xl space-y-4 text-white">
+                    <h1 class="text-4xl md:text-6xl font-normal tracking-tight font-dm-serif" style="--delay: 0.2s;">Our Story</h1>
+                    <p class="text-lg md:text-xl font-medium max-w-3xl mx-auto font-dm-serif" style="--delay: 0.4s;">
+                        The foundation of trust, built on smiles.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Our Story Content -->
+        <section id="story-content" class="relative container mx-auto px-6 py-24 md:py-40 fade-in">
+            <!-- Dr. Muhammad Waleed Section -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-16 items-center mb-24">
+                <!-- Text Content -->
+                <div class="space-y-8" style="--delay: 0.1s;">
+                    <h2 class="text-3xl md:text-4xl font-normal font-dm-serif" style="--delay: 0.2s;">
+                        From Fear to Fascination
+                    </h2>
+                    <p class="text-base text-gray-600 font-normal font-dm-serif" style="--delay: 0.3s;">
+                        Dr. Muhammad Waleed, Owner<br>Lead Dental Surgeon
+                    </p>
+                    <p class="text-lg text-gray-600" style="--delay: 0.4s;">
+                        As a child, I remember the dentist’s chair as a place of fear: the unfamiliar sounds, the clinical smells, the faces I didn’t know. Yet, what began as fear soon turned into fascination. That curiosity drew me into the world of dentistry, and before I knew it, I was immersed in dental college with long nights of study, clinical practice, and the realization that this profession is about far more than teeth.
+                    </p>
+                    <p class="text-lg text-gray-600" style="--delay: 0.5s;">
+                        Dentistry, I discovered, is about people. It’s about trust, comfort, and the confidence that comes from a healthy smile. That lesson became the foundation of WAFA Dental Clinic. From day one, my vision has been to create a space where patients feel welcomed, respected, and cared for on a personal level, a clinic that feels less like a medical appointment and more like being among friends who truly understand your needs.
+                    </p>
+                    <p class="text-lg text-gray-600" style="--delay: 0.6s;">
+                        Today, our team continues to grow, but our philosophy has never changed. We blend advanced dental techniques with compassion and a gentle touch, ensuring that every patient feels at ease from the moment they walk in.
+                    </p>
+                    <p class="text-lg text-gray-600" style="--delay: 0.7s;">
+                        Every smile we treat becomes part of our journey. And it is our greatest honor to be part of yours, helping you smile brighter, healthier, and with complete confidence.
+                    </p>
+                </div>
+                <!-- Image with Frosted Glass Effect -->
+                <div class="w-full h-auto max-w-md mx-auto card-frosted-white rounded-2xl p-4 md:p-6" style="--delay: 0.8s;">
+                    <img src="images/our-story/wz-01.jpg" alt="A friendly male dentist consulting with a happy female patient" class="w-full h-auto object-cover rounded-xl shadow-xl transform transition-transform hover:scale-105 aspect-[3/4]" loading="lazy">
+                </div>
+            </div>
+
+            <!-- Dr. Fatima Asif Khan Section -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-16 items-center mb-24">
+                 <!-- Image with Frosted Glass Effect -->
+                 <div class="w-full h-auto max-w-md mx-auto card-frosted-white rounded-2xl p-4 md:p-6" style="--delay: 0.1s;">
+                    <img src="images/our-story/ftk-01.jpg" alt="A friendly female dentist consulting with a happy male patient" class="w-full h-auto object-cover rounded-xl shadow-xl transform transition-transform hover:scale-105 aspect-[3/4]" loading="lazy">
+                </div>
+                <!-- Text Content -->
+                <div class="space-y-8 order-1 md:order-2" style="--delay: 0.2s;">
+                    <h2 class="text-3xl md:text-4xl font-normal font-dm-serif" style="--delay: 0.3s;">
+                        From Vision to Reality
+                    </h2>
+                    <p class="text-base text-gray-600 font-normal font-dm-serif" style="--delay: 0.4s;">
+                        Dr. Fatima Asif Khan, Co-Owner<br>General Dentist
+                    </p>
+                    <p class="text-lg text-gray-600" style="--delay: 0.5s;">
+                        When I first met Waleed, I recognized more than a skilled young dentist. I saw someone with a vision — not simply to establish a clinic, but to create a place defined by compassion, trust, and care for every patient who walked through its doors.
+                    </p>
+                    <p class="text-lg text-gray-600" style="--delay: 0.6s;">
+                        At the time, I was deeply committed to my own path in dentistry, driven by a passion to help people feel confident in their smiles. As our journeys aligned, so too did our aspirations, and eventually, our lives. We married, and soon after, I joined Waleed not only as a partner in life but also as a partner in purpose. Together, we set out to build something greater than ourselves: a clinic that embodied our shared values, our passion for dentistry, and our names.
+                    </p>
+                    <p class="text-lg text-gray-600" style="--delay: 0.7s;">
+                        That vision became WAFA Dental Clinic. “WA” represents Waleed, and “FA” represents Fatima. Every detail of WAFA reflects our story. From the way patients are welcomed to the way treatments are designed, our clinic was built to feel less like a conventional practice and more like an extension of family, because that is how it began.
+                    </p>
+                    <p class="text-lg text-gray-600" style="--delay: 0.8s;">
+                        Working side by side, combining our skills and strengths, is a privilege we never take for granted. Together, we have created an environment where patients feel seen, heard, and genuinely cared for, where fear transforms into trust and appointments evolve into lasting relationships.
+                    </p>
+                    <p class="text-lg text-gray-600" style="--delay: 0.9s;">
+                        WAFA Dental Clinic is more than a name. It is our legacy, our passion, and a living testament to what is possible when two people share one vision.
+                    </p>
+                </div>
+            </div>
+            
+            <!-- Zafar Iqbal Section -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
+                <!-- Text Content -->
+                <div class="space-y-8" style="--delay: 0.1s;">
+                    <h2 class="text-3xl md:text-4xl font-normal font-dm-serif" style="--delay: 0.2s;">
+                        A Legacy of Care and Commitment
+                    </h2>
+                    <p class="text-base text-gray-600 font-normal font-dm-serif" style="--delay: 0.3s;">
+                        Zafar Iqbal<br>Father of Muhammad Waleed
+                    </p>
+                    <p class="text-lg text-gray-600" style="--delay: 0.4s;">
+                        When my son was just a little boy, he was terrified of going to the dentist. I still remember how he would cling to my hand in the waiting room, his eyes wide with nervousness. Yet in those moments, I did not focus on his fear. Instead, I dreamed of a future. I imagined a day when he would wear the white coat, not as a patient, but as a healer. As my only son, I quietly hoped he might one day choose dentistry, not only for the profession, but for the life and legacy we could build together.
+                    </p>
+                    <p class="text-lg text-gray-600" style="--delay: 0.5s;">
+                        I never pushed him. But when he eventually chose dentistry on his own, my heart filled with pride. I saw in him not just a student, but someone who truly cared about people. He wanted to ease the very fears he had once felt himself.
+                    </p>
+                    <p class="text-lg text-gray-600" style="--delay: 0.6s;">
+                        Watching him grow through university, face challenges, study late into the night, and emerge stronger each time was the greatest reward a father could ask for. And when we finally opened the doors to the clinic, it was not just the start of a business. It was the fulfillment of a father’s dream and the result of a son’s hard-earned achievement.
+                    </p>
+                    <p class="text-lg text-gray-600" style="--delay: 0.7s;">
+                        Today, WAFA Dental Clinic stands as more than a dental practice. It is a place built on love, legacy, and the belief that every patient deserves to be treated like family. Every smile Waleed creates, every patient he helps feel safe and confident, is a reminder of how far we have come.
+                    </p>
+                    <p class="text-lg text-gray-600" style="--delay: 0.8s;">
+                        This is our story: a father’s dream, a son’s journey, and a shared commitment to caring for others, one smile at a time.
+                    </p>
+                </div>
+                <!-- Image with Frosted Glass Effect -->
+                <div class="w-full h-auto max-w-md mx-auto card-frosted-white rounded-2xl p-4 md:p-6" style="--delay: 0.9s;">
+                    <img src="images/our-story/zi-01.png" alt="Zafar Iqbal with his family" class="w-full h-auto object-cover rounded-xl shadow-xl transform transition-transform hover:scale-105 aspect-[3/4]" loading="lazy">
+                </div>
+            </div>
+        </section>
+
+        <!-- Meet the Team Section -->
+        <section id="team" class="relative container mx-auto px-6 py-24 md:py-40 fade-in">
+            <h2 class="text-3xl md:text-4xl font-normal text-center mb-16 font-dm-serif" style="--delay: 0.1s;">Meet Our Compassionate Team</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-12">
+                <!-- Team Member 1 -->
+                <div class="bg-white rounded-2xl shadow-lg p-8 text-center hover:shadow-2xl transition-all duration-300 transform hover:scale-105" style="--delay: 0.2s;">
+                    <img src="https://placehold.co/200x200/4c4e9e/FFFFFF?text=Dr.+Waleed" alt="Dr. Muhammad Waleed" class="w-32 h-32 rounded-full mx-auto mb-6 object-cover" loading="lazy">
+                    <h3 class="text-xl font-normal font-dm-serif mb-2">Dr. Muhammad Waleed</h3>
+                    <p class="text-sm font-semibold text-accent-blue mb-4">Owner & Lead Dental Surgeon</p>
+                    <a href="https://www.linkedin.com/in/mwaleed111/" target="_blank" rel="noopener noreferrer" class="text-accent-blue hover:underline hover:text-primary-blue transition-colors duration-200">
+                        <i class="fab fa-linkedin"></i>
+                        <span class="ml-2">LinkedIn Profile</span>
+                    </a>
+                    <p class="text-sm text-gray-600 mt-4">
+                        Dr. Waleed is dedicated to transforming dental fear into trust, creating a patient-focused experience where compassion and advanced care are at the forefront of every treatment.
+                    </p>
+                </div>
+                <!-- Team Member 2 -->
+                <div class="bg-white rounded-2xl shadow-lg p-8 text-center hover:shadow-2xl transition-all duration-300 transform hover:scale-105" style="--delay: 0.3s;">
+                    <img src="https://placehold.co/200x200/4c4e9e/FFFFFF?text=Dr.+Fatima" alt="Dr. Fatima Asif Khan" class="w-32 h-32 rounded-full mx-auto mb-6 object-cover" loading="lazy">
+                    <h3 class="text-xl font-normal font-dm-serif mb-2">Dr. Fatima Asif Khan</h3>
+                    <p class="text-sm font-semibold text-accent-blue mb-4">Co-Owner & General Dentist</p>
+                    <a href="https://www.linkedin.com/in/fatimakhwan/" target="_blank" rel="noopener noreferrer" class="text-accent-blue hover:underline hover:text-primary-blue transition-colors duration-200">
+                        <i class="fab fa-linkedin"></i>
+                        <span class="ml-2">LinkedIn Profile</span>
+                    </a>
+                    <p class="text-sm text-gray-600 mt-4">
+                        Dr. Fatima is a compassionate dentist who partnered in both life and business to build a clinic that feels like family, where every patient is treated with warmth and respect.
+                    </p>
+                </div>
+                <!-- Team Member 3 -->
+                <div class="bg-white rounded-2xl shadow-lg p-8 text-center hover:shadow-2xl transition-all duration-300 transform hover:scale-105" style="--delay: 0.4s;">
+                    <img src="https://placehold.co/200x200/4c4e9e/FFFFFF?text=Hammad" alt="Hammad Saeed" class="w-32 h-32 rounded-full mx-auto mb-6 object-cover" loading="lazy">
+                    <h3 class="text-xl font-normal font-dm-serif mb-2">Hammad Saeed</h3>
+                    <p class="text-sm font-semibold text-accent-blue mb-4">Director of Marketing & Operations</p>
+                    <a href="https://www.linkedin.com/in/hammaddsaeed/" target="_blank" rel="noopener noreferrer" class="text-accent-blue hover:underline hover:text-primary-blue transition-colors duration-200">
+                        <i class="fab fa-linkedin"></i>
+                        <span class="ml-2">LinkedIn Profile</span>
+                    </a>
+                    <p class="text-sm text-gray-600 mt-4">
+                        As Director of Marketing & Operations, Hammad drives the clinic’s growth through modern marketing, community engagement, and a trusted brand presence. He ensures smooth operations, regulatory compliance, and strategic partnerships, enabling the clinic to deliver exceptional care and sustainable growth.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Call to Action Section -->
+        <section id="contact" class="relative container mx-auto px-6 py-24 md:py-40 text-center fade-in">
+            <h2 class="text-3xl md:text-4xl font-normal font-dm-serif" style="--delay: 0.1s;">Ready to Start Your Smile Journey?</h2>
+            <p class="mt-4 md:mt-6 text-lg md:text-xl text-gray-600 max-w-2xl mx-auto" style="--delay: 0.2s;">
+                Contact us today to schedule your consultation and take the first step towards a healthier, more confident you.
+            </p>
+            <div class="mt-8" style="--delay: 0.3s;">
+                <!-- Book Now button with solid color, shadow, and smooth hover animation -->
+                <a href="index.html#contact" class="px-8 py-3 font-semibold rounded-full shadow-lg text-white bg-primary-blue transition-all duration-300 book-now-button">
+                    Book Now
+                </a>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-primary-blue py-12">
+        <div class="container mx-auto px-6 text-gray-300">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <h3 class="text-base font-normal text-white mb-4 font-dm-serif">WAFA Dental Clinic</h3>
+                    <p class="text-xs">
+                        <!-- Make the address clickable -->
+                        <a href="https://www.google.com/maps/place/WAFA+Dental+Clinic/@33.6673337,73.0747596,17z/data=!3m1!4b1!4m6!3m5!1s0x38df957cc7644563:0x27a7ae2e6cda42ef!8m2!3d33.6673337!4d73.0747596!16s%2Fg%2F11xd1rytr0?entry=tts&g_ep=EgoyMDI1MDgyNS4wIPu8ASoASAFQAw%3D%3D&skid=3e4f1248-9eac-454b-81b2-2d7b8c2abadb" target="_blank" class="hover:text-white transition-colors duration-200">
+                            Office #7 · 3rd Floor · The Ark Building · I-8 Markaz <br> Islamabad 44000 · Pakistan
+                        </a>
+                    </p>
+                </div>
+                <!-- Services re-added to footer -->
+                <div>
+                    <h3 class="text-base font-normal text-white mb-4 font-dm-serif">Our Services</h3>
+                    <ul class="space-y-2">
+                        <li><a href="index.html#services" class="text-xs hover:text-white transition-colors duration-200">Cosmetic Dentistry</a></li>
+                        <li><a href="index.html#services" class="text-xs hover:text-white transition-colors duration-200">General Dentistry</a></li>
+                        <li><a href="index.html#services" class="text-xs hover:text-white transition-colors duration-200">Orthodontics</a></li>
+                        <li><a href="index.html#services" class="text-xs hover:text-white transition-colors duration-200">Oral Surgery</a></li>
+                        <li><a href="index.html#services" class="text-xs hover:text-white transition-colors duration-200">Pediatric Care</a></li>
+                        <li><a href="index.html#services" class="text-xs hover:text-white transition-colors duration-200">Preventive Care</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-base font-normal text-white mb-4 font-dm-serif">About Us</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#story-content" class="text-xs hover:text-white transition-colors duration-200">Our Story</a></li>
+                        <li><a href="#team" class="text-xs hover:text-white transition-colors duration-200">Meet the Team</a></li>
+                        <li><a href="#" class="text-xs hover:text-white transition-colors duration-200">Careers</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-base font-normal text-white mb-4 font-dm-serif">Follow Us</h3>
+                    <div class="flex flex-col space-y-2 text-xs">
+                        <a href="https://www.facebook.com/wafadentalclinics" target="_blank" rel="noopener noreferrer" class="text-gray-300 hover:text-white transition-colors duration-200" aria-label="Facebook">
+                            Facebook
+                        </a>
+                        <a href="https://www.instagram.com/wafadentalclinic.pk/" target="_blank" rel="noopener noreferrer" class="text-gray-300 hover:text-white transition-colors duration-200" aria-label="Instagram">
+                            Instagram
+                        </a>
+                        <a href="https://www.linkedin.com/company/wafa-dental-clinic/" target="_blank" rel="noopener noreferrer" class="text-gray-300 hover:text-white transition-colors duration-200" aria-label="LinkedIn" >
+                            LinkedIn
+                        </a>
+                        <a href="https://x.com/TeamWafaDental" target="_blank" rel="noopener noreferrer" class="text-gray-300 hover:text-white transition-colors duration-200" aria-label="Twitter" >
+                            Twitter
+                        </a>
+                        <a href="https://www.youtube.com/@WAFADentalClinic" target="_blank" rel="noopener noreferrer" class="text-gray-300 hover:text-white transition-colors duration-200" aria-label="YouTube" >
+                            YouTube
+                        </a>
+                        <a href="https://www.tiktok.com/@wafadental" target="_blank" rel="noopener noreferrer" class="text-gray-300 hover:text-white transition-colors duration-200" aria-label="TikTok" >
+                            TikTok
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <hr class="my-8 border-gray-200">
+            <div class="text-center text-xs text-gray-300">
+                &copy; <span id="current-year"></span> WAFA Dental Clinic. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- Mobile Menu Toggle ---
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('is-open');
+                mobileMenuButton.classList.toggle('is-open'); // Add a class to the button itself for animation
+            });
+
+            // --- Smooth Scrolling for Anchor Links ---
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                });
+            });
+
+            // --- Scroll-based Fade-in Animation ---
+            const fadeInSections = document.querySelectorAll('.fade-in');
+            const observerOptions = {
+                root: null, // relative to the viewport
+                rootMargin: '0px',
+                threshold: 0.1 // 10% of the item is visible
+            };
+
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) { // Corrected the variable from 'visible' to 'is-intersecting'
+                        entry.target.classList.add('is-visible');
+                        observer.unobserve(entry.target); // Stop observing once it's visible
+                    }
+                });
+            }, observerOptions);
+
+            fadeInSections.forEach(section => {
+                observer.observe(section);
+            });
+
+            // --- Auto-update Footer Year ---
+            const currentYearSpan = document.getElementById('current-year');
+            const currentYear = new Date().getFullYear();
+            currentYearSpan.textContent = currentYear;
+        });
+    </script>
+</body>
+</html>
