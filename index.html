@@ -5,16 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WAFA Dental Clinic</title>
     <!-- Favicon and Open Graph tags -->
-    <link rel="icon" type="image/png" href="images/favicon.ico">
+    <link rel="icon" type="image/png" href="images/favicon.png">
     <meta property="og:title" content="WAFA Dental Clinic">
     <meta property="og:description" content="Never Too Late To Improve Your Smile!">
     <meta property="og:image" content="images/og-picture.png">
     <meta property="og:url" content="https://www.wafadentalclinic.com">
 
-    <!-- DM Serif Display for headings -->
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" xintegrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXUxC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <style>
@@ -26,7 +26,7 @@
             --gradient-middle: #061a70;
             --gradient-end: #c6d9f5;
         }
-
+        
         /* Custom CSS for the live gradient effect */
         @keyframes gradient-shift {
             0% { background-position: 0% 50%; }
@@ -41,17 +41,15 @@
         }
 
         /* Custom fonts and utility classes */
-        .font-dm-serif {
-            font-family: 'DM Serif Display', serif;
-            letter-spacing: 0.02em;
-        }
-        
         body {
-            /* Now correctly set to a generic sans-serif font stack for body text */
-            font-family: sans-serif;
+            font-family: 'Inter', sans-serif;
             color: #2D3748;
             scroll-behavior: smooth;
             background-color: #F7F7F7;
+        }
+
+        .font-dm-serif {
+            font-family: 'DM Serif Display', serif;
         }
         
         /* Fade-in animation for sections and elements with a smoother feel */
@@ -152,17 +150,14 @@
             <!-- Logo and Clinic Name as a clickable link --> 
             <a href="index.html" class="flex items-center space-x-4" aria-label="Home"> 
                 <img src="images/logo.png" alt="WAFA Dental Clinic Logo" class="w-8 h-7 rounded-full"> 
-                <!-- Applied DM Serif Display font and reduced font size to 2xl -->
-                <span class="text-2xl font-dm-serif font-normal text-white tracking-tight">WAFA Dental Clinic</span> 
+                <span class="text-2xl font-bold font-normal text-white tracking-tight font-dm-serif">WAFA Dental Clinic</span> 
             </a>
 
             <!-- Desktop Navigation -->
-            <!-- Adjusted navigation to ensure no text wrapping on larger screens -->
             <nav class="hidden md:flex items-center space-x-8 flex-nowrap">
                 <a href="#about" class="text-sm text-gray-300 hover:text-white transition-colors duration-200">About</a>
                 <a href="#services" class="text-sm text-gray-300 hover:text-white transition-colors duration-200">Services</a>
                 <a href="#features" class="text-sm text-gray-300 hover:text-white transition-colors duration-200">Our Promise</a>
-                <!-- Updated 'Book an Appointment' button with glass-like style and shorter text to prevent wrapping -->
                 <a href="#contact" class="px-4 py-2 text-sm font-semibold rounded-full shadow-lg button-glass-white text-gray-800 transition-all duration-300 transform hover:scale-105">
                     Book Now
                 </a>
@@ -191,41 +186,58 @@
 
     <main>
         <!-- Hero Section - Live Gradient Background -->
-        <section id="hero" class="relative min-h-screen flex items-center justify-center text-center">
+        <section id="hero" class="relative min-h-screen flex flex-col items-center justify-center text-center">
             <!-- Live Gradient Effect -->
             <div class="absolute inset-0 z-0 gradient-background"></div>
             
-            <!-- Content Layer -->
-            <div class="relative z-10 container mx-auto px-6 py-24 md:py-48 flex flex-col items-center justify-center fade-in">
-                <!-- Frosted Glass Effect behind the text, now more opaque -->
-                <div class="bg-white bg-opacity-50 backdrop-blur-2xl p-6 sm:p-12 rounded-3xl shadow-2xl inline-block" style="--delay: 0s;">
-                    <!-- All headings now use font-dm-serif class -->
-                    <h1 class="font-dm-serif text-4xl md:text-6xl font-normal leading-tight tracking-tight drop-shadow-sm text-primary-blue" style="--delay: 0.1s;">
-                        Your Smile, Our Priority.
-                    </h1>
-                    <p class="mt-4 md:mt-6 text-lg md:text-xl max-w-3xl mx-auto drop-shadow-sm font-light text-primary-blue" style="--delay: 0.2s;">
-                        Never Too Late To Improve Your Smile
-                    </p>
+            <!-- Content Layer with improved layout -->
+            <div class="relative z-10 container mx-auto px-6 py-12 flex flex-col items-center justify-center space-y-8 fade-in">
+                <!-- New Header for Hero Section -->
+                <div class="flex items-center space-x-4 mb-8" style="--delay: 0.1s;">
+                    <!-- Adjusted logo size for mobile -->
+                    <img src="images/logo.png" alt="WAFA Dental Clinic Logo" class="w-8 h-7 md:w-16 md:h-16 rounded-full">
+                    <!-- Adjusted heading font size for mobile and removed whitespace-nowrap -->
+                    <h1 class="text-3xl sm:text-4xl md:text-6xl font-normal text-white tracking-tight font-dm-serif">WAFA Dental Clinic</h1>
                 </div>
-                <!-- This container now ensures both buttons are always centered -->
-                <div class="mt-12 flex flex-col items-center justify-center space-y-4">
-                    <!-- The buttons are now properly ordered as requested -->
-                    <a href="#contact" class="px-8 py-3 font-semibold rounded-full shadow-lg button-glass-white text-gray-800" style="--delay: 0.3s;">
-                        Book an Appointment
-                    </a>
-                    <a href="#services" class="px-8 py-3 font-semibold rounded-full shadow-lg button-glass-white text-gray-800" style="--delay: 0.4s;">
-                        Explore our Services
-                    </a>
+
+                <!-- Main Content Flex Container for Desktop -->
+                <div class="w-full grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8 lg:gap-12 items-center justify-center">
+                    <!-- Image Tile (Mobile first order) -->
+                    <div class="order-1 md:order-1 card-with-glass p-6 sm:p-8 md:p-10 rounded-3xl flex flex-col justify-center items-center text-center space-y-6 h-full w-full" style="--delay: 0.2s;">
+                        <img src="images/hero.jpg" alt="WAFA Dental Clinic professional working with a patient" class="w-full h-auto max-h-[500px] object-cover rounded-3xl shadow-2xl transition-transform transform hover:scale-105">
+                        <p class="text-lg md:text-xl text-white font-dm-serif font-medium" style="--delay: 0.3s;">
+                            Providing premium dental care to the community.
+                        </p>
+                    </div>
+
+                    <!-- Text and Buttons Tile -->
+                    <div class="order-2 md:order-2 card-with-glass p-6 sm:p-8 md:p-10 rounded-3xl flex flex-col justify-center items-center text-center space-y-6 h-full w-full" style="--delay: 0.4s;">
+                        <h2 class="text-3xl md:text-5xl font-normal leading-tight tracking-tight drop-shadow-sm text-white font-dm-serif" style="--delay: 0.5s;">
+                            Your Smile, Our Priority.
+                        </h2>
+                        <p class="text-lg md:text-xl font-medium max-w-3xl mx-auto drop-shadow-sm text-white font-dm-serif" style="--delay: 0.6s;">
+                            Never Too Late To Improve Your Smile!
+                        </p>
+                        
+                        <div class="flex flex-col items-center space-y-4" style="--delay: 0.7s;">
+                            <!-- The buttons have been updated with new Tailwind classes -->
+                            <a href="#contact" class="px-6 py-2.5 font-semibold rounded-full shadow-lg button-glass-white text-gray-800 hover:bg-white transition-all duration-300 transform hover:translate-y-[-2px] hover:shadow-2xl">
+                                Book an Appointment
+                            </a>
+                            <a href="#services" class="px-6 py-2.5 font-semibold rounded-full shadow-lg button-glass-white text-gray-800 hover:bg-white transition-all duration-300 transform hover:translate-y-[-2px] hover:shadow-2xl">
+                                Explore our Services
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
         
         <!-- About Section -->
         <section id="about" class="relative container mx-auto px-6 py-24 md:py-40 fade-in">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-                <div class="flex flex-col space-y-4" style="--delay: 0.1s;">
-                    <!-- All headings now use font-dm-serif class -->
-                    <h2 class="font-dm-serif text-3xl md:text-4xl font-normal" style="--delay: 0.2s;">About WAFA Dental Clinic</h2>
+            <div class="grid grid-cols-1 md:grid-cols-1 gap-12 items-center">
+                <div class="flex flex-col space-y-4 text-center md:text-left" style="--delay: 0.1s;">
+                    <h2 class="text-3xl md:text-4xl font-normal font-dm-serif" style="--delay: 0.2s;">About WAFA Dental Clinic</h2>
                     <p class="text-lg text-gray-600" style="--delay: 0.3s;">
                         At WAFA Dental Clinic, we believe in a patient-first approach. Our mission is to provide high-quality, gentle dental care in a welcoming and modern environment. With a team of skilled professionals and state-of-the-art technology, we are dedicated to helping you achieve and maintain a beautiful, healthy smile for life.
                     </p>
@@ -233,66 +245,80 @@
                         We are passionate about what we do and committed to making your dental experience as comfortable and stress-free as possible. From routine checkups to complex procedures, we are here to guide you every step of the way.
                     </p>
                 </div>
-                <div style="--delay: 0.5s;">
-                    <img src="https://images.unsplash.com/photo-1544062400-f94d3090b83b?q=80&w=1587&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                         alt="A welcoming and modern dental clinic interior" class="rounded-2xl shadow-xl w-full">
-                </div>
             </div>
         </section>
 
         <!-- Services Section -->
         <section id="services" class="relative container mx-auto px-6 py-24 md:py-40 fade-in">
-            <!-- All headings now use font-dm-serif class -->
-            <h2 class="font-dm-serif text-3xl md:text-4xl font-normal text-center" style="--delay: 0.1s;">Our Comprehensive Services</h2>
+            <h2 class="text-3xl md:text-4xl font-normal text-center font-dm-serif" style="--delay: 0.1s;">Our Comprehensive Services</h2>
             <div class="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 <!-- Service Card 1: Cosmetic Dentistry -->
-                <div class="bg-white p-8 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-105" style="--delay: 0.2s;">
-                    <img src="https://images.unsplash.com/photo-1582216667389-8d7d4c6d36e2?q=80&w=1587&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                         alt="A person with a bright, clean smile" class="rounded-lg w-full h-48 object-cover">
-                    <!-- All headings now use font-dm-serif class -->
-                    <h3 class="font-dm-serif mt-6 text-xl font-medium">Cosmetic Dentistry</h3>
-                    <p class="mt-2 text-gray-600">Enhance your smile with teeth whitening, veneers, and bonding procedures designed for a radiant look.</p>
+                <div class="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-105" style="--delay: 0.2s;">
+                    <img src="images/servicephotos/cosmeticdentistry.jpg" alt="Cosmetic Dentistry" class="w-full h-48 object-cover rounded-t-2xl">
+                    <div class="p-8">
+                        <h3 class="text-xl font-normal mb-2 text-gray-800 font-dm-serif">Cosmetic Dentistry</h3>
+                        <p class="text-gray-600">Achieve the smile of your dreams with our cosmetic treatments, including professional whitening, veneers, and bonding for a stunning, radiant look.</p>
+                    </div>
                 </div>
                 <!-- Service Card 2: General Dentistry -->
-                <div class="bg-white p-8 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-105" style="--delay: 0.3s;">
-                    <img src="https://images.unsplash.com/photo-1605333129334-03a116f1943c?q=80&w=1587&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                         alt="A dentist performing a routine dental checkup" class="rounded-lg w-full h-48 object-cover">
-                    <!-- All headings now use font-dm-serif class -->
-                    <h3 class="font-dm-serif mt-6 text-xl font-medium">General Dentistry</h3>
-                    <p class="mt-2 text-gray-600">Routine check-ups, cleanings, and fillings to keep your oral health in perfect condition.</p>
+                <div class="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-105" style="--delay: 0.3s;">
+                    <img src="images/servicephotos/generaldentistry.jpg" alt="General Dentistry" class="w-full h-48 object-cover rounded-t-2xl">
+                    <div class="p-8">
+                        <h3 class="text-xl font-normal mb-2 text-gray-800 font-dm-serif">General Dentistry</h3>
+                        <p class="text-gray-600">Maintain optimal oral health with our comprehensive general dentistry services, from routine check-ups and cleanings to expert fillings and preventative care.</p>
+                    </div>
                 </div>
                 <!-- Service Card 3: Orthodontics -->
-                <div class="bg-white p-8 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-105" style="--delay: 0.4s;">
-                    <img src="https://images.unsplash.com/photo-1599813292415-3b9777f985a9?q=80&w=1587&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                         alt="A person's mouth with clear aligners" class="rounded-lg w-full h-48 object-cover">
-                    <!-- All headings now use font-dm-serif class -->
-                    <h3 class="font-dm-serif mt-6 text-xl font-medium">Orthodontics</h3>
-                    <p class="mt-2 text-gray-600">Straighten your teeth and correct your bite with modern braces and aligners for a beautiful smile.</p>
+                <div class="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-105" style="--delay: 0.4s;">
+                    <img src="images/servicephotos/orthodontics.jpg" alt="Orthodontics" class="w-full h-48 object-cover rounded-t-2xl">
+                    <div class="p-8">
+                        <h3 class="text-xl font-normal mb-2 text-gray-800 font-dm-serif">Orthodontics</h3>
+                        <p class="text-gray-600">Correct misalignments and perfect your bite with our orthodontic solutions, including modern braces and clear aligners for a beautiful, straight smile.</p>
+                    </div>
                 </div>
                 <!-- Service Card 4: Oral Surgery -->
-                <div class="bg-white p-8 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-105" style="--delay: 0.5s;">
-                    <img src="https://images.unsplash.com/photo-1627961224855-385a1e9b251?q=80&w=1587&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                         alt="A professional dentist in a medical office" class="rounded-lg w-full h-48 object-cover">
-                    <!-- All headings now use font-dm-serif class -->
-                    <h3 class="font-dm-serif mt-6 text-xl font-medium">Oral Surgery</h3>
-                    <p class="mt-2 text-gray-600">From wisdom tooth extractions to advanced procedures, our team ensures a smooth experience.</p>
+                <div class="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-105" style="--delay: 0.5s;">
+                    <img src="images/servicephotos/oralsurgery.jpg" alt="Oral Surgery" class="w-full h-48 object-cover rounded-t-2xl">
+                    <div class="p-8">
+                        <h3 class="text-xl font-normal mb-2 text-gray-800 font-dm-serif">Oral Surgery</h3>
+                        <p class="text-gray-600">Our experienced team provides safe and comfortable oral surgery, handling everything from wisdom tooth extractions to more complex surgical procedures with expert care.</p>
+                    </div>
                 </div>
                 <!-- Service Card 5: Pediatric Care -->
-                <div class="bg-white p-8 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-105" style="--delay: 0.6s;">
-                    <img src="https://images.unsplash.com/photo-1559837943-241f8087965b?q=80&w=1587&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                         alt="A child smiling in a dental chair" class="rounded-lg w-full h-48 object-cover">
-                    <!-- All headings now use font-dm-serif class -->
-                    <h3 class="font-dm-serif mt-6 text-xl font-medium">Pediatric Care</h3>
-                    <p class="mt-2 text-gray-600">Gentle and friendly dental care for children, creating a positive foundation for lifelong oral health.</p>
+                <div class="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-105" style="--delay: 0.6s;">
+                    <img src="images/servicephotos/pediatriccare.jpg" alt="Pediatric Care" class="w-full h-48 object-cover rounded-t-2xl">
+                    <div class="p-8">
+                        <h3 class="text-xl font-normal mb-2 text-gray-800 font-dm-serif">Pediatric Care</h3>
+                        <p class="text-gray-600">We offer gentle and friendly dental care for children, focusing on creating a positive and fun experience that establishes a strong foundation for lifelong oral health.</p>
+                    </div>
                 </div>
                 <!-- Service Card 6: Preventive Care -->
-                <div class="bg-white p-8 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-105" style="--delay: 0.7s;">
-                    <img src="https://images.unsplash.com/photo-1625965476348-18e0df07f2d3?q=80&w=1587&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                         alt="A dentist's hand showing a patient's clean teeth" class="rounded-lg w-full h-48 object-cover">
-                    <!-- All headings now use font-dm-serif class -->
-                    <h3 class="font-dm-serif mt-6 text-xl font-medium">Preventive Care</h3>
-                    <p class="mt-2 text-gray-600">The key to a lasting smile is prevention. Our preventive care services are designed to protect your teeth and gums from future issues. We provide comprehensive cleanings, dental exams, and personalized education to help you maintain impeccable oral hygiene at home.</p>
+                <div class="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-105" style="--delay: 0.7s;">
+                    <img src="images/servicephotos/preventivecare.jpg" alt="Preventive Care" class="w-full h-48 object-cover rounded-t-2xl">
+                    <div class="p-8">
+                        <h3 class="text-xl font-normal mb-2 text-gray-800 font-dm-serif">Preventive Care</h3>
+                        <p class="text-gray-600">Protect your smile from future issues with our personalized preventive care services. We provide thorough cleanings, detailed exams, and education to help you maintain impeccable hygiene.</p>
+                    </div>
                 </div>
+                
+                <!-- Service Card 7: Prosthodontic Services (NEW) -->
+                <div class="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-105" style="--delay: 0.8s;">
+                    <img src="images/servicephotos/prosthodonticservices.jpg" alt="Prosthodontic Services" class="w-full h-48 object-cover rounded-t-2xl">
+                    <div class="p-8">
+                        <h3 class="text-xl font-normal mb-2 text-gray-800 font-dm-serif">Prosthodontic Services</h3>
+                        <p class="text-gray-600">We restore smiles with high-quality prosthodontic services, offering custom-designed crowns, bridges, dentures, and implants to replace missing or damaged teeth with precision and comfort.</p>
+                    </div>
+                </div>
+
+                <!-- Service Card 8: Implantology (NEW) -->
+                <div class="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-105" style="--delay: 0.9s;">
+                    <img src="images/servicephotos/Implantology.jpg" alt="Implantology" class="w-full h-48 object-cover rounded-t-2xl">
+                    <div class="p-8">
+                        <h3 class="text-xl font-normal mb-2 text-gray-800 font-dm-serif">Implantology</h3>
+                        <p class="text-gray-600">Replace missing teeth with our expert implantology services. We offer durable, natural-looking dental implants from surgical placement to final restoration for a secure and long-lasting solution.</p>
+                    </div>
+                </div>
+                
             </div>
         </section>
 
@@ -300,38 +326,33 @@
         <section id="features" class="relative container mx-auto px-6 py-24 md:py-40 fade-in">
             <!-- Frosted Glass Card -->
             <div class="p-16 rounded-2xl shadow-xl card-with-glass">
-                <!-- All headings now use font-dm-serif class -->
-                <h2 class="font-dm-serif text-3xl md:text-4xl font-normal text-center" style="--delay: 0.1s;">Our Promise to You</h2>
+                <h2 class="text-3xl md:text-4xl font-normal text-center font-dm-serif" style="--delay: 0.1s;">Our Promise to You</h2>
                 <div class="mt-12 grid grid-cols-1 md:grid-cols-2 gap-x-20 gap-y-16">
                     <div class="flex items-start space-x-6" style="--delay: 0.2s;">
                         <i class="fas fa-laptop-medical text-3xl text-blue-600 flex-shrink-0 mt-1"></i>
                         <div class="flex-1">
-                            <!-- All headings now use font-dm-serif class -->
-                            <h3 class="font-dm-serif text-xl font-medium">Advanced Technology</h3>
+                            <h3 class="text-xl font-normal font-dm-serif">Advanced Technology</h3>
                             <p class="mt-2 text-base text-gray-800">We use the latest dental equipment and techniques for accurate diagnoses and effective treatments.</p>
                         </div>
                     </div>
                     <div class="flex items-start space-x-6" style="--delay: 0.3s;">
                          <i class="fas fa-user-md text-3xl text-blue-600 flex-shrink-0 mt-1"></i>
                         <div class="flex-1">
-                            <!-- All headings now use font-dm-serif class -->
-                            <h3 class="font-dm-serif text-xl font-medium">Experienced Professionals</h3>
+                            <h3 class="text-xl font-normal font-dm-serif">Experienced Professionals</h3>
                             <p class="mt-2 text-base text-gray-800">Our dedicated team of dentists and hygienists are committed to providing personalized care.</p>
                         </div>
                     </div>
                     <div class="flex items-start space-x-6" style="--delay: 0.4s;">
                         <i class="fas fa-hospital text-3xl text-blue-600 flex-shrink-0 mt-1"></i>
                         <div class="flex-1">
-                            <!-- All headings now use font-dm-serif class -->
-                            <h3 class="font-dm-serif text-xl font-medium">Comfortable Environment</h3>
+                            <h3 class="text-xl font-normal font-dm-serif">Comfortable Environment</h3>
                             <p class="mt-2 text-base text-gray-800">We prioritize your comfort with a calming clinic atmosphere and gentle treatment methods.</p>
                         </div>
                     </div>
                     <div class="flex items-start space-x-6" style="--delay: 0.5s;">
                         <i class="fas fa-heartbeat text-3xl text-blue-600 flex-shrink-0 mt-1"></i>
                         <div class="flex-1">
-                            <!-- All headings now use font-dm-serif class -->
-                            <h3 class="font-dm-serif text-xl font-medium">Patient-Centered Care</h3>
+                            <h3 class="text-xl font-normal font-dm-serif">Patient-Centered Care</h3>
                             <p class="mt-2 text-base text-gray-800">Your unique needs and concerns are our top priority. We listen and develop a plan that's right for you.</p>
                         </div>
                     </div>
@@ -341,8 +362,7 @@
 
         <!-- Call to Action Section -->
         <section id="contact" class="relative container mx-auto px-6 py-24 md:py-40 text-center fade-in">
-            <!-- All headings now use font-dm-serif class -->
-            <h2 class="font-dm-serif text-3xl md:text-4xl font-normal" style="--delay: 0.1s;">Ready for a Brighter Smile?</h2>
+            <h2 class="text-3xl md:text-4xl font-normal font-dm-serif" style="--delay: 0.1s;">Ready for a Brighter Smile?</h2>
             <p class="mt-4 md:mt-6 text-lg md:text-xl text-gray-600 max-w-2xl mx-auto" style="--delay: 0.2s;">
                 Contact us today to schedule your consultation and take the first step towards a healthier, more confident you.
             </p>
@@ -356,16 +376,15 @@
 
         <!-- Map and Business Hours Section -->
         <section id="location" class="relative container mx-auto px-6 py-24 md:py-40 fade-in">
-            <!-- All headings now use font-dm-serif class -->
-            <h2 class="font-dm-serif text-3xl md:text-4xl font-normal text-center mb-12" style="--delay: 0.1s;">Our Location</h2>
+            <h2 class="text-3xl md:text-4xl font-normal text-center mb-12 font-dm-serif" style="--delay: 0.1s;">Our Location</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16 items-start">
                 <!-- Map Column -->
                 <div class="w-full" style="--delay: 0.2s;">
                     <!-- Wrap the map in an anchor tag to make it a clickable link -->
-                    <a href="https://maps.app.goo.gl/L2WcvqYxCvjmpqf16" target="_blank" class="block cursor-pointer" aria-label="Open WAFA Dental Clinic location in Google Maps">
+                    <a href="https://www.google.com/maps/place/WAFA+Dental+Clinic/@33.6673337,73.0747596,17z/data=!3m1!4b1!4m6!3m5!1s0x38df957cc7644563:0x27a7ae2e6cda42ef!8m2!3d33.6673337!4d73.0747596!16s%2Fg%2F11xd1rytr0?entry=tts&g_ep=EgoyMDI1MDgyNS4wIPu8ASoASAFQAw%3D%3D&skid=3e4f1248-9eac-454b-81b2-2d7b8c2abadb" target="_blank" class="block cursor-pointer" aria-label="Open WAFA Dental Clinic location in Google Maps">
                         <div class="overflow-hidden rounded-2xl shadow-xl h-[400px]">
                             <iframe 
-                                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1474.9654160415309!2d73.0450534579173!3d33.684115167098316!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x38dfbd35e83e3a77%3A0x280e8e4588e28f3a!2sThe%20Ark%20Building!5e0!3m2!1sen!2s!4v1724651347012!5m2!1sen!2s" 
+                                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3320.088494056911!2d73.0721846!3d33.6673337!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x38df957cc7644563:0x27a7ae2e6cda42ef!2sWAFA%20Dental%20Clinic!5e0!3m2!1sen!2s!4v1725206263536!5m2!1sen!2s" 
                                 class="w-full h-full rounded-2xl" 
                                 style="border:0;" 
                                 allowfullscreen="" 
@@ -375,17 +394,15 @@
                             </iframe>
                         </div>
                     </a>
-                    <a href="https://maps.app.goo.gl/L2WcvqYxCvjmpqf16" target="_blank" class="block mt-4 text-center text-sm text-gray-600 hover:underline">
-                        Office 7, 3rd Floor, The Ark Building, Markaz, I-8 Markaz, Islamabad, 44000, Pakistan <br>
-                        Plus Code: M38F+WW Islamabad, Pakistan
+                    <a href="https://www.google.com/maps/place/WAFA+Dental+Clinic/@33.6673337,73.0747596,17z/data=!3m1!4b1!4m6!3m5!1s0x38df957cc7644563:0x27a7ae2e6cda42ef!8m2!3d33.6673337!4d73.0747596!16s%2Fg%2F11xd1rytr0?entry=tts&g_ep=EgoyMDI1MDgyNS4wIPu8ASoASAFQAw%3D%3D&skid=3e4f1248-9eac-454b-81b2-2d7b8c2abadb" target="_blank" class="block mt-4 text-center text-sm text-gray-600 hover:underline">
+                        Office #7, 3rd Floor, The Ark Building, Markaz, I-8 Markaz I 8 Markaz I-8, Islamabad, 44000, Pakistan
                     </a>
                 </div>
 
                 <!-- Business Hours Column -->
                 <div class="w-full" style="--delay: 0.3s;">
                     <div class="p-8 md:p-12 rounded-2xl shadow-xl card-with-glass w-full h-[400px] flex flex-col justify-center items-center">
-                        <!-- All headings now use font-dm-serif class -->
-                        <h3 class="font-dm-serif text-2xl font-normal mb-8 text-gray-800">Our Business Hours</h3>
+                        <h3 class="text-2xl font-normal mb-8 text-gray-800 font-dm-serif">Our Business Hours</h3>
                         <div class="text-sm max-w-sm mx-auto">
                             <div class="grid grid-cols-2 gap-x-2 gap-y-2 text-sm">
                                 <div class="font-bold">Monday</div>
@@ -418,8 +435,7 @@
             <!-- Increased max-w for overall card and adjusted padding -->
             <div class="max-w-3xl mx-auto p-8 md:p-12 rounded-3xl shadow-2xl card-with-glass space-y-12">
                 <div class="text-center">
-                    <!-- All headings now use font-dm-serif class -->
-                    <h2 class="font-dm-serif text-3xl md:text-4xl font-normal text-primary-blue" style="--delay: 0.1s;">General Inquiries</h2>
+                    <h2 class="text-3xl md:text-4xl font-normal text-primary-blue font-dm-serif" style="--delay: 0.1s;">General Inquiries</h2>
                     <p class="mt-2 text-base text-gray-600 max-w-2xl mx-auto" style="--delay: 0.2s;">
                         Have a question? Fill out the form below or contact us directly.
                     </p>
@@ -454,8 +470,7 @@
                     <!-- Contact Info Column -->
                     <div class="space-y-6 md:mt-10" style="--delay: 0.4s;">
                         <div class="p-6 rounded-2xl bg-white bg-opacity-70 shadow-lg">
-                            <!-- All headings now use font-dm-serif class -->
-                            <h3 class="font-dm-serif text-xl font-medium mb-3">Get in Touch Directly</h3>
+                            <h3 class="text-xl font-normal mb-3 font-dm-serif">Get in Touch Directly</h3>
                             <div class="space-y-3">
                                 <!-- Adjusted font size for links to prevent overflow and added whitespace-nowrap -->
                                 <a href="mailto:management@wafadentalclinic.com" class="flex items-center space-x-3 text-gray-700 hover:text-blue-600 transition-colors whitespace-nowrap">
@@ -473,8 +488,7 @@
                             </div>
                         </div>
                         <div class="p-6 rounded-2xl bg-white bg-opacity-70 shadow-lg">
-                            <!-- All headings now use font-dm-serif class -->
-                            <h3 class="font-dm-serif text-xl font-medium mb-3">Book an Appointment</h3>
+                            <h3 class="text-xl font-normal mb-3 font-dm-serif">Book an Appointment</h3>
                             <p class="text-sm text-gray-700">
                                 <!-- Added a hyperlink to "Click Here" -->
                                 To schedule an appointment <a href="#contact" class="text-blue-600 hover:underline">Click Here</a> or contact us via phone or WhatsApp during our business hours.
@@ -492,19 +506,17 @@
         <div class="container mx-auto px-6 text-gray-300">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
                 <div>
-                    <!-- All headings now use font-dm-serif class -->
-                    <h3 class="font-dm-serif text-base font-medium text-white mb-4">WAFA Dental Clinic</h3>
+                    <h3 class="text-base font-normal text-white mb-4 font-dm-serif">WAFA Dental Clinic</h3>
                     <p class="text-xs">
                         <!-- Make the address clickable -->
-                        <a href="https://maps.app.goo.gl/L2WcvqYxCvjmpqf16" target="_blank" class="hover:text-white transition-colors duration-200">
-                            Office 7 · 3rd Floor · The Ark Building · I-8 Markaz <br> Islamabad 44000 · Pakistan
+                        <a href="https://www.google.com/maps/place/WAFA+Dental+Clinic/@33.6673337,73.0747596,17z/data=!3m1!4b1!4m6!3m5!1s0x38df957cc7644563:0x27a7ae2e6cda42ef!8m2!3d33.6673337!4d73.0747596!16s%2Fg%2F11xd1rytr0?entry=tts&g_ep=EgoyMDI1MDgyNS4wIPu8ASoASAFQAw%3D%3D&skid=3e4f1248-9eac-454b-81b2-2d7b8c2abadb" target="_blank" class="hover:text-white transition-colors duration-200">
+                            Office #7 · 3rd Floor · The Ark Building · I-8 Markaz <br> Islamabad 44000 · Pakistan
                         </a>
                     </p>
                 </div>
                 <!-- Services re-added to footer -->
                 <div>
-                    <!-- All headings now use font-dm-serif class -->
-                    <h3 class="font-dm-serif text-base font-medium text-white mb-4">Our Services</h3>
+                    <h3 class="text-base font-normal text-white mb-4 font-dm-serif">Our Services</h3>
                     <ul class="space-y-2">
                         <li><a href="#services" class="text-xs hover:text-white transition-colors duration-200">Cosmetic Dentistry</a></li>
                         <li><a href="#services" class="text-xs hover:text-white transition-colors duration-200">General Dentistry</a></li>
@@ -515,8 +527,7 @@
                     </ul>
                 </div>
                 <div>
-                    <!-- All headings now use font-dm-serif class -->
-                    <h3 class="font-dm-serif text-base font-medium text-white mb-4">About Us</h3>
+                    <h3 class="text-base font-normal text-white mb-4 font-dm-serif">About Us</h3>
                     <ul class="space-y-2">
                         <li><a href="#about" class="text-xs hover:text-white transition-colors duration-200">Our Story</a></li>
                         <li><a href="#" class="text-xs hover:text-white transition-colors duration-200">Meet the Team</a></li>
@@ -524,8 +535,7 @@
                     </ul>
                 </div>
                 <div>
-                    <!-- All headings now use font-dm-serif class -->
-                    <h3 class="font-dm-serif text-base font-medium text-white mb-4">Follow Us</h3>
+                    <h3 class="text-base font-normal text-white mb-4 font-dm-serif">Follow Us</h3>
                     <div class="flex flex-col space-y-2 text-xs">
                         <a href="https://www.facebook.com/wafadentalclinics" target="_blank" rel="noopener noreferrer" class="text-gray-300 hover:text-white transition-colors duration-200" aria-label="Facebook">
                             Facebook
@@ -586,7 +596,7 @@
 
             const observer = new IntersectionObserver((entries, observer) => {
                 entries.forEach(entry => {
-                    if (entry.isIntersecting) {
+                    if (entry.isIntersecting) { // Corrected the variable from 'visible' to 'isIntersecting'
                         entry.target.classList.add('is-visible');
                         observer.unobserve(entry.target); // Stop observing once it's visible
                     }
