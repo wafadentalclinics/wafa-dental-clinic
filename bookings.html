@@ -1,0 +1,1359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WDC - Bookings</title>
+    <!-- Favicon and Open Graph tags -->
+    <meta property="og:title" content="WAFA Dental Clinic">
+    <meta property="og:description" content="Never Too Late To Improve Your Smile!">
+    <link rel="icon" type="image/x-icon" href="images/favicon.ico" />
+    <meta property="og:image" content="images/og-picture.png">
+    <meta property="og:url" content="https://www.wafadentalclinic.com">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Google reCAPTCHA v2 script -->
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background: #f9f9f9;
+            color: #2D3748;
+            scroll-behavior: smooth;
+        }
+
+        .calendar-container {
+            position: relative;
+            width: 100%;
+        }
+
+        .calendar-input {
+            width: 100%;
+            cursor: pointer;
+            padding-right: 2.5rem; /* Space for the icon */
+        }
+
+        .calendar-icon {
+            position: absolute;
+            right: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            pointer-events: none;
+            transition: transform 0.2s ease-in-out;
+        }
+
+        .calendar-input[aria-expanded="true"] + .calendar-icon {
+            transform: translateY(-50%) rotate(180deg);
+        }
+
+        .calendar-popup {
+            display: none;
+            position: absolute;
+            z-index: 1000; /* Increased z-index to ensure it's on top */
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+            padding: 20px;
+            width: 320px;
+            max-width: 90vw;
+            top: calc(100% + 10px); /* Position below the input */
+            left: 0;
+        }
+
+        .calendar-popup.is-open {
+            display: block;
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .calendar-header h2 {
+            font-size: 16px;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .calendar-header button {
+            background: none;
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+            color: #007aff;
+            padding: 5px 10px;
+            border-radius: 8px;
+            transition: background-color 0.2s ease;
+        }
+
+        .calendar-header button:hover {
+            background-color: #f0f0f0;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 6px;
+            font-size: 13px;
+        }
+
+        .calendar-grid div {
+            text-align: center;
+            padding: 8px 0;
+            border-radius: 8px;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .calendar-grid .day-name {
+            font-weight: 600;
+            color: #888;
+            cursor: default;
+        }
+
+        .calendar-grid .disabled {
+            color: #ccc;
+            cursor: not-allowed;
+        }
+
+        .calendar-grid .sunday {
+            color: red;
+        }
+
+        .calendar-grid .today {
+            background: #007aff;
+            color: #fff;
+            font-weight: bold;
+        }
+
+        .calendar-grid .selected {
+            background: #34c759;
+            color: #fff;
+            font-weight: bold;
+        }
+
+        @media (max-width: 500px) {
+            .calendar-popup {
+                width: 100%;
+                padding: 15px;
+            }
+            .calendar-header h2 {
+                font-size: 14px;
+            }
+            .calendar-grid {
+                font-size: 12px;
+            }
+        }
+
+        /* Custom Tailwind configuration */
+        :root {
+            --primary-blue: #010245;
+            /* Premium gradient colors */
+            --gradient-start: #04052e;
+            --gradient-middle: #061a70;
+            --gradient-end: #c6d9f5;
+        }
+        
+        /* Custom CSS for the live gradient effect */
+        @keyframes gradient-shift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .gradient-background {
+            background: linear-gradient(-45deg, var(--gradient-start), var(--gradient-middle), var(--gradient-end), var(--gradient-middle));
+            background-size: 600% 600%;
+            animation: gradient-shift 20s ease infinite;
+        }
+
+        /* Custom fonts and utility classes */
+        .font-dm-serif {
+            font-family: 'DM Serif Display', serif;
+        }
+        
+        /* Fade-in animation for sections and elements with a smoother feel */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 1.2s cubic-bezier(0.25, 1, 0.5, 1), transform 1.2s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        .fade-in.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Adds a subtle delay for children elements */
+        .fade-in.is-visible > * {
+            transition: opacity 0.8s cubic-bezier(0.25, 1, 0.5, 1), transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+            transition-delay: var(--delay);
+        }
+
+        .card-with-glass {
+            background-color: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+        }
+
+        /* Styles for the premium glass buttons */
+        .button-glass-white {
+            background-color: rgba(255, 255, 255, 0.5); /* Semi-transparent white */
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .button-glass-white:hover {
+            background-color: rgba(255, 255, 255, 0.8);
+            border-color: rgba(255, 255, 255, 0.7);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1), 0 6px 6px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
+        }
+
+        /* Apple-like hover effect for the 'Book Now' button */
+        .book-now-button:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2), 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Apple-like form field styling */
+        .apple-input {
+            border: 1px solid #d1d5db; /* A softer gray border */
+            border-radius: 0.75rem; /* More rounded corners */
+            padding: 0.75rem 1rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05); /* Subtle shadow */
+            transition: all 0.2s ease-in-out;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+        }
+
+        .apple-input:focus {
+            outline: none;
+            border-color: #6366f1; /* A light indigo/blue border on focus */
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2); /* Soft focus ring */
+        }
+        
+        /* Mobile menu animation */
+        #mobile-menu {
+            transition: max-height 0.3s ease-in-out, padding 0.3s ease-in-out;
+            max-height: 0;
+            overflow: hidden;
+        }
+        #mobile-menu.is-open {
+            max-height: 500px; /* A value large enough to contain all content */
+        }
+        /* Mobile menu icon animation */
+        #mobile-menu-button {
+            transition: transform 0.3s ease;
+        }
+        #mobile-menu-button.is-open {
+            transform: rotate(90deg);
+        }
+
+        /* Styles for the custom searchable dropdown */
+        .custom-dropdown-container {
+            position: relative;
+            width: 100%;
+        }
+        .custom-dropdown-input {
+            width: 100%;
+            cursor: pointer;
+            padding-right: 2.5rem; /* Space for the icon */
+        }
+        .custom-dropdown-icon {
+            position: absolute;
+            right: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            pointer-events: none;
+            transition: transform 0.2s ease-in-out;
+        }
+        .custom-dropdown-input[aria-expanded="true"] + .custom-dropdown-icon {
+            transform: translateY(-50%) rotate(180deg);
+        }
+        .custom-dropdown-menu {
+            position: absolute;
+            z-index: 10;
+            width: 100%;
+            max-height: 200px;
+            overflow-y: auto;
+            background-color: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            top: calc(100% + 0.5rem);
+            list-style: none;
+            padding: 0.5rem;
+            margin: 0;
+            display: none;
+        }
+        .custom-dropdown-menu.is-open {
+            display: block;
+        }
+        .custom-dropdown-menu li {
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            border-radius: 0.5rem;
+            transition: background-color 0.1s ease-in-out;
+        }
+        .custom-dropdown-menu li:hover {
+            background-color: #f3f4f6;
+        }
+
+        /* reCAPTCHA responsiveness */
+        .g-recaptcha {
+            transform-origin: 0 0;
+            -webkit-transform-origin: 0 0;
+        }
+
+        @media (max-width: 400px) {
+            .g-recaptcha {
+                transform: scale(0.8);
+                -webkit-transform: scale(0.8);
+            }
+        }
+
+        @media (max-width: 350px) {
+            .g-recaptcha {
+                transform: scale(0.7);
+                -webkit-transform: scale(0.7);
+            }
+        }
+    </style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary-blue': '#010245',
+                        'accent-blue': '#4c4e9e',
+                        'light-blue': '#9b9bd1',
+                    },
+                },
+            },
+        };
+    </script>
+</head>
+<body class="overflow-x-hidden">
+
+    <!-- Header --> 
+    <header class="sticky top-0 z-50 bg-[#010245] bg-opacity-90 backdrop-blur-md shadow-sm"> 
+        <div class="container mx-auto px-6 py-4 flex items-center justify-between"> 
+            <!-- Logo and Clinic Name as a clickable link --> 
+            <a href="index.html" class="flex items-center space-x-4" aria-label="Home"> 
+                <img src="images/logo.png" alt="WAFA Dental Clinic Logo" class="w-8 h-7 rounded-full" decoding="async">
+                <span class="text-2xl font-bold font-normal text-white tracking-tight font-dm-serif">WAFA Dental Clinic</span> 
+            </a>
+
+            <!-- Desktop Navigation -->
+            <nav class="hidden md:flex items-center space-x-8 flex-nowrap">
+                <a href="#booking" class="text-sm text-gray-300 hover:text-white transition-colors duration-200">Book Now</a>
+                <a href="#location" class="text-sm text-gray-300 hover:text-white transition-colors duration-200">Location</a>
+                <a href="#inquiries" class="px-4 py-2 text-sm font-semibold rounded-full shadow-lg button-glass-white text-gray-800 transition-all duration-300 transform hover:scale-105">
+                    Contact Us
+                </a>
+            </nav>
+
+            <!-- Mobile Navigation Toggle -->
+            <button id="mobile-menu-button" class="md:hidden focus:outline-none">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+            </button>
+        </div>
+
+        <!-- Mobile Navigation Menu -->
+        <div id="mobile-menu" class="md:hidden bg-[#010245] shadow-lg transition-all duration-300 ease-in-out">
+            <nav class="flex flex-col items-center space-y-4 py-4 px-6">
+                <a href="#booking" class="text-sm text-gray-300 hover:text-white transition-colors duration-200" onclick="document.getElementById('mobile-menu').classList.remove('is-open')">Book Now</a>
+                <a href="#location" class="text-sm text-gray-300 hover:text-white transition-colors duration-200" onclick="document.getElementById('mobile-menu').classList.remove('is-open')">Location</a>
+                <a href="#inquiries" class="px-5 py-2 font-semibold rounded-full shadow-lg bg-white text-primary-blue transition-all duration-300 transform hover:scale-105" onclick="document.getElementById('mobile-menu').classList.remove('is-open')">
+                    Contact Us
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <!-- Booking Section -->
+        <section id="booking" class="relative container mx-auto px-6 py-24 md:py-40 fade-in">
+            <div class="max-w-3xl mx-auto p-8 md:p-12 rounded-3xl shadow-2xl card-with-glass space-y-12">
+                <div class="text-center">
+                    <h2 class="text-3xl md:text-4xl font-normal text-primary-blue font-dm-serif" style="--delay: 0.1s;">Book an Appointment</h2>
+                    <p class="mt-2 text-base text-gray-600 max-w-2xl mx-auto" style="--delay: 0.2s;">
+                        Choose a service and a convenient time slot to book your appointment.
+                    </p>
+                </div>
+                
+                <form id="bookingForm" class="space-y-6" style="--delay: 0.3s;">
+                    <!-- Updated Name fields to be First Name and Last Name -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label for="firstName" class="block text-sm font-medium text-gray-700 mb-1">First Name</label>
+                            <input type="text" id="firstName" name="firstName" class="apple-input block w-full" required>
+                        </div>
+                        <div>
+                            <label for="lastName" class="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
+                            <input type="text" id="lastName" name="lastName" class="apple-input block w-full" required>
+                        </div>
+                    </div>
+                    <div>
+                        <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+                        <input type="email" id="email" name="email" class="apple-input block w-full" required>
+                    </div>
+                    <div>
+                        <label for="phone" class="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+                        <div class="flex space-x-2">
+                            <div class="custom-dropdown-container w-1/2 md:w-1/3 min-w-[120px] max-w-[180px]">
+                                <input
+                                    type="text"
+                                    id="countryCodeInput"
+                                    class="apple-input custom-dropdown-input"
+                                    placeholder="+92 (PK)"
+                                    readonly
+                                    aria-haspopup="listbox"
+                                    aria-expanded="false"
+                                >
+                                <input type="hidden" id="countryCode" name="countryCode" value="+92">
+                                <svg class="custom-dropdown-icon w-4 h-4 text-gray-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                </svg>
+                                <ul id="countryList" class="custom-dropdown-menu"></ul>
+                            </div>
+                            <input type="tel" id="phoneNumber" name="phoneNumber" class="apple-input block w-full" placeholder="3XX XXXXXXX" required>
+                        </div>
+                    </div>
+                    <div>
+                        <label for="service" class="block text-sm font-medium text-gray-700 mb-1">Select a Service</label>
+                        <!-- Updated to use a custom dropdown -->
+                        <div class="custom-dropdown-container">
+                            <input
+                                type="text"
+                                id="serviceInput"
+                                class="apple-input custom-dropdown-input"
+                                placeholder="Select a service"
+                                readonly
+                                aria-haspopup="listbox"
+                                aria-expanded="false"
+                            >
+                            <input type="hidden" id="serviceHidden" name="service" required>
+                            <svg class="custom-dropdown-icon w-4 h-4 text-gray-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                            </svg>
+                            <ul id="serviceList" class="custom-dropdown-menu"></ul>
+                        </div>
+                    </div>
+                    <div>
+                        <label for="dateInput" class="block text-sm font-medium text-gray-700 mb-1">Date</label>
+                        <!-- Calendar will be attached to this input -->
+                        <div class="calendar-container">
+                            <input type="text" id="dateInput" name="date" class="apple-input block w-full cursor-pointer calendar-input" placeholder="Select a date" readonly aria-haspopup="dialog" aria-expanded="false" required>
+                            <svg class="calendar-icon w-4 h-4 text-gray-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                            </svg>
+                            <div id="calendarPopup" class="calendar-popup">
+                                <div class="calendar-header">
+                                    <button id="prevMonth" aria-label="Previous Month"><</button>
+                                    <h2 id="monthYear"></h2>
+                                    <button id="nextMonth" aria-label="Next Month">></button>
+                                </div>
+                                <div id="calendarGrid" class="calendar-grid"></div>
+                            </div>
+                        </div>
+                        <p class="mt-1 text-sm text-red-500">
+                            We are <span class="underline">Closed</span> on Sundays
+                        </p>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Appointment Time</label>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="custom-dropdown-container">
+                                <label for="bookingHourInput" class="sr-only">Hours</label>
+                                <input
+                                    type="text"
+                                    id="bookingHourInput"
+                                    class="apple-input custom-dropdown-input"
+                                    placeholder="Hours"
+                                    readonly
+                                    aria-haspopup="listbox"
+                                    aria-expanded="false"
+                                >
+                                <input type="hidden" id="bookingHourHidden" name="bookingHour" required>
+                                <svg class="custom-dropdown-icon w-4 h-4 text-gray-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                </svg>
+                                <ul id="bookingHourList" class="custom-dropdown-menu"></ul>
+                            </div>
+                            <div class="custom-dropdown-container">
+                                <label for="bookingMinuteInput" class="sr-only">Interval - Select Minute(s)</label>
+                                <input
+                                    type="text"
+                                    id="bookingMinuteInput"
+                                    class="apple-input custom-dropdown-input"
+                                    placeholder="Interval - Select Minute(s)"
+                                    readonly
+                                    aria-haspopup="listbox"
+                                    aria-expanded="false"
+                                >
+                                <input type="hidden" id="bookingMinuteHidden" name="bookingMinute" required>
+                                <svg class="custom-dropdown-icon w-4 h-4 text-gray-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                </svg>
+                                <ul id="bookingMinuteList" class="custom-dropdown-menu"></ul>
+                            </div>
+                        </div>
+                        <p id="selectedTimeDisplay" class="mt-2 text-center text-sm font-medium text-green-600" style="--delay: 0.4s;"></p>
+                    </div>
+                    <div class="g-recaptcha" data-sitekey="YOUR_RECAPTCHA_SITE_KEY" data-callback="onRecaptchaSuccess" data-expired-callback="onRecaptchaExpired"></div>
+                    <!-- Inline comment for site key -->
+                    <!-- Replace "YOUR_RECAPTCHA_SITE_KEY" with your actual reCAPTCHA site key -->
+                    <div id="recaptchaError" class="text-red-500 text-sm mt-2 hidden">Please complete the reCAPTCHA.</div>
+
+                    <button type="submit" class="w-full px-6 py-3 font-semibold text-white bg-primary-blue rounded-xl shadow-md hover:bg-accent-blue transition-colors duration-200">
+                        Confirm Appointment
+                    </button>
+                    <!-- Loading and status messages -->
+                    <div id="statusMessage" class="mt-4 text-center text-sm font-medium"></div>
+                </form>
+            </div>
+        </section>
+
+        <!-- Map and Business Hours Section -->
+        <section id="location" class="relative container mx-auto px-6 py-24 md:py-40 fade-in">
+            <h2 class="text-3xl md:text-4xl font-normal text-center mb-12 font-dm-serif" style="--delay: 0.1s;">Our Location</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16 items-start">
+                <!-- Map Column -->
+                <div class="w-full" style="--delay: 0.2s;">
+                    <!-- Wrap the map in an anchor tag to make it a clickable link -->
+                    <a href="https://www.google.com/maps/place/WAFA+Dental+Clinic/@33.6673337,73.0747596,17z/data=!3m1!4b1!4m6!3m5!1s0x38df957cc7644563:0x27a7ae2e6cda42ef!8m2!3d33.6673337!4d73.0747596!16s%2Fg%2F11xd1rytr0?entry=tts&g_ep=EgoyMDI1MDgyNS4wIPu8ASoASAFQAw%3D%3D&skid=3e4f1248-9eac-454b-81b2-2d7b8c2abadb" target="_blank" class="block cursor-pointer" aria-label="Open WAFA Dental Clinic location in Google Maps">
+                        <div class="overflow-hidden rounded-2xl shadow-xl h-[400px]">
+                            <iframe 
+                                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3320.088494056911!2d73.0721846!3d33.6673337!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x38df957cc7644563:0x27a7ae2e6cda42ef!2sWAFA%20Dental%20Clinic!5e0!3m2!1sen!2s!4v1725206263536!5m2!1sen!2s" 
+                                class="w-full h-full rounded-2xl" 
+                                style="border:0;" 
+                                allowfullscreen="" 
+                                loading="lazy" 
+                                referrerpolicy="no-referrer-when-downgrade"
+                                tabindex="-1">
+                            </iframe>
+                        </div>
+                    </a>
+                    <a href="https://www.google.com/maps/place/WAFA+Dental+Clinic/@33.6673337,73.0747596,17z/data=!3m1!4b1!4m6!3m5!1s0x38df957cc7644563:0x27a7ae2e6cda42ef!8m2!3d33.6673337!4d73.0747596!16s%2Fg%2F11xd1rytr0?entry=tts&g_ep=EgoyMDI1MDgyNS4wIPu8ASoASAFQAw%3D%3D&skid=3e4f1248-9eac-454b-81b2-2d7b8c2abadb" target="_blank" class="block mt-4 text-center text-sm text-gray-600 hover:underline">
+                        Office #7 · 3rd Floor · The Ark Building · I-8 Markaz <br> Islamabad 44000 · Pakistan
+                    </a>
+                </div>
+
+                <!-- Business Hours Column -->
+                <div class="w-full" style="--delay: 0.3s;">
+                    <div class="p-8 md:p-12 rounded-2xl shadow-xl card-with-glass w-full h-[400px] flex flex-col justify-center items-center">
+                        <h3 class="text-2xl font-normal mb-8 text-gray-800 font-dm-serif">Our Business Hours</h3>
+                        <div class="text-sm max-w-sm mx-auto">
+                            <div class="grid grid-cols-2 gap-x-2 gap-y-2 text-sm">
+                                <div class="font-bold">Monday</div>
+                                <div class="whitespace-nowrap">4:00 PM - 9:00 PM</div>
+                                <div class="font-bold">Tuesday</div>
+                                <div class="whitespace-nowrap">4:00 PM - 9:00 PM</div>
+                                <div class="font-bold">Wednesday</div>
+                                <div class="whitespace-nowrap">4:00 PM - 9:00 PM</div>
+                                <div class="font-bold">Thursday</div>
+                                <div class="whitespace-nowrap">4:00 PM - 9:00 PM</div>
+                                <div class="font-bold">Friday</div>
+                                <div class="whitespace-nowrap">4:00 PM - 9:00 PM</div>
+                                <div class="font-bold">Saturday</div>
+                                <div class="whitespace-nowrap">4:00 PM - 9:00 PM</div>
+                                <div class="font-bold">Sunday</div>
+                                <div class="whitespace-nowrap">Closed</div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- New text added here -->
+                    <p class="mt-4 text-center text-sm text-gray-600">
+                        We are open from Mon-Sat · Hours: 4:00PM - 9:00PM. We are closed on Sundays.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- General Inquiries Section -->
+        <section id="inquiries" class="relative container mx-auto px-6 py-24 md:py-40 fade-in">
+            <!-- Increased max-w for overall card and adjusted padding -->
+            <div class="max-w-3xl mx-auto p-8 md:p-12 rounded-3xl shadow-2xl card-with-glass space-y-12">
+                <div class="text-center">
+                    <h2 class="text-3xl md:text-4xl font-normal text-primary-blue font-dm-serif" style="--delay: 0.1s;">General Inquiries</h2>
+                    <p class="mt-2 text-base text-gray-600 max-w-2xl mx-auto" style="--delay: 0.2s;">
+                        Have a question? Fill out the form below or contact us directly.
+                    </p>
+                </div>
+                
+                <!-- Reduced the gap on medium screens to give more room -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+                    <!-- Form Column -->
+                    <!-- Updated form with id for JavaScript handling -->
+                    <form id="contactForm" class="space-y-6" style="--delay: 0.3s;">
+                        <div>
+                            <label for="inquiries_name" class="block text-sm font-medium text-gray-700 mb-1">Name</label>
+                            <input type="text" id="inquiries_name" name="name" class="apple-input block w-full">
+                        </div>
+                        <div>
+                            <label for="inquiries_email" class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+                            <input type="email" id="inquiries_email" name="email" class="apple-input block w-full">
+                        </div>
+                        <div>
+                            <label for="inquiries_subject" class="block text-sm font-medium text-gray-700 mb-1">Subject</label>
+                            <input type="text" id="inquiries_subject" name="subject" class="apple-input block w-full">
+                        </div>
+                        <div>
+                            <label for="inquiries_message" class="block text-sm font-medium text-gray-700 mb-1">Message</label>
+                            <textarea id="inquiries_message" name="message" rows="4" class="apple-input block w-full"></textarea>
+                        </div>
+                        <button type="submit" class="w-full px-6 py-3 font-semibold text-white bg-primary-blue rounded-xl shadow-md hover:bg-accent-blue transition-colors duration-200">
+                            Send Message
+                        </button>
+                    </form>
+
+                    <!-- Contact Info Column -->
+                    <div class="space-y-6 md:mt-10" style="--delay: 0.4s;">
+                        <div class="p-6 rounded-2xl bg-white bg-opacity-70 shadow-lg">
+                            <h3 class="text-xl font-normal mb-3 font-dm-serif">Get in Touch Directly</h3>
+                            <div class="space-y-3">
+                                <!-- Adjusted font size for links to prevent overflow and added whitespace-nowrap -->
+                                <a href="mailto:management@wafadentalclinic.com" class="flex items-center space-x-3 text-gray-700 hover:text-blue-600 transition-colors whitespace-nowrap">
+                                    <i class="fas fa-envelope text-blue-600 text-xs flex-shrink-0"></i>
+                                    <span class="text-xs">management@wafadentalclinic.com</span>
+                                </a>
+                                <a href="tel:+92518448877" class="flex items-center space-x-3 text-gray-700 hover:text-blue-600 transition-colors whitespace-nowrap">
+                                    <i class="fas fa-phone-alt text-blue-600 text-xs"></i>
+                                    <span class="text-xs">+92 51 8448877</span>
+                                </a>
+                                <a href="https://wa.me/923295195096" class="flex items-center space-x-3 text-gray-700 hover:text-blue-600 transition-colors whitespace-nowrap">
+                                    <i class="fab fa-whatsapp text-blue-600 text-xs"></i>
+                                    <span class="text-xs">+92 329 5195096</span>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="p-6 rounded-2xl bg-white bg-opacity-70 shadow-lg">
+                            <h3 class="text-xl font-normal mb-3 font-dm-serif">Book an Appointment</h3>
+                            <p class="text-sm text-gray-700">
+                                <!-- Added a hyperlink to "Click Here" -->
+                                To schedule an appointment <a href="#booking" class="text-blue-600 hover:underline">Click Here</a> or contact us via phone or WhatsApp during our business hours.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-primary-blue py-12">
+        <div class="container mx-auto px-6 text-gray-300">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <h3 class="text-base font-normal text-white mb-4 font-dm-serif">WAFA Dental Clinic</h3>
+                    <p class="text-xs">
+                        <!-- Make the address clickable -->
+                        <a href="https://www.google.com/maps/place/WAFA+Dental+Clinic/@33.6673337,73.0747596,17z/data=!3m1!4b1!4m6!3m5!1s0x38df957cc7644563:0x27a7ae2e6cda42ef!8m2!3d33.6673337!4d73.0747596!16s%2Fg%2F11xd1rytr0?entry=tts&g_ep=EgoyMDI1MDgyNS4wIPu8ASoASAFQAw%3D%3D&skid=3e4f1248-9eac-454b-81b2-2d7b8c2abadb" target="_blank" class="hover:text-white transition-colors duration-200">
+                            Office #7 · 3rd Floor · The Ark Building · I-8 Markaz <br> Islamabad 44000 · Pakistan
+                        </a>
+                    </p>
+                </div>
+                <!-- Services re-added to footer -->
+                <div>
+                    <h3 class="text-base font-normal text-white mb-4 font-dm-serif">Our Services</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#services" class="text-xs hover:text-white transition-colors duration-200">Cosmetic Dentistry</a></li>
+                        <li><a href="#services" class="text-xs hover:text-white transition-colors duration-200">General Dentistry</a></li>
+                        <li><a href="#services" class="text-xs hover:text-white transition-colors duration-200">Orthodontics</a></li>
+                        <li><a href="#services" class="text-xs hover:text-white transition-colors duration-200">Oral Surgery</a></li>
+                        <li><a href="#services" class="text-xs hover:text-white transition-colors duration-200">Pediatric Care</a></li>
+                        <li><a href="#services" class="text-xs hover:text-white transition-colors duration-200">Preventive Care</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-base font-normal text-white mb-4 font-dm-serif">About Us</h3>
+                    <ul class="space-y-2">
+                        <li><a href="our-story.html" class="text-xs hover:text-white transition-colors duration-200">Our Story</a></li>
+                        <li><a href="#" class="text-xs hover:text-white transition-colors duration-200">Meet the Team</a></li>
+                        <li><a href="#" class="text-xs hover:text-white transition-colors duration-200">Careers</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-base font-normal text-white mb-4 font-dm-serif">Follow Us</h3>
+                    <div class="flex flex-col space-y-2 text-xs">
+                        <a href="https://www.facebook.com/wafadentalclinics" target="_blank" rel="noopener noreferrer" class="text-gray-300 hover:text-white transition-colors duration-200" aria-label="Facebook">
+                            Facebook
+                        </a>
+                        <a href="https://www.instagram.com/wafadentalclinic.pk/" target="_blank" rel="noopener noreferrer" class="text-gray-300 hover:text-white transition-colors duration-200" aria-label="Instagram">
+                            Instagram
+                        </a>
+                        <a href="https://www.linkedin.com/company/wafa-dental-clinic/" target="_blank" rel="noopener noreferrer" class="text-gray-300 hover:text-white transition-colors duration-200" aria-label="LinkedIn" >
+                            LinkedIn
+                        </a>
+                        <a href="https://x.com/TeamWafaDental" target="_blank" rel="noopener noreferrer" class="text-gray-300 hover:text-white transition-colors duration-200" aria-label="Twitter" >
+                            Twitter
+                        </a>
+                        <a href="https://www.youtube.com/@WAFADentalClinic" target="_blank" rel="noopener noreferrer" class="text-gray-300 hover:text-white transition-colors duration-200" aria-label="YouTube" >
+                            YouTube
+                        </a>
+                        <a href="https://www.tiktok.com/@wafadental" target="_blank" rel="noopener noreferrer" class="text-gray-300 hover:text-white transition-colors duration-200" aria-label="TikTok" >
+                            TikTok
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <hr class="my-8 border-gray-200">
+            <div class="text-center text-xs text-gray-300">
+                &copy; <span id="current-year"></span> WAFA Dental Clinic. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // --- IMPORTANT: CONFIGURATION VARIABLES ---
+        // Please replace these placeholder values with your actual data.
+        const TIMEZONE = "Asia/Islamabad";
+        const SHEET_NAME = "Bookings";
+        const SHEET_COLUMNS = ["Client ID","Booking ID","Name","Email","Phone","Service","Date","Time","Calendar Event ID","Doc URL","Created At"];
+        const CALENDAR_ID = "[YOUR_GOOGLE_CALENDAR_ID]";
+        const DOC_TEMPLATE_ID = "[YOUR_GOOGLE_DOC_TEMPLATE_ID]";
+        const EMAIL_FROM = "management@wafadentalclinic.com";
+        const EMAILJS_SERVICE_ID = "[EMAILJS_SERVICE_ID]";
+        const EMAILJS_TEMPLATE_ID = "[EMAILJS_TEMPLATE_ID]";
+        const EMAILJS_PUBLIC_KEY = "[EMAILJS_PUBLIC_KEY]";
+        const EMAILJS_PRIVATE_KEY = "[EMAILJS_PRIVATE_KEY]";
+        const WEB_APP_URL = "[YOUR_APPS_SCRIPT_WEB_APP_URL]";
+        // Google reCAPTCHA v2 Secret Key - IMPORTANT: Keep this server-side in a real application!
+        // For client-side demonstration, it's placed here.
+        const RECAPTCHA_SECRET_KEY = "YOUR_RECAPTCHA_SECRET_KEY"; // Replace with your actual reCAPTCHA secret key
+
+        const COUNTRIES = [
+            // Key English-speaking countries
+            { code: "+1", name: "United States", iso: "USA" },
+            { code: "+44", name: "United Kingdom", iso: "GBR" },
+            { code: "+1", name: "Canada", iso: "CAN" },
+            { code: "+61", name: "Australia", iso: "AUS" },
+            { code: "+49", name: "Germany", iso: "DEU" },
+            { code: "+33", name: "France", iso: "FRA" },
+            { code: "+64", name: "New Zealand", iso: "NZL" },
+            { code: "+353", name: "Ireland", iso: "IRL" },
+            { code: "+41", name: "Switzerland", iso: "CHE" },
+            { code: "+46", name: "Sweden", iso: "SWE" },
+            { code: "+31", name: "Netherlands", iso: "NLD" },
+            { code: "+81", name: "Japan", iso: "JPN" },
+            { code: "+65", name: "Singapore", iso: "SGP" },
+            { code: "+82", name: "South Korea", iso: "KOR" },
+
+            // Key Source Markets (Asia)
+            { code: "+86", name: "China", iso: "CHN" },
+            { code: "+91", name: "India", iso: "IND" },
+            { code: "+92", name: "Pakistan", iso: "PAK" },
+            { code: "+880", name: "Bangladesh", iso: "BGD" },
+            { code: "+977", name: "Nepal", iso: "NPL" },
+            { code: "+94", name: "Sri Lanka", iso: "LKA" },
+            { code: "+84", name: "Vietnam", iso: "VNM" },
+            { code: "+62", name: "Indonesia", iso: "IDN" },
+            { code: "+60", name: "Malaysia", iso: "MYS" },
+            { code: "+66", name: "Thailand", iso: "THA" },
+            { code: "+63", name: "Philippines", iso: "PHL" },
+
+            // Key Source Markets (Middle East & Africa)
+            { code: "+971", name: "United Arab Emirates", iso: "ARE" },
+            { code: "+966", name: "Saudi Arabia", iso: "SAU" },
+            { code: "+974", name: "Qatar", iso: "QAT" },
+            { code: "+965", name: "Kuwait", iso: "KWT" },
+            { code: "+968", name: "Oman", iso: "OMN" },
+            { code: "+973", name: "Bahrain", iso: "BHR" },
+            { code: "+90", name: "Turkey", iso: "TUR" },
+            { code: "+20", name: "Egypt", iso: "EGY" },
+            { code: "+234", name: "Nigeria", iso: "NGA" },
+            { code: "+233", name: "Ghana", iso: "GHA" },
+            { code: "+254", name: "Kenya", iso: "KEN" },
+            { code: "+27", name: "South Africa", iso: "ZAF" },
+            { code: "+212", name: "Morocco", iso: "MAR" },
+
+            // Key Source Markets (Europe)
+            { code: "+7", name: "Russia", iso: "RUS" },
+            { code: "+39", name: "Italy", iso: "ITA" },
+            { code: "+34", name: "Spain", iso: "ESP" },
+            { code: "+40", name: "Romania", iso: "ROU" },
+            { code: "+380", name: "Ukraine", iso: "UKR" },
+
+            // Key Source Markets (Americas)
+            { code: "+55", name: "Brazil", iso: "BRA" },
+            { code: "+52", name: "Mexico", iso: "MEX" },
+            { code: "+57", name: "Colombia", iso: "COL" },
+            { code: "+54", name: "Argentina", iso: "ARG" }
+        ];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- Mobile Menu Toggle ---
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('is-open');
+                mobileMenuButton.classList.toggle('is-open'); // Add a class to the button itself for animation
+            });
+
+            // --- Smooth Scrolling for Anchor Links ---
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                });
+            });
+
+            // --- Scroll-based Fade-in Animation ---
+            const fadeInSections = document.querySelectorAll('.fade-in');
+            const observerOptions = {
+                root: null, // relative to the viewport
+                rootMargin: '0px',
+                threshold: 0.1 // 10% of the item is visible
+            };
+
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) { // Corrected the variable from 'visible' to 'is-visible'
+                        entry.target.classList.add('is-visible');
+                        observer.unobserve(entry.target); // Stop observing once it's visible
+                    }
+                });
+            }, observerOptions);
+
+            fadeInSections.forEach(section => {
+                observer.observe(section);
+            });
+
+            // --- Auto-update Footer Year ---
+            const currentYearSpan = document.getElementById('current-year');
+            currentYearSpan.textContent = new Date().getFullYear();
+
+            // --- General Inquiries Form Submission (Mailto) ---
+            const contactForm = document.getElementById('contactForm');
+            const recipientEmail = 'management@wafadentalclinic.com'; // You can change this email address
+
+            contactForm.addEventListener('submit', (e) => {
+                e.preventDefault(); // Prevent the default form submission
+
+                // Get form values
+                const name = document.getElementById('inquiries_name').value;
+                const email = document.getElementById('inquiries_email').value;
+                const subject = document.getElementById('inquiries_subject').value;
+                const message = document.getElementById('inquiries_message').value;
+
+                // Construct a clean, readable body text
+                const bodyText = `Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}`;
+
+                // Create the mailto link with encoded subject and body
+                const mailtoLink = `mailto:${recipientEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(bodyText)}`;
+
+                // Redirect to the mailto link
+                window.location.href = mailtoLink;
+            });
+            
+            // --- New Appointment Booking Form Submission ---
+            const bookingForm = document.getElementById('bookingForm');
+            const statusMessage = document.getElementById('statusMessage');
+
+            bookingForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                // Clear previous messages
+                statusMessage.textContent = '';
+                statusMessage.classList.remove('text-red-500', 'text-green-500');
+
+                // Get values from the new separate fields
+                const firstName = document.getElementById('firstName').value;
+                const lastName = document.getElementById('lastName').value;
+                const name = `${firstName} ${lastName}`;
+                const email = document.getElementById('email').value;
+                const countryCode = document.getElementById('countryCode').value;
+                const phoneNumber = document.getElementById('phoneNumber').value;
+                const service = document.getElementById('serviceHidden').value; // Get value from hidden input
+                const date = document.getElementById('dateInput').value; // Changed to dateInput
+                const bookingHour = document.getElementById('bookingHourHidden').value;
+                const bookingMinute = document.getElementById('bookingMinuteHidden').value;
+                const time = `${bookingHour}:${bookingMinute}`;
+
+                // Combine the country code and phone number
+                const phone = countryCode + ' ' + phoneNumber;
+                const recaptchaResponse = grecaptcha.getResponse();
+                const recaptchaErrorDiv = document.getElementById('recaptchaError');
+
+                // Basic validation
+                if (!firstName || !lastName || !email || !phone || !service || !date || !bookingHour || !bookingMinute) {
+                    statusMessage.textContent = 'Please fill out all fields.';
+                    statusMessage.classList.add('text-red-500');
+                    return;
+                }
+
+                // reCAPTCHA validation
+                if (recaptchaResponse.length === 0) {
+                    recaptchaErrorDiv.classList.remove('hidden');
+                    statusMessage.textContent = 'Please complete the reCAPTCHA.';
+                    statusMessage.classList.add('text-red-500');
+                    return;
+                } else {
+                    recaptchaErrorDiv.classList.add('hidden');
+                }
+
+                // Construct date string in YYYY-MM-DD format for consistent parsing
+                const [month, day, year] = date.split('/');
+                const formattedDate = `${year}-${month}-${day}`;
+                const selectedDate = new Date(`${formattedDate}T${bookingHour}:${bookingMinute}:00`);
+                const dayOfWeek = selectedDate.getDay(); // 0 for Sunday, 1 for Monday...
+
+                // Check for Sunday
+                if (dayOfWeek === 0) {
+                    statusMessage.textContent = 'Appointments are not available on Sundays.';
+                    statusMessage.classList.add('text-red-500');
+                    return;
+                }
+
+                // Check for valid time range (4:00 PM to 9:00 PM)
+                const startTime = 16; // 4:00 PM
+                const endTime = 21; // 9:00 PM
+                const selectedHour = parseInt(bookingHour, 10);
+                const selectedMinutes = parseInt(bookingMinute, 10);
+
+                if (selectedHour < startTime || selectedHour >= endTime || (selectedHour === endTime && selectedMinutes > 0)) {
+                    statusMessage.textContent = 'Please select a time between 4:00 PM and 9:00 PM.';
+                    statusMessage.classList.add('text-red-500');
+                    return;
+                }
+
+                statusMessage.textContent = 'Booking your appointment...';
+                statusMessage.classList.add('text-gray-500');
+
+                statusMessage.textContent = 'Verifying reCAPTCHA...';
+                statusMessage.classList.add('text-gray-500');
+
+                // Verify reCAPTCHA on the server-side (or simulate for client-side demo)
+                const recaptchaVerifyUrl = `https://www.google.com/recaptcha/api/siteverify?secret=${RECAPTCHA_SECRET_KEY}&response=${recaptchaResponse}`;
+                
+                try {
+                    const recaptchaVerification = await fetch(recaptchaVerifyUrl, { method: 'POST' });
+                    const recaptchaJson = await recaptchaVerification.json();
+
+                    if (!recaptchaJson.success) {
+                        statusMessage.textContent = 'reCAPTCHA verification failed. Please try again.';
+                        statusMessage.classList.add('text-red-500');
+                        grecaptcha.reset();
+                        return;
+                    }
+
+                    const bookingData = {
+                        name,
+                        email,
+                        phone,
+                        service,
+                        date,
+                        time,
+                    };
+                    
+                    const response = await fetch(WEB_APP_URL, {
+                        method: 'POST',
+                        mode: 'no-cors', // Apps Script CORS
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(bookingData),
+                    });
+                    
+                    // We can't check `response.ok` with 'no-cors', so we assume success
+                    statusMessage.textContent = 'Appointment booked successfully!';
+                    statusMessage.classList.add('text-green-500');
+                    bookingForm.reset();
+                    grecaptcha.reset(); // Reset reCAPTCHA after successful submission
+
+                } catch (error) {
+                    console.error('Error:', error);
+                    statusMessage.textContent = 'Failed to book appointment. Please try again later.';
+                    statusMessage.classList.add('text-red-500');
+                    grecaptcha.reset();
+                }
+            });
+
+            // reCAPTCHA callback functions
+            window.onRecaptchaSuccess = () => {
+                document.getElementById('recaptchaError').classList.add('hidden');
+            };
+
+            window.onRecaptchaExpired = () => {
+                grecaptcha.reset();
+                document.getElementById('recaptchaError').classList.remove('hidden');
+                document.getElementById('recaptchaError').textContent = 'reCAPTCHA expired. Please complete it again.';
+            };
+
+            // --- Searchable Dropdown Logic ---
+            const countryCodeInput = document.getElementById('countryCodeInput');
+            const countryCodeHidden = document.getElementById('countryCode');
+            const countryList = document.getElementById('countryList');
+            const customDropdownContainer = countryCodeInput.closest('.custom-dropdown-container');
+
+            const renderCountries = (filter = '') => {
+                countryList.innerHTML = '';
+                const filteredCountries = COUNTRIES.filter(country => 
+                    country.name.toLowerCase().includes(filter.toLowerCase()) || 
+                    country.code.includes(filter) ||
+                    country.iso.toLowerCase().includes(filter.toLowerCase())
+                );
+                filteredCountries.forEach(country => {
+                    const li = document.createElement('li');
+                    li.textContent = `${country.code} (${country.iso}) ${country.name}`;
+                    li.dataset.code = country.code;
+                    countryList.appendChild(li);
+                });
+            };
+
+            const toggleDropdown = (show, inputElement, listElement) => {
+                if (show) {
+                    listElement.classList.add('is-open');
+                    inputElement.setAttribute('aria-expanded', 'true');
+                } else {
+                    listElement.classList.remove('is-open');
+                    inputElement.setAttribute('aria-expanded', 'false');
+                }
+            };
+
+            countryCodeInput.addEventListener('click', () => {
+                countryCodeInput.readOnly = false;
+                countryCodeInput.value = '';
+                countryCodeInput.focus();
+                renderCountries();
+                toggleDropdown(true, countryCodeInput, countryList);
+            });
+
+            countryCodeInput.addEventListener('input', (e) => {
+                renderCountries(e.target.value);
+                toggleDropdown(true, countryCodeInput, countryList);
+            });
+
+            countryList.addEventListener('click', (e) => {
+                const selectedLi = e.target.closest('li');
+                if (selectedLi) {
+                    countryCodeInput.value = selectedLi.textContent;
+                    countryCodeHidden.value = selectedLi.dataset.code;
+                    countryCodeInput.readOnly = true;
+                    toggleDropdown(false, countryCodeInput, countryList);
+                }
+            });
+
+            document.addEventListener('click', (e) => {
+                if (!e.target.closest('.custom-dropdown-container') && !e.target.closest('.calendar-popup')) {
+                    toggleDropdown(false, countryCodeInput, countryList);
+                    toggleDropdown(false, serviceInput, serviceList);
+                    toggleDropdown(false, bookingHourInput, bookingHourList);
+                    toggleDropdown(false, bookingMinuteInput, bookingMinuteList);
+                    calendarPopup.classList.remove('is-open');
+                    dateInput.setAttribute('aria-expanded', 'false');
+                }
+            });
+            
+            // Initial render
+            renderCountries();
+
+            // --- Hour Dropdown Logic ---
+            const bookingHourInput = document.getElementById('bookingHourInput');
+            const bookingHourHidden = document.getElementById('bookingHourHidden');
+            const bookingHourList = document.getElementById('bookingHourList');
+            const selectedTimeDisplay = document.getElementById('selectedTimeDisplay');
+
+            const HOURS = [
+                { value: "16", display: "4 PM" },
+                { value: "17", display: "5 PM" },
+                { value: "18", display: "6 PM" },
+                { value: "19", display: "7 PM" },
+                { value: "20", display: "8 PM" }
+            ];
+
+            const renderHours = (filter = '') => {
+                bookingHourList.innerHTML = '';
+                const filteredHours = HOURS.filter(hour =>
+                    hour.display.toLowerCase().includes(filter.toLowerCase())
+                );
+                filteredHours.forEach(hour => {
+                    const li = document.createElement('li');
+                    li.textContent = hour.display;
+                    li.dataset.value = hour.value;
+                    bookingHourList.appendChild(li);
+                });
+            };
+
+            bookingHourInput.addEventListener('click', () => {
+                bookingHourInput.readOnly = false;
+                bookingHourInput.value = '';
+                bookingHourInput.focus();
+                renderHours();
+                toggleDropdown(true, bookingHourInput, bookingHourList);
+            });
+
+            bookingHourInput.addEventListener('input', (e) => {
+                renderHours(e.target.value);
+                toggleDropdown(true, bookingHourInput, bookingHourList);
+            });
+
+            bookingHourList.addEventListener('click', (e) => {
+                const selectedLi = e.target.closest('li');
+                if (selectedLi) {
+                    bookingHourInput.value = selectedLi.textContent;
+                    bookingHourHidden.value = selectedLi.dataset.value;
+                    bookingHourInput.readOnly = true;
+                    toggleDropdown(false, bookingHourInput, bookingHourList);
+                    updateSelectedTimeDisplay();
+                }
+            });
+
+            // --- Minute Dropdown Logic ---
+            const bookingMinuteInput = document.getElementById('bookingMinuteInput');
+            const bookingMinuteHidden = document.getElementById('bookingMinuteHidden');
+            const bookingMinuteList = document.getElementById('bookingMinuteList');
+
+            const MINUTES = [
+                { value: "00", display: "00" },
+                { value: "15", display: "15" },
+                { value: "30", display: "30" },
+                { value: "45", display: "45" }
+            ];
+
+            const renderMinutes = (filter = '') => {
+                bookingMinuteList.innerHTML = '';
+                const filteredMinutes = MINUTES.filter(minute =>
+                    minute.display.includes(filter)
+                );
+                filteredMinutes.forEach(minute => {
+                    const li = document.createElement('li');
+                    li.textContent = minute.display;
+                    li.dataset.value = minute.value;
+                    bookingMinuteList.appendChild(li);
+                });
+            };
+
+            bookingMinuteInput.addEventListener('click', () => {
+                bookingMinuteInput.readOnly = false;
+                bookingMinuteInput.value = '';
+                bookingMinuteInput.focus();
+                renderMinutes();
+                toggleDropdown(true, bookingMinuteInput, bookingMinuteList);
+            });
+
+            bookingMinuteInput.addEventListener('input', (e) => {
+                renderMinutes(e.target.value);
+                toggleDropdown(true, bookingMinuteInput, bookingMinuteList);
+            });
+
+            bookingMinuteList.addEventListener('click', (e) => {
+                const selectedLi = e.target.closest('li');
+                if (selectedLi) {
+                    bookingMinuteInput.value = selectedLi.textContent;
+                    bookingMinuteHidden.value = selectedLi.dataset.value;
+                    bookingMinuteInput.readOnly = true;
+                    toggleDropdown(false, bookingMinuteInput, bookingMinuteList);
+                    updateSelectedTimeDisplay();
+                }
+            });
+
+            // --- Update Selected Time Display ---
+            const updateSelectedTimeDisplay = () => {
+                const hour = bookingHourHidden.value;
+                const minute = bookingMinuteHidden.value;
+                const date = dateInput.value; // Get selected date
+                if (hour && minute && date && hour !== "" && minute !== "") { // Ensure both hour and minute are selected
+                    const displayHour = parseInt(hour, 10);
+                    const ampm = displayHour >= 12 ? 'PM' : 'AM';
+                    const formattedHour = displayHour % 12 === 0 ? 12 : displayHour % 12;
+                    selectedTimeDisplay.innerHTML = `Booking Appointment at: ${formattedHour}:${minute} ${ampm}<br>${date}`;
+                    selectedTimeDisplay.classList.add('text-green-600', 'font-semibold'); // Premium styling
+                } else {
+                    selectedTimeDisplay.textContent = '';
+                    selectedTimeDisplay.classList.remove('text-green-600', 'font-semibold'); // Remove styling when text is empty
+                }
+            };
+
+            // --- Service Dropdown Logic ---
+            const serviceInput = document.getElementById('serviceInput');
+            const serviceHidden = document.getElementById('serviceHidden');
+            const serviceList = document.getElementById('serviceList');
+
+            const SERVICES = [
+                "Cosmetic Dentistry",
+                "General Dentistry",
+                "Consultation",
+                "Orthodontics",
+                "Oral Surgery",
+                "Pediatric Care",
+                "Preventive Care",
+                "Prosthodontic Services",
+                "Implantology"
+            ];
+
+            const renderServiceOptions = (filter = '') => {
+                serviceList.innerHTML = '';
+                const filteredServices = SERVICES.filter(service => 
+                    service.toLowerCase().includes(filter.toLowerCase())
+                );
+                filteredServices.forEach(service => {
+                    const li = document.createElement('li');
+                    li.textContent = service;
+                    li.dataset.value = service;
+                    serviceList.appendChild(li);
+                });
+            };
+            
+            serviceInput.addEventListener('click', () => {
+                serviceInput.readOnly = false;
+                serviceInput.focus();
+                renderServiceOptions();
+                toggleDropdown(true, serviceInput, serviceList);
+            });
+            
+            serviceInput.addEventListener('input', (e) => {
+                renderServiceOptions(e.target.value);
+                toggleDropdown(true, serviceInput, serviceList);
+            });
+
+            serviceList.addEventListener('click', (e) => {
+                const selectedLi = e.target.closest('li');
+                if (selectedLi) {
+                    serviceInput.value = selectedLi.textContent;
+                    serviceHidden.value = selectedLi.dataset.value;
+                    serviceInput.readOnly = true;
+                    toggleDropdown(false, serviceInput, serviceList);
+                }
+            });
+
+            // Initial render of service options
+            renderServiceOptions();
+
+            // --- Custom Calendar Logic ---
+            const dateInput = document.getElementById('dateInput');
+            const calendarPopup = document.getElementById('calendarPopup');
+            const calendarGrid = document.getElementById('calendarGrid');
+            const monthYear = document.getElementById('monthYear');
+            const prevMonth = document.getElementById('prevMonth');
+            const nextMonth = document.getElementById('nextMonth');
+
+            let today = new Date();
+            let currentMonth = today.getMonth();
+            let currentYear = today.getFullYear();
+            let selectedDate = null;
+
+            const dayNames = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
+
+            function renderCalendar(month, year) {
+                calendarGrid.innerHTML = "";
+
+                // Add day names
+                dayNames.forEach(d => {
+                    const div = document.createElement('div');
+                    div.textContent = d;
+                    div.classList.add("day-name");
+                    calendarGrid.appendChild(div);
+                });
+
+                const firstDay = new Date(year, month).getDay(); 
+                const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+                // Calculate start index (make Monday the first column)
+                const offset = (firstDay + 6) % 7;
+
+                // Fill empty slots
+                for (let i = 0; i < offset; i++) {
+                    const div = document.createElement('div');
+                    calendarGrid.appendChild(div);
+                }
+
+                for (let day = 1; day <= daysInMonth; day++) {
+                    const div = document.createElement('div');
+                    div.textContent = day;
+
+                    const dateObj = new Date(year, month, day);
+
+                    // Sundays in red and disabled
+                    if (dateObj.getDay() === 0) {
+                        div.classList.add("sunday");
+                        div.classList.add("disabled");
+                    }
+
+                    // Disable past dates
+                    if (dateObj < new Date(today.getFullYear(), today.getMonth(), today.getDate())) {
+                        div.classList.add("disabled");
+                    }
+
+                    // Highlight today
+                    if (
+                        day === today.getDate() &&
+                        month === today.getMonth() &&
+                        year === today.getFullYear()
+                    ) {
+                        div.classList.add("today");
+                    }
+
+                    // Highlight previously selected date
+                    if (selectedDate && dateObj.toDateString() === selectedDate.toDateString()) {
+                        div.classList.add("selected");
+                    }
+
+                    // Select date
+                    div.addEventListener("click", () => {
+                        if (!div.classList.contains("disabled")) {
+                            document.querySelectorAll(".calendar-grid .selected").forEach(el => el.classList.remove("selected"));
+                            div.classList.add("selected");
+                            selectedDate = dateObj;
+                            dateInput.value = selectedDate.toLocaleDateString("en-US", { year: "numeric", month: "2-digit", day: "2-digit" });
+                            calendarPopup.classList.remove('is-open');
+                            dateInput.setAttribute('aria-expanded', 'false');
+                            updateSelectedTimeDisplay(); // Update confirmation text when date is selected
+                        }
+                    });
+
+                    calendarGrid.appendChild(div);
+                }
+
+                monthYear.textContent = new Date(year, month).toLocaleDateString("en-US", { month: "long", year: "numeric" });
+            }
+
+            prevMonth.addEventListener("click", () => {
+                currentMonth--;
+                if (currentMonth < 0) {
+                    currentMonth = 11;
+                    currentYear--;
+                }
+                renderCalendar(currentMonth, currentYear);
+            });
+
+            nextMonth.addEventListener("click", () => {
+                currentMonth++;
+                if (currentMonth > 11) {
+                    currentMonth = 0;
+                    currentYear++;
+                }
+                renderCalendar(currentMonth, currentYear);
+            });
+
+            dateInput.addEventListener('click', (e) => {
+                e.stopPropagation(); // Prevent the document click listener from immediately closing it
+                calendarPopup.classList.toggle('is-open');
+                dateInput.setAttribute('aria-expanded', calendarPopup.classList.contains('is-open'));
+                renderCalendar(currentMonth, currentYear);
+            });
+
+            // Set default selected date to today
+            selectedDate = today;
+            dateInput.value = selectedDate.toLocaleDateString("en-US", { year: "numeric", month: "2-digit", day: "2-digit" });
+            renderCalendar(currentMonth, currentYear);
+        });
+    </script>
+</body>
+</html>
