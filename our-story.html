@@ -114,6 +114,67 @@
             opacity: 0; /* Start invisible */
         }
     </style>
+    <style>
+.whatsapp-float {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 58px;
+  height: 58px;
+  background: #25d366; /* WhatsApp green (can swap with WAFA brand color) */
+  border-radius: 50%;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.whatsapp-float img {
+  width: 28px;
+  height: 28px;
+}
+
+/* Hover animation */
+.whatsapp-float:hover {
+  transform: scale(1.12) translateY(-3px);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+}
+
+/* Tooltip styling */
+.tooltip {
+  position: absolute;
+  right: 70px;
+  background: #333;
+  color: #fff;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 13px;
+  opacity: 0;
+  white-space: nowrap;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+/* Tooltip arrow */
+.tooltip::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 100%;
+  margin-top: -6px;
+  border-width: 6px;
+  border-style: solid;
+  border-color: transparent transparent transparent #333;
+}
+
+/* Show tooltip on hover */
+.whatsapp-float:hover .tooltip {
+  opacity: 1;
+}
+    </style>
     <script>
         tailwind.config = {
             theme: {
@@ -129,6 +190,15 @@
     </script>
 </head>
 <body class="overflow-x-hidden">
+
+    <!-- Elegant WhatsApp Floating Button with Tooltip -->
+<a href="https://wa.me/923331234567?text=Hello,%20I’d%20like%20to%20schedule%20an%20appointment%20at%20WAFA%20Dental%20Clinic." 
+   class="whatsapp-float" 
+   target="_blank" 
+   aria-label="Chat with WAFA Dental">
+   <img src="images/apple.png" alt="WAFA Dental WhatsApp" />
+   <span class="tooltip">Chat with WAFA Dental Support</span>
+</a>
 
     <!-- Header --> 
     <header class="sticky top-0 z-50 bg-[#010245] bg-opacity-90 backdrop-blur-md shadow-sm"> 
@@ -441,3 +511,4 @@
     </script>
 </body>
 </html>
+2
