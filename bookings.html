@@ -572,7 +572,7 @@
         <section id="booking" class="relative container mx-auto px-6 py-24 md:py-40 fade-in">
             <div class="max-w-3xl mx-auto p-10 md:p-16 rounded-3xl shadow-2xl card-with-glass">
                 <div class="text-center relative">
-                    <button type="button" id="backToPatientTypeBtn" class="absolute top-2 left-2 w-6 h-6 rounded-full bg-primary-blue flex items-center justify-center shadow-md transition-all duration-300 transform hover:scale-110 focus:outline-none z-10">
+                    <button type="button" id="backToPatientTypeBtn" class="absolute top-2 left-2 w-6 h-6 rounded-full bg-primary-blue flex items-center justify-center shadow-md transition-all duration-300 transform hover:scale-110 focus:outline-none z-10 hidden">
                         <i class="fas fa-arrow-left text-white text-xs"></i>
                     </button>
                     <h2 class="text-3xl md:text-4xl font-normal text-primary-blue font-dm-serif pl-8">Book an Appointment</h2>
@@ -932,14 +932,14 @@
         const TIMEZONE = "Asia/Islamabad";
         const SHEET_NAME = "Bookings";
         const SHEET_COLUMNS = ["Client ID","Booking ID","Name","Email","Phone","Service","Date","Time","Calendar Event ID","Doc URL","Created At"];
-        const CALENDAR_ID = "[YOUR_GOOGLE_CALENDAR_ID]";
-        const DOC_TEMPLATE_ID = "[YOUR_GOOGLE_DOC_TEMPLATE_ID]";
-        const EMAIL_FROM = "management@wafadentalclinic.com";
-        const EMAILJS_SERVICE_ID = "[EMAILJS_SERVICE_ID]";
-        const EMAILJS_TEMPLATE_ID = "[EMAILJS_TEMPLATE_ID]";
-        const EMAILJS_PUBLIC_KEY = "[EMAILJS_PUBLIC_KEY]";
-        const EMAILJS_PRIVATE_KEY = "[EMAILJS_PRIVATE_KEY]";
-        const WEB_APP_URL = "[YOUR_APPS_SCRIPT_WEB_APP_URL]";
+const CALENDAR_ID = "wafadentalclinics@gmail.com";
+const DOC_TEMPLATE_ID = "[YOUR_GOOGLE_DOC_TEMPLATE_ID]";
+const EMAIL_FROM = "management@wafadentalclinic.com";
+const EMAILJS_SERVICE_ID = "[EMAILJS_SERVICE_ID]";
+const EMAILJS_TEMPLATE_ID = "[EMAILJS_TEMPLATE_ID]";
+const EMAILJS_PUBLIC_KEY = "[EMAILJS_PUBLIC_KEY]";
+const EMAILJS_PRIVATE_KEY = "[EMAILJS_PRIVATE_KEY]";
+const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzXcuSNzwTqKuhUhY6a_XySp3iPDuKiIkVu0TOeuY4NrTMdik5bLaACMc_OgkA5zSID/exec";
         // Google reCAPTCHA v2 Secret Key - IMPORTANT: Keep this server-side in a real application!
         // For client-side demonstration, it's placed here.
         const RECAPTCHA_SECRET_KEY = "6LfGh8ArAAAAALI-QNNPCIji6q_DirCe1CsyuCC2"; // The reCAPTCHA secret key has been updated.
