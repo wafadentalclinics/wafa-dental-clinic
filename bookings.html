@@ -570,16 +570,19 @@
     <main>
         <!-- Booking Section -->
         <section id="booking" class="relative container mx-auto px-6 py-24 md:py-40 fade-in">
-            <div class="max-w-3xl mx-auto p-8 md:p-12 rounded-3xl shadow-2xl card-with-glass">
-                <div class="text-center">
-                    <h2 class="text-3xl md:text-4xl font-normal text-primary-blue font-dm-serif">Book an Appointment</h2>
-                    <p id="servicePrompt" class="mt-2 text-base text-gray-600 max-w-2xl mx-auto mb-8">
+            <div class="max-w-3xl mx-auto p-10 md:p-16 rounded-3xl shadow-2xl card-with-glass">
+                <div class="text-center relative">
+                    <button type="button" id="backToPatientTypeBtn" class="absolute top-2 left-2 w-6 h-6 rounded-full bg-primary-blue flex items-center justify-center shadow-md transition-all duration-300 transform hover:scale-110 focus:outline-none z-10">
+                        <i class="fas fa-arrow-left text-white text-xs"></i>
+                    </button>
+                    <h2 class="text-3xl md:text-4xl font-normal text-primary-blue font-dm-serif pl-8">Book an Appointment</h2>
+                    <p id="servicePrompt" class="mt-2 text-base text-gray-600 max-w-2xl mx-auto mb-12">
                         Choose a service and a convenient time slot to book your appointment.
                     </p>
                 </div>
 
                 <!-- Patient Type Selection -->
-                <div id="patientTypeSelection" class="flex flex-col md:flex-row gap-4 justify-center mt-12">
+                <div id="patientTypeSelection" class="flex flex-col md:flex-row gap-4 justify-center mt-8">
                     <button type="button" id="firstTimePatientBtn" class="button-glass-white px-6 py-3 font-semibold rounded-xl shadow-md text-primary-blue hover:bg-opacity-80 transition-all duration-300 transform hover:scale-105">
                         First Time Patient
                     </button>
@@ -588,7 +591,7 @@
                     </button>
                 </div>
                 
-                <form id="bookingForm" class="space-y-8 form-hidden" style="--delay: 0.3s;">
+                <form id="bookingForm" class="space-y-8 form-hidden relative" style="--delay: 0.3s;">
                     <!-- Updated Name fields to be First Name and Last Name -->
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
@@ -1093,12 +1096,33 @@
             // Add a class to the bookingForm for smooth animation
             bookingForm.classList.add('form-hidden');
 
+            const backToPatientTypeBtn = document.getElementById('backToPatientTypeBtn');
+            backToPatientTypeBtn.classList.add('hidden'); // Initially hide the back button
+
+            const showPatientTypeSelection = () => {
+                patientTypeSelection.classList.remove('hidden');
+                clientIDSection.classList.add('hidden', 'form-hidden');
+                bookingForm.classList.add('form-hidden');
+                bookingForm.classList.remove('form-visible');
+                servicePrompt.classList.remove('is-visible'); // Hide the prompt when going back
+                backToPatientTypeBtn.classList.add('hidden'); // Hide back button
+                bookingForm.reset();
+                serviceHidden.value = '';
+                if (selectedSubOption) {
+                    selectedSubOption.classList.remove('selected');
+                    selectedSubOption.querySelector('.fa-check-circle').classList.remove('opacity-100', 'scale-100');
+                    selectedSubOption = null;
+                }
+                updateSelectedTimeDisplay();
+            };
+
             firstTimePatientBtn.addEventListener('click', () => {
                 patientTypeSelection.classList.add('hidden');
                 clientIDSection.classList.add('hidden'); // Ensure client ID section is hidden
                 bookingForm.classList.remove('form-hidden'); // Animate form to visible
                 bookingForm.classList.add('form-visible');
                 servicePrompt.classList.add('is-visible'); // Show the prompt
+                backToPatientTypeBtn.classList.remove('hidden'); // Show back button
                 // Reset form for new patient
                 bookingForm.reset();
                 serviceHidden.value = '';
@@ -1118,6 +1142,7 @@
                 bookingForm.classList.add('form-hidden'); // Ensure booking form is hidden initially
                 bookingForm.classList.remove('form-visible'); // Remove visible class if it was there
                 servicePrompt.classList.add('is-visible'); // Show the prompt
+                backToPatientTypeBtn.classList.remove('hidden'); // Show back button
                 // Clear form for returning patient to enter ID
                 bookingForm.reset();
                 serviceHidden.value = '';
@@ -1128,6 +1153,8 @@
                 }
                 updateSelectedTimeDisplay();
             });
+
+            backToPatientTypeBtn.addEventListener('click', showPatientTypeSelection);
 
             const submitClientIDBtn = clientIDSection.querySelector('#submitClientIDBtn');
             const clientIDInput = clientIDSection.querySelector('#clientID');
