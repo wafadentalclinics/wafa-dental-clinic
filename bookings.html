@@ -1201,6 +1201,7 @@
                 const bookingHour = document.getElementById('bookingHourHidden').value;
                 const bookingMinute = document.getElementById('bookingMinuteHidden').value;
                 const time = `${bookingHour}:${bookingMinute}`;
+                const notes = document.getElementById("otherIssues").value; // Using 'otherIssues' for notes
 
                 // Combine the country code and phone number
                 const phone = countryCode + ' ' + phoneNumber;
@@ -1269,29 +1270,40 @@
                         return;
                     }
 
-                    const bookingData = {
-                        name,
-                        email,
-                        phone,
-                        service,
-                        date,
-                        time,
+                    const data = { // Renamed to 'data' to match user's script
+                        FirstName: firstName,
+                        LastName: lastName,
+                        Email: email,
+                        Phone: phone,
+                        Service: service,
+                        Date: date,
+                        Time: time,
+                        Notes: notes
                     };
                     
-                    const response = await fetch(WEB_APP_URL, {
-                        method: 'POST',
-                        mode: 'no-cors', // Apps Script CORS
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify(bookingData),
+                    fetch("https://script.google.com/macros/s/AKfycbzXcuSNzwTqKuhUhY6a_XySp3iPDuKiIkVu0TOeuY4NrTMdik5bLaACMc_OgkA5zSID/exec", {
+                        method: "POST",
+                        body: JSON.stringify(data) // Use the updated 'data' object
+                    })
+                    .then(res => res.json())
+                    .then(response => {
+                        if(response.success){
+                            statusMessage.textContent = "Booking confirmed! Download your PDF: " + response.pdfUrl;
+                            statusMessage.classList.add('text-green-500');
+                            bookingForm.reset();
+                            grecaptcha.reset();
+                        } else {
+                            statusMessage.textContent = "Error: " + response.message;
+                            statusMessage.classList.add('text-red-500');
+                            grecaptcha.reset();
+                        }
+                    })
+                    .catch(err => {
+                        console.error('Submission failed:', err);
+                        statusMessage.textContent = "Submission failed: " + err;
+                        statusMessage.classList.add('text-red-500');
+                        grecaptcha.reset();
                     });
-                    
-                    // We can't check `response.ok` with 'no-cors', so we assume success
-                    statusMessage.textContent = 'Appointment booked successfully!';
-                    statusMessage.classList.add('text-green-500');
-                    bookingForm.reset();
-                    grecaptcha.reset(); // Reset reCAPTCHA after successful submission
 
                 } catch (error) {
                     console.error('Error:', error);
