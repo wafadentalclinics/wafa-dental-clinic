@@ -309,6 +309,120 @@
             background-color: #f3f4f6;
         }
 
+        /* New styles for service buttons */
+        .service-button {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            padding: 1rem 1.5rem;
+            border-radius: 0.75rem; /* Rounded corners */
+            background-color: rgba(255, 255, 255, 0.7); /* Semi-transparent white */
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            color: #2D3748;
+            font-weight: 600;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .service-button:hover {
+            background-color: rgba(255, 255, 255, 0.9);
+            border-color: rgba(255, 255, 255, 0.8);
+            box-shadow: 0 8px 12px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .service-button.active {
+            background-color: var(--primary-blue);
+            color: white;
+            border-color: var(--primary-blue);
+            box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .service-button .arrow-icon {
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .service-button.active .arrow-icon {
+            transform: rotate(90deg);
+        }
+
+        .sub-options-container {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-in-out, padding 0.5s ease-in-out;
+            background-color: rgba(255, 255, 255, 0.1); /* Subtle background for sub-options */
+            border-radius: 0.75rem;
+            margin-top: 0.5rem;
+            padding: 0 1rem; /* Initial padding for smooth transition */
+        }
+
+        .sub-options-container.is-open {
+            max-height: 500px; /* Adjust as needed to fit content */
+            padding: 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+
+        .sub-option-item {
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+            color: #2D3748;
+            font-weight: 500;
+        }
+
+        .sub-option-item:hover {
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+
+        .sub-option-item.selected {
+            background-color: var(--accent-blue);
+            color: #2D3748; /* Changed text color to a dark gray for visibility */
+            border: 2px solid var(--primary-blue); /* Add a clear outline */
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.5); /* Add a subtle white glow for contrast */
+        }
+
+        /* Styles for floating label */
+        .relative .apple-input:focus + label,
+        .relative .apple-input:not(:placeholder-shown) + label {
+            top: 0.25rem;
+            font-size: 0.75rem; /* Smaller font size for floating label */
+            color: var(--primary-blue); /* Change color when active */
+        }
+
+        /* Adjust padding for textarea when label is floating */
+        .relative .apple-input:focus,
+        .relative .apple-input:not(:placeholder-shown) {
+            padding-top: 1.25rem; /* More space for the label */
+            padding-bottom: 0.5rem;
+        }
+
+        /* Tooltip specific styles */
+        .group .group-hover:block {
+            display: none;
+        }
+        .group:hover .group-hover:block {
+            display: block;
+        }
+
+        /* Form animation styles */
+        .form-hidden {
+            opacity: 0;
+            max-height: 0;
+            overflow: hidden;
+            transition: opacity 0.5s ease-out, max-height 0.7s ease-out;
+        }
+
+        .form-visible {
+            opacity: 1;
+            max-height: 5000px; /* Increased to ensure all form content, including reCAPTCHA, is contained */
+            transition: opacity 0.5s ease-in, max-height 0.7s ease-in;
+        }
+
         /* reCAPTCHA responsiveness */
         .g-recaptcha {
             transform-origin: 0 0;
@@ -456,15 +570,25 @@
     <main>
         <!-- Booking Section -->
         <section id="booking" class="relative container mx-auto px-6 py-24 md:py-40 fade-in">
-            <div class="max-w-3xl mx-auto p-8 md:p-12 rounded-3xl shadow-2xl card-with-glass space-y-12">
+            <div class="max-w-3xl mx-auto p-8 md:p-12 rounded-3xl shadow-2xl card-with-glass">
                 <div class="text-center">
-                    <h2 class="text-3xl md:text-4xl font-normal text-primary-blue font-dm-serif" style="--delay: 0.1s;">Book an Appointment</h2>
-                    <p class="mt-2 text-base text-gray-600 max-w-2xl mx-auto" style="--delay: 0.2s;">
+                    <h2 class="text-3xl md:text-4xl font-normal text-primary-blue font-dm-serif">Book an Appointment</h2>
+                    <p id="servicePrompt" class="mt-2 text-base text-gray-600 max-w-2xl mx-auto mb-8">
                         Choose a service and a convenient time slot to book your appointment.
                     </p>
                 </div>
+
+                <!-- Patient Type Selection -->
+                <div id="patientTypeSelection" class="flex flex-col md:flex-row gap-4 justify-center mt-12">
+                    <button type="button" id="firstTimePatientBtn" class="button-glass-white px-6 py-3 font-semibold rounded-xl shadow-md text-primary-blue hover:bg-opacity-80 transition-all duration-300 transform hover:scale-105">
+                        First Time Patient
+                    </button>
+                    <button type="button" id="returningPatientBtn" class="button-glass-white px-6 py-3 font-semibold rounded-xl shadow-md text-primary-blue hover:bg-opacity-80 transition-all duration-300 transform hover:scale-105">
+                        Returning Patient
+                    </button>
+                </div>
                 
-                <form id="bookingForm" class="space-y-6" style="--delay: 0.3s;">
+                <form id="bookingForm" class="space-y-8 form-hidden" style="--delay: 0.3s;">
                     <!-- Updated Name fields to be First Name and Last Name -->
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
@@ -502,26 +626,38 @@
                             <input type="tel" id="phoneNumber" name="phoneNumber" class="apple-input block w-full" placeholder="3XX XXXXXXX" required>
                         </div>
                     </div>
-                    <div>
-                        <label for="service" class="block text-sm font-medium text-gray-700 mb-1">Select a Service</label>
-                        <!-- Updated to use a custom dropdown -->
-                        <div class="custom-dropdown-container">
-                            <input
-                                type="text"
-                                id="serviceInput"
-                                class="apple-input custom-dropdown-input"
-                                placeholder="Select a service"
-                                readonly
-                                aria-haspopup="listbox"
-                                aria-expanded="false"
-                            >
-                            <input type="hidden" id="serviceHidden" name="service" required>
-                            <svg class="custom-dropdown-icon w-4 h-4 text-gray-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-                            </svg>
-                            <ul id="serviceList" class="custom-dropdown-menu"></ul>
+                    <div id="servicesSection">
+                        <label class="block text-sm font-medium text-gray-700 mb-4">Select a Service</label>
+                        <div id="mainServiceButtons" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <!-- Main service buttons will be rendered here by JavaScript -->
+                        </div>
+                        <input type="hidden" id="serviceHidden" name="service" required>
+                    </div>
+
+                    <!-- New section for Other / Previous Issues -->
+                    <div class="relative mt-6">
+                        <textarea
+                            id="otherIssues"
+                            name="otherIssues"
+                            rows="1"
+                            class="apple-input block w-full resize-none overflow-hidden pt-5 pb-2 focus:pt-5 focus:pb-2 transition-all duration-200 ease-in-out"
+                            onfocus="this.rows=3"
+                            onblur="if(this.value==='')this.rows=1"
+                        ></textarea>
+                        <label
+                            for="otherIssues"
+                            class="absolute left-4 top-1 text-sm text-gray-500 transition-all duration-200 ease-in-out pointer-events-none"
+                        >
+                            Other / Previous Issues (Optional)
+                        </label>
+                        <div class="absolute right-4 top-1 group">
+                            <i class="fas fa-info-circle text-gray-400 text-sm cursor-help"></i>
+                            <div class="absolute hidden group-hover:block bg-gray-800 text-white text-xs rounded py-1 px-2 right-full top-1/2 transform -translate-y-1/2 mr-2 whitespace-nowrap z-10">
+                                Provide details if you have prior dental issues or concerns
+                            </div>
                         </div>
                     </div>
+
                     <div>
                         <label for="dateInput" class="block text-sm font-medium text-gray-700 mb-1">Date</label>
                         <!-- Calendar will be attached to this input -->
@@ -932,9 +1068,92 @@
                 window.location.href = mailtoLink;
             });
             
-            // --- New Appointment Booking Form Submission ---
+            // --- Patient Type Selection Logic ---
+            const patientTypeSelection = document.getElementById('patientTypeSelection');
+            const firstTimePatientBtn = document.getElementById('firstTimePatientBtn');
+            const returningPatientBtn = document.getElementById('returningPatientBtn');
+            const servicePrompt = document.getElementById('servicePrompt');
             const bookingForm = document.getElementById('bookingForm');
             const statusMessage = document.getElementById('statusMessage');
+            const clientIDSection = document.createElement('div');
+            clientIDSection.innerHTML = `
+                <div>
+                    <label for="clientID" class="block text-sm font-medium text-gray-700 mb-1">Client ID</label>
+                    <input type="text" id="clientID" name="clientID" class="apple-input block w-full" placeholder="Enter your Client ID">
+                </div>
+                <button type="button" id="submitClientIDBtn" class="w-full px-6 py-3 font-semibold text-white bg-primary-blue rounded-xl shadow-md hover:bg-accent-blue transition-colors duration-200 mt-4">
+                    Submit Client ID
+                </button>
+            `;
+            clientIDSection.classList.add('space-y-6', 'hidden'); // Initially hidden
+
+            // Insert clientIDSection right after patientTypeSelection
+            patientTypeSelection.parentNode.insertBefore(clientIDSection, bookingForm);
+
+            // Add a class to the bookingForm for smooth animation
+            bookingForm.classList.add('form-hidden');
+
+            firstTimePatientBtn.addEventListener('click', () => {
+                patientTypeSelection.classList.add('hidden');
+                clientIDSection.classList.add('hidden'); // Ensure client ID section is hidden
+                bookingForm.classList.remove('form-hidden'); // Animate form to visible
+                bookingForm.classList.add('form-visible');
+                servicePrompt.classList.add('is-visible'); // Show the prompt
+                // Reset form for new patient
+                bookingForm.reset();
+                serviceHidden.value = '';
+                if (selectedSubOption) {
+                    selectedSubOption.classList.remove('selected');
+                    selectedSubOption.querySelector('.fa-check-circle').classList.remove('opacity-100', 'scale-100');
+                    selectedSubOption = null;
+                }
+                updateSelectedTimeDisplay();
+            });
+
+            returningPatientBtn.addEventListener('click', () => {
+                patientTypeSelection.classList.add('hidden');
+                clientIDSection.classList.remove('hidden'); // Show client ID input and submit button
+                clientIDSection.classList.remove('form-hidden'); // Ensure clientIDSection is visible
+                clientIDSection.classList.add('form-visible'); // Animate clientIDSection
+                bookingForm.classList.add('form-hidden'); // Ensure booking form is hidden initially
+                bookingForm.classList.remove('form-visible'); // Remove visible class if it was there
+                servicePrompt.classList.add('is-visible'); // Show the prompt
+                // Clear form for returning patient to enter ID
+                bookingForm.reset();
+                serviceHidden.value = '';
+                if (selectedSubOption) {
+                    selectedSubOption.classList.remove('selected');
+                    selectedSubOption.querySelector('.fa-check-circle').classList.remove('opacity-100', 'scale-100');
+                    selectedSubOption = null;
+                }
+                updateSelectedTimeDisplay();
+            });
+
+            const submitClientIDBtn = clientIDSection.querySelector('#submitClientIDBtn');
+            const clientIDInput = clientIDSection.querySelector('#clientID');
+
+            submitClientIDBtn.addEventListener('click', () => {
+                const clientID = clientIDInput.value;
+                if (clientID === '12345') { // Example Client ID
+                    document.getElementById('firstName').value = 'John';
+                    document.getElementById('lastName').value = 'Doe';
+                    document.getElementById('email').value = 'john.doe@example.com';
+                    document.getElementById('phoneNumber').value = '3001234567';
+                    // Keep service and date/time blank as per requirements
+                    clientIDSection.classList.remove('form-visible'); // Hide client ID section
+                    clientIDSection.classList.add('form-hidden');
+                    bookingForm.classList.remove('form-hidden'); // Show form
+                    bookingForm.classList.add('form-visible'); // Animate form
+                } else {
+                    // Clear fields if ID is invalid
+                    document.getElementById('firstName').value = '';
+                    document.getElementById('lastName').value = '';
+                    document.getElementById('email').value = '';
+                    document.getElementById('phoneNumber').value = '';
+                    alert('Invalid Client ID. Please try again.'); // Simple alert for demo
+                }
+            });
+
 
             bookingForm.addEventListener('submit', async (e) => {
                 e.preventDefault();
@@ -1121,13 +1340,25 @@
             });
 
             document.addEventListener('click', (e) => {
+                // Close country code, hour, minute dropdowns and calendar if click is outside their containers
                 if (!e.target.closest('.custom-dropdown-container') && !e.target.closest('.calendar-popup')) {
                     toggleDropdown(false, countryCodeInput, countryList);
-                    toggleDropdown(false, serviceInput, serviceList);
                     toggleDropdown(false, bookingHourInput, bookingHourList);
                     toggleDropdown(false, bookingMinuteInput, bookingMinuteList);
                     calendarPopup.classList.remove('is-open');
                     dateInput.setAttribute('aria-expanded', 'false');
+                }
+
+                // Close service sub-options if click is outside the services section
+                if (!e.target.closest('#servicesSection')) {
+                    if (activeServiceButton) {
+                        activeServiceButton.classList.remove('active');
+                        const prevSubOptions = document.getElementById(`sub-options-${activeServiceButton.dataset.service.replace(/\s/g, '-')}`);
+                        if (prevSubOptions) {
+                            prevSubOptions.classList.remove('is-open');
+                        }
+                        activeServiceButton = null;
+                    }
                 }
             });
             
@@ -1238,12 +1469,13 @@
             const updateSelectedTimeDisplay = () => {
                 const hour = bookingHourHidden.value;
                 const minute = bookingMinuteHidden.value;
+                const service = serviceHidden.value; // Get selected service
                 const date = dateInput.value; // Get selected date
-                if (hour && minute && date && hour !== "" && minute !== "") { // Ensure both hour and minute are selected
+                if (hour && minute && date && service && hour !== "" && minute !== "" && service !== "") { // Ensure all are selected
                     const displayHour = parseInt(hour, 10);
                     const ampm = displayHour >= 12 ? 'PM' : 'AM';
                     const formattedHour = displayHour % 12 === 0 ? 12 : displayHour % 12;
-                    selectedTimeDisplay.innerHTML = `Booking Appointment at: ${formattedHour}:${minute} ${ampm}<br>${date}`;
+                    selectedTimeDisplay.innerHTML = `Booking Appointment for: ${service}<br>At: ${formattedHour}:${minute} ${ampm}<br>On: ${date}`;
                     selectedTimeDisplay.classList.add('text-green-600', 'font-semibold'); // Premium styling
                 } else {
                     selectedTimeDisplay.textContent = '';
@@ -1251,68 +1483,159 @@
                 }
             };
 
-            // --- Service Dropdown Logic ---
-            const serviceInput = document.getElementById('serviceInput');
+            // --- Service Selection Logic (New Button-based) ---
+            const mainServiceButtonsContainer = document.getElementById('mainServiceButtons');
             const serviceHidden = document.getElementById('serviceHidden');
-            const serviceList = document.getElementById('serviceList');
 
-            const SERVICES = [
-                "Cosmetic Dentistry",
-                "General Dentistry",
-                "Consultation",
-                "Orthodontics",
-                "Oral Surgery",
-                "Pediatric Care",
-                "Preventive Care",
-                "Prosthodontic Services",
-                "Implantology"
-            ];
-
-            const renderServiceOptions = (filter = '') => {
-                serviceList.innerHTML = '';
-                const filteredServices = SERVICES.filter(service => 
-                    service.toLowerCase().includes(filter.toLowerCase())
-                );
-                filteredServices.forEach(service => {
-                    const li = document.createElement('li');
-                    li.textContent = service;
-                    li.dataset.value = service;
-                    serviceList.appendChild(li);
-                });
+            const ALL_SERVICES = {
+                "General Dentistry": [
+                    "Consultation & Check-up",
+                    "Dental Cleaning (Scaling & Polishing)"
+                ],
+                "Cosmetic Dentistry": [
+                    "Teeth Whitening",
+                    "Dental Veneers",
+                    "Smile Makeover (Composite Bonding / Veneers)"
+                ],
+                "Orthodontics": [
+                    "Braces (Metal / Ceramic)",
+                    "Invisalign (Clear Aligners)",
+                    "Retainers"
+                ],
+                "Prosthodontics": [
+                    "Dental Crowns",
+                    "Dental Bridges",
+                    "Complete Dentures",
+                    "Partial Dentures"
+                ],
+                "Operative Dentistry": [
+                    "Single Tooth Root Canal",
+                    "Multi-Root Canal",
+                    "Retreatment (previous RCT)",
+                    "Tooth Filling Composite",
+                    "Tooth Filling Amalgam",
+                    "Tooth Extraction (Simple / Surgical)"
+                ],
+                "Pediatric Dentistry": [
+                    "Kids’ Check-up",
+                    "Fluoride Treatment",
+                    "Fissure Sealants",
+                    "Pediatric Filling",
+                    "Pediatric Extraction"
+                ],
+                "Oral Surgery": [
+                    "Surgical Extraction (Wisdom Tooth)",
+                    "Cyst/Minor Surgery",
+                    "Implant Consultation"
+                ],
+                "Preventive Care": [
+                    "Gum Disease Treatment",
+                    "Deep Cleaning (Scaling & Root Planing)",
+                    "Gum Surgery"
+                ],
+                "Implants & Advanced Restorations": [
+                    "Dental Implant Consultation",
+                    "Single Tooth Implant",
+                    "Full Mouth Implant Solution"
+                ]
             };
-            
-            serviceInput.addEventListener('click', () => {
-                serviceInput.readOnly = false;
-                serviceInput.focus();
-                renderServiceOptions();
-                toggleDropdown(true, serviceInput, serviceList);
-            });
-            
-            serviceInput.addEventListener('input', (e) => {
-                renderServiceOptions(e.target.value);
-                toggleDropdown(true, serviceInput, serviceList);
-            });
 
-            serviceList.addEventListener('click', (e) => {
-                const selectedLi = e.target.closest('li');
-                if (selectedLi) {
-                    serviceInput.value = selectedLi.textContent;
-                    serviceHidden.value = selectedLi.dataset.value;
-                    serviceInput.readOnly = true;
-                    toggleDropdown(false, serviceInput, serviceList);
+            let activeServiceButton = null;
+            let selectedSubOption = null;
+
+            const renderServiceButtons = () => {
+                mainServiceButtonsContainer.innerHTML = '';
+                for (const mainService in ALL_SERVICES) {
+                    const buttonWrapper = document.createElement('div');
+                    buttonWrapper.classList.add('col-span-1'); // Ensure it takes full width on small screens, half on md
+
+                    const button = document.createElement('button');
+                    button.type = 'button';
+                    button.classList.add('service-button');
+                    button.dataset.service = mainService;
+                    button.innerHTML = `
+                        <span>${mainService}</span>
+                        <svg class="arrow-icon w-4 h-4 text-gray-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                        </svg>
+                    `;
+
+                    const subOptionsContainer = document.createElement('div');
+                    subOptionsContainer.classList.add('sub-options-container', 'space-y-2');
+                    subOptionsContainer.id = `sub-options-${mainService.replace(/\s/g, '-')}`;
+
+                    ALL_SERVICES[mainService].forEach(subOption => {
+                        const subOptionItem = document.createElement('div');
+                        subOptionItem.classList.add('sub-option-item', 'flex', 'items-center', 'justify-between');
+                        subOptionItem.dataset.subOption = subOption;
+                        subOptionItem.innerHTML = `
+                            <span>${subOption}</span>
+                            <i class="fas fa-check-circle text-green-500 opacity-0 transform scale-0 transition-all duration-300 ease-out"></i>
+                        `;
+                        subOptionItem.addEventListener('click', (e) => {
+                            e.stopPropagation(); // Prevent main button from toggling
+                            // If the clicked sub-option is already selected, deselect it
+                            if (subOptionItem.classList.contains('selected')) {
+                                subOptionItem.classList.remove('selected');
+                                subOptionItem.querySelector('.fa-check-circle').classList.remove('opacity-100', 'scale-100');
+                                selectedSubOption = null;
+                                serviceHidden.value = ''; // Clear hidden service value
+                            } else {
+                                // Deselect previously selected sub-option if any
+                                if (selectedSubOption) {
+                                    selectedSubOption.classList.remove('selected');
+                                    selectedSubOption.querySelector('.fa-check-circle').classList.remove('opacity-100', 'scale-100');
+                                }
+                                // Select the current sub-option
+                                subOptionItem.classList.add('selected');
+                                subOptionItem.querySelector('.fa-check-circle').classList.add('opacity-100', 'scale-100');
+                                selectedSubOption = subOptionItem;
+                                serviceHidden.value = subOption; // Update hidden input with selected sub-option
+                            }
+                            updateSelectedTimeDisplay(); // Update confirmation text
+                        });
+                        subOptionsContainer.appendChild(subOptionItem);
+                    });
+
+                    button.addEventListener('click', (e) => {
+                        e.stopPropagation(); // Prevent event from bubbling up to document click listener
+
+                        // If the clicked button is already active, deactivate it
+                        if (button.classList.contains('active')) {
+                            button.classList.remove('active');
+                            subOptionsContainer.classList.remove('is-open');
+                            button.classList.remove('active'); // Ensure the main button also deactivates
+                            activeServiceButton = null;
+                            // Do NOT clear selectedSubOption or serviceHidden.value here,
+                            // as the user wants it to remain selected visually and functionally.
+                            updateSelectedTimeDisplay(); // Update confirmation text
+                        } else {
+                            // Deactivate previously active button and close its sub-options
+                            if (activeServiceButton) {
+                                activeServiceButton.classList.remove('active');
+                                const prevSubOptions = document.getElementById(`sub-options-${activeServiceButton.dataset.service.replace(/\s/g, '-')}`);
+                                if (prevSubOptions) {
+                                    prevSubOptions.classList.remove('is-open');
+                                }
+                            }
+
+                            // Activate the current button and open its sub-options
+                            button.classList.add('active');
+                            subOptionsContainer.classList.add('is-open');
+                            activeServiceButton = button;
+                        }
+                    });
+
+                    buttonWrapper.appendChild(button);
+                    buttonWrapper.appendChild(subOptionsContainer);
+                    mainServiceButtonsContainer.appendChild(buttonWrapper);
                 }
-            });
+            };
 
-            // Initial render of service options
-            renderServiceOptions();
+            // Initial render of service buttons
+            renderServiceButtons();
 
             // --- Custom Calendar Logic ---
-            const dateInput = document.getElementById('dateInput');
-            const calendarPopup = document.getElementById('calendarPopup');
-            const calendarGrid = document.getElementById('calendarGrid');
-            const monthYear = document.getElementById('monthYear');
-            const prevMonth = document.getElementById('prevMonth');
-            const nextMonth = document.getElementById('nextMonth');
 
             let today = new Date();
             let currentMonth = today.getMonth();
