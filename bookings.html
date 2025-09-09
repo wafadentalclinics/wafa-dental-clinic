@@ -1283,6 +1283,9 @@ const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzXcuSNzwTqKuhUhY6a
                     
                     fetch("https://script.google.com/macros/s/AKfycbzXcuSNzwTqKuhUhY6a_XySp3iPDuKiIkVu0TOeuY4NrTMdik5bLaACMc_OgkA5zSID/exec", {
                         method: "POST",
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
                         body: JSON.stringify(data) // Use the updated 'data' object
                     })
                     .then(res => res.json())
