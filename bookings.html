@@ -525,7 +525,7 @@
    class="whatsapp-float" 
    target="_blank" 
    aria-label="Chat with WAFA Dental">
-   <img src="images/apple.png" alt="WAFA Dental WhatsApp" />
+   <img src="images/whatsapp%20floating%20Button/whatsapp.svg" alt="WAFA Dental WhatsApp" />
    <span class="tooltip">Chat with WAFA Dental Support</span>
 </a>
 
@@ -548,7 +548,7 @@
             </nav>
 
             <!-- Mobile Navigation Toggle -->
-            <button id="mobile-menu-button" class="md:hidden focus:outline-none">
+            <button type="button" id="mobile-menu-button" class="md:hidden focus:outline-none">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
                 </svg>
@@ -639,14 +639,12 @@
 
                     <!-- New section for Other / Previous Issues -->
                     <div class="relative mt-6">
-                        <textarea
-                            id="otherIssues"
-                            name="otherIssues"
-                            rows="1"
-                            class="apple-input block w-full resize-none overflow-hidden pt-5 pb-2 focus:pt-5 focus:pb-2 transition-all duration-200 ease-in-out"
-                            onfocus="this.rows=3"
-                            onblur="if(this.value==='')this.rows=1"
-                        ></textarea>
+                            <textarea
+                                id="otherIssues"
+                                name="otherIssues"
+                                rows="1"
+                                class="apple-input block w-full resize-none overflow-hidden pt-5 pb-2 focus:pt-5 focus:pb-2 transition-all duration-200 ease-in-out"
+                            ></textarea>
                         <label
                             for="otherIssues"
                             class="absolute left-4 top-1 text-sm text-gray-500 transition-all duration-200 ease-in-out pointer-events-none"
@@ -671,9 +669,9 @@
                             </svg>
                             <div id="calendarPopup" class="calendar-popup">
                                 <div class="calendar-header">
-                                    <button id="prevMonth" aria-label="Previous Month"><</button>
+                                    <button type="button" id="prevMonth" aria-label="Previous Month"><</button>
                                     <h2 id="monthYear"></h2>
-                                    <button id="nextMonth" aria-label="Next Month">></button>
+                                    <button type="button" id="nextMonth" aria-label="Next Month">></button>
                                 </div>
                                 <div id="calendarGrid" class="calendar-grid"></div>
                             </div>
@@ -933,17 +931,7 @@
         const SHEET_NAME = "Bookings";
         const SHEET_COLUMNS = ["Client ID","Booking ID","Name","Email","Phone","Service","Date","Time","Calendar Event ID","Doc URL","Created At"];
 const CALENDAR_ID = "wafadentalclinics@gmail.com";
-const DOC_TEMPLATE_ID = "[YOUR_GOOGLE_DOC_TEMPLATE_ID]";
-const EMAIL_FROM = "management@wafadentalclinic.com";
-const EMAILJS_SERVICE_ID = "[EMAILJS_SERVICE_ID]";
-const EMAILJS_TEMPLATE_ID = "[EMAILJS_TEMPLATE_ID]";
-const EMAILJS_PUBLIC_KEY = "[EMAILJS_PUBLIC_KEY]";
-const EMAILJS_PRIVATE_KEY = "[EMAILJS_PRIVATE_KEY]";
 const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzXcuSNzwTqKuhUhY6a_XySp3iPDuKiIkVu0TOeuY4NrTMdik5bLaACMc_OgkA5zSID/exec";
-        // Google reCAPTCHA v2 Secret Key - IMPORTANT: Keep this server-side in a real application!
-        // For client-side demonstration, it's placed here.
-        const RECAPTCHA_SECRET_KEY = "6LfGh8ArAAAAALI-QNNPCIji6q_DirCe1CsyuCC2"; // The reCAPTCHA secret key has been updated.
-
         const COUNTRIES = [
             // Key English-speaking countries
             { code: "+1", name: "United States", iso: "USA" },
@@ -1114,6 +1102,9 @@ const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzXcuSNzwTqKuhUhY6a
                     selectedSubOption = null;
                 }
                 updateSelectedTimeDisplay();
+                // Ensure serviceHidden and selectedSubOption are cleared when going back
+                serviceHidden.value = '';
+                selectedSubOption = null;
             };
 
             firstTimePatientBtn.addEventListener('click', () => {
@@ -1256,64 +1247,47 @@ const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzXcuSNzwTqKuhUhY6a
                 statusMessage.textContent = 'Verifying reCAPTCHA...';
                 statusMessage.classList.add('text-gray-500');
 
-                // Verify reCAPTCHA on the server-side (or simulate for client-side demo)
-                const recaptchaVerifyUrl = `https://www.google.com/recaptcha/api/siteverify?secret=${RECAPTCHA_SECRET_KEY}&response=${recaptchaResponse}`;
+                // reCAPTCHA verification will happen on the server-side.
+                // For client-side, we just ensure it's completed.
+
+                const data = { // Renamed to 'data' to match user's script
+                    FirstName: firstName,
+                    LastName: lastName,
+                    Email: email,
+                    Phone: phone,
+                    Service: service,
+                    Date: date,
+                    Time: time,
+                    Notes: notes,
+                    RecaptchaResponse: recaptchaResponse // Send reCAPTCHA response to server
+                };
                 
-                try {
-                    const recaptchaVerification = await fetch(recaptchaVerifyUrl, { method: 'POST' });
-                    const recaptchaJson = await recaptchaVerification.json();
-
-                    if (!recaptchaJson.success) {
-                        statusMessage.textContent = 'reCAPTCHA verification failed. Please try again.';
+                fetch(WEB_APP_URL, { // Use the WEB_APP_URL constant
+                    method: "POST",
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data) // Use the updated 'data' object
+                })
+                .then(res => res.json())
+                .then(response => {
+                    if(response.success){
+                        statusMessage.textContent = "Booking confirmed! Download your PDF: " + response.pdfUrl;
+                        statusMessage.classList.add('text-green-500');
+                        bookingForm.reset();
+                        if (typeof grecaptcha !== 'undefined') { grecaptcha.reset(); }
+                    } else {
+                        statusMessage.textContent = "Error: " + response.message;
                         statusMessage.classList.add('text-red-500');
-                        grecaptcha.reset();
-                        return;
+                        if (typeof grecaptcha !== 'undefined') { grecaptcha.reset(); }
                     }
-
-                    const data = { // Renamed to 'data' to match user's script
-                        FirstName: firstName,
-                        LastName: lastName,
-                        Email: email,
-                        Phone: phone,
-                        Service: service,
-                        Date: date,
-                        Time: time,
-                        Notes: notes
-                    };
-                    
-                    fetch("https://script.google.com/macros/s/AKfycbzXcuSNzwTqKuhUhY6a_XySp3iPDuKiIkVu0TOeuY4NrTMdik5bLaACMc_OgkA5zSID/exec", {
-                        method: "POST",
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify(data) // Use the updated 'data' object
-                    })
-                    .then(res => res.json())
-                    .then(response => {
-                        if(response.success){
-                            statusMessage.textContent = "Booking confirmed! Download your PDF: " + response.pdfUrl;
-                            statusMessage.classList.add('text-green-500');
-                            bookingForm.reset();
-                            grecaptcha.reset();
-                        } else {
-                            statusMessage.textContent = "Error: " + response.message;
-                            statusMessage.classList.add('text-red-500');
-                            grecaptcha.reset();
-                        }
-                    })
-                    .catch(err => {
-                        console.error('Submission failed:', err);
-                        statusMessage.textContent = "Submission failed: " + err;
-                        statusMessage.classList.add('text-red-500');
-                        grecaptcha.reset();
-                    });
-
-                } catch (error) {
-                    console.error('Error:', error);
-                    statusMessage.textContent = 'Failed to book appointment. Please try again later.';
+                })
+                .catch(err => {
+                    console.error('Submission failed:', err);
+                    statusMessage.textContent = "Submission failed: " + err;
                     statusMessage.classList.add('text-red-500');
-                    grecaptcha.reset();
-                }
+                    if (typeof grecaptcha !== 'undefined') { grecaptcha.reset(); }
+                });
             });
 
             // reCAPTCHA callback functions
@@ -1322,7 +1296,7 @@ const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzXcuSNzwTqKuhUhY6a
             };
 
             window.onRecaptchaExpired = () => {
-                grecaptcha.reset();
+                if (typeof grecaptcha !== 'undefined') { grecaptcha.reset(); }
                 document.getElementById('recaptchaError').classList.remove('hidden');
                 document.getElementById('recaptchaError').textContent = 'reCAPTCHA expired. Please complete it again.';
             };
