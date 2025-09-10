@@ -1262,65 +1262,51 @@ const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzOaJ4xV9uZumUZZji4
                     RecaptchaResponse: recaptchaResponse // Send reCAPTCHA response to server
                 };
                 
-                // Create a hidden iframe for submission
-                let iframe = document.getElementById('hiddenIframe');
-                if (!iframe) {
-                    iframe = document.createElement('iframe');
-                    iframe.id = 'hiddenIframe';
-                    iframe.name = 'hiddenIframe';
-                    iframe.style.display = 'none';
-                    document.body.appendChild(iframe);
-                }
-
-                // Create a temporary form
-                const tempForm = document.createElement('form');
-                tempForm.action = WEB_APP_URL;
-                tempForm.method = 'POST';
-                tempForm.target = 'hiddenIframe'; // Target the hidden iframe
-
-                // Add data as hidden inputs
+                // Use FormData to easily construct URL-encoded data
+                const formData = new FormData();
                 for (const key in data) {
                     if (data.hasOwnProperty(key)) {
-                        const hiddenField = document.createElement('input');
-                        hiddenField.type = 'hidden';
-                        hiddenField.name = key;
-                        hiddenField.value = data[key];
-                        tempForm.appendChild(hiddenField);
+                        formData.append(key, data[key]);
                     }
                 }
 
-                // Append and submit the form
-                document.body.appendChild(tempForm);
-                tempForm.submit();
+                try {
+                    const response = await fetch(WEB_APP_URL, {
+                        method: 'POST',
+                        body: formData // FormData automatically sets Content-Type to multipart/form-data
+                                        // For application/x-www-form-urlencoded, we need to convert it
+                    });
 
-                // Handle response from the iframe
-                iframe.onload = function() {
-                    try {
-                        const responseText = iframe.contentWindow.document.body.textContent;
-                        const response = JSON.parse(responseText);
+                    // Google Apps Script expects application/x-www-form-urlencoded for e.parameter
+                    // Let's convert FormData to URLSearchParams
+                    const urlEncodedData = new URLSearchParams(formData).toString();
 
-                        if(response.success){
-                            statusMessage.textContent = "Booking confirmed! Download your PDF: " + response.pdfUrl;
-                            statusMessage.classList.add('text-green-500');
-                            bookingForm.reset();
-                            if (typeof grecaptcha !== 'undefined') { grecaptcha.reset(); }
-                        } else {
-                            statusMessage.textContent = "Error: " + response.message;
-                            statusMessage.classList.add('text-red-500');
-                            if (typeof grecaptcha !== 'undefined') { grecaptcha.reset(); }
-                        }
-                    } catch (parseError) {
-                        console.error('Error parsing Apps Script response:', parseError, 'Response:', iframe.contentWindow.document.body.textContent);
-                        statusMessage.textContent = "Error: Could not process Apps Script response. Check console for details.";
+                    const fetchResponse = await fetch(WEB_APP_URL, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded'
+                        },
+                        body: urlEncodedData
+                    });
+
+                    const result = await fetchResponse.json();
+
+                    if (result.success) {
+                        statusMessage.textContent = "Booking confirmed! Download your PDF: " + result.pdfUrl;
+                        statusMessage.classList.add('text-green-500');
+                        bookingForm.reset();
+                        if (typeof grecaptcha !== 'undefined') { grecaptcha.reset(); }
+                    } else {
+                        statusMessage.textContent = "Error: " + result.message;
                         statusMessage.classList.add('text-red-500');
                         if (typeof grecaptcha !== 'undefined') { grecaptcha.reset(); }
-                    } finally {
-                        // Clean up the temporary form and iframe
-                        if (tempForm.parentNode) tempForm.parentNode.removeChild(tempForm);
-                        // Keep iframe for potential re-use or remove if not needed
-                        // if (iframe.parentNode) iframe.parentNode.removeChild(iframe);
                     }
-                };
+                } catch (error) {
+                    console.error('Error submitting form:', error);
+                    statusMessage.textContent = "Error: Could not connect to the booking service. Please try again.";
+                    statusMessage.classList.add('text-red-500');
+                    if (typeof grecaptcha !== 'undefined') { grecaptcha.reset(); }
+                }
             });
 
             // reCAPTCHA callback functions
