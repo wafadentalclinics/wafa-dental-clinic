@@ -525,7 +525,7 @@
    class="whatsapp-float" 
    target="_blank" 
    aria-label="Chat with WAFA Dental">
-   <img src="images/whatsapp%20floating%20Button/whatsapp.svg" alt="WAFA Dental WhatsApp" />
+   <img src="images/apple.png" alt="WAFA Dental WhatsApp" />
    <span class="tooltip">Chat with WAFA Dental Support</span>
 </a>
 
@@ -931,7 +931,7 @@
         const SHEET_NAME = "Bookings";
         const SHEET_COLUMNS = ["Client ID","Booking ID","Name","Email","Phone","Service","Date","Time","Calendar Event ID","Doc URL","Created At"];
 const CALENDAR_ID = "wafadentalclinics@gmail.com";
-const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzXcuSNzwTqKuhUhY6a_XySp3iPDuKiIkVu0TOeuY4NrTMdik5bLaACMc_OgkA5zSID/exec";
+const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzOaJ4xV9uZumUZZji43VZ8XQbJ_nTpnq6P1eq2-orDlfChEWulAz_PozQc71AOoVGP/exec";
         const COUNTRIES = [
             // Key English-speaking countries
             { code: "+1", name: "United States", iso: "USA" },
@@ -1265,9 +1265,9 @@ const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzXcuSNzwTqKuhUhY6a
                 fetch(WEB_APP_URL, { // Use the WEB_APP_URL constant
                     method: "POST",
                     headers: {
-                        'Content-Type': 'application/json',
+                        'Content-Type': 'application/x-www-form-urlencoded', // Changed Content-Type
                     },
-                    body: JSON.stringify(data) // Use the updated 'data' object
+                    body: new URLSearchParams(data).toString() // Send data as URL-encoded form data
                 })
                 .then(res => res.json())
                 .then(response => {
@@ -1762,6 +1762,19 @@ const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzXcuSNzwTqKuhUhY6a
             selectedDate = today;
             dateInput.value = selectedDate.toLocaleDateString("en-US", { year: "numeric", month: "2-digit", day: "2-digit" });
             renderCalendar(currentMonth, currentYear);
+
+            // Add event listeners for the otherIssues textarea
+            const otherIssuesTextarea = document.getElementById('otherIssues');
+            if (otherIssuesTextarea) {
+                otherIssuesTextarea.addEventListener('focus', function() {
+                    this.rows = 3;
+                });
+                otherIssuesTextarea.addEventListener('blur', function() {
+                    if (this.value === '') {
+                        this.rows = 1;
+                    }
+                });
+            }
         });
     </script>
 </body>
