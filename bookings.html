@@ -1443,15 +1443,6 @@ Thank you for choosing WAFA Dental Clinic
                         // Set download link and trigger download
                         downloadReceiptBtn.href = downloadUrl;
                         downloadReceiptBtn.download = `WAFA_Booking_Receipt_${result.bookingID || 'unknown'}.txt`; // Suggest a filename
-
-                        // Optionally, trigger download instantly
-                        const tempLink = document.createElement('a');
-                        tempLink.href = downloadUrl;
-                        tempLink.download = `WAFA_Booking_Receipt_${result.bookingID || 'unknown'}.txt`;
-                        document.body.appendChild(tempLink);
-                        tempLink.click();
-                        document.body.removeChild(tempLink);
-                        URL.revokeObjectURL(downloadUrl); // Clean up the object URL
                         
                         bookingForm.reset();
                         if (typeof grecaptcha !== 'undefined') { grecaptcha.reset(); }
@@ -1498,6 +1489,11 @@ Thank you for choosing WAFA Dental Clinic
             const confirmationModal = document.getElementById('confirmationModal');
             modalCloseBtn.addEventListener('click', () => {
                 confirmationModal.classList.remove('is-visible');
+                // Revoke the object URL when the modal is closed
+                const downloadUrl = downloadReceiptBtn.href;
+                if (downloadUrl && downloadUrl.startsWith('blob:')) {
+                    URL.revokeObjectURL(downloadUrl);
+                }
             });
 
             // --- Loading Overlay and Confirmation Modal Elements ---
