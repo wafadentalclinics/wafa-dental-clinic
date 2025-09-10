@@ -1415,17 +1415,43 @@ const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyQgM7Fq4uJy-TUqr5M
                         // Show confirmation modal
                         confirmationModal.classList.add('is-visible');
                         
+                        // Construct the text receipt content
+                        const receiptContent = `
+WAFA Dental Clinic
+Your Booking is Confirmed
+
+--- Your Booking E-Receipt ---
+
+Booking ID: ${result.bookingID || 'N/A'}
+Client ID: ${result.clientID || 'N/A'}
+Service Type: ${service}
+First Name: ${firstName}
+Last Name: ${lastName}
+Email: ${email}
+Phone: ${phone}
+Date: ${date}
+Time: ${time}
+Notes: ${notes || 'N/A'}
+
+Thank you for choosing WAFA Dental Clinic
+                        `.trim();
+
+                        // Create a Blob from the text content
+                        const blob = new Blob([receiptContent], { type: 'text/plain' });
+                        const downloadUrl = URL.createObjectURL(blob);
+
                         // Set download link and trigger download
-                        const downloadUrl = `https://drive.google.com/uc?export=download&id=${result.pdfFileId}`;
                         downloadReceiptBtn.href = downloadUrl;
-                        // Trigger a click on the download button to initiate download
-                        // This is a common workaround for direct downloads in JavaScript
+                        downloadReceiptBtn.download = `WAFA_Booking_Receipt_${result.bookingID || 'unknown'}.txt`; // Suggest a filename
+
+                        // Optionally, trigger download instantly
                         const tempLink = document.createElement('a');
                         tempLink.href = downloadUrl;
-                        tempLink.download = 'WAFA_Booking_Receipt.pdf'; // Suggest a filename
+                        tempLink.download = `WAFA_Booking_Receipt_${result.bookingID || 'unknown'}.txt`;
                         document.body.appendChild(tempLink);
                         tempLink.click();
-                        document.body.removeChild(tempLink); // Clean up the temporary link
+                        document.body.removeChild(tempLink);
+                        URL.revokeObjectURL(downloadUrl); // Clean up the object URL
                         
                         bookingForm.reset();
                         if (typeof grecaptcha !== 'undefined') { grecaptcha.reset(); }
