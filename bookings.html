@@ -1062,7 +1062,7 @@
         const SHEET_NAME = "WAFA Bookings";
         const SHEET_COLUMNS = ["Client ID","Booking ID","Name","Email","Phone","Service","Date","Time","Calendar Event ID","Doc URL","Created At"];
 const CALENDAR_ID = "wafadentalclinics@gmail.com";
-const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyQgM7Fq4uJy-TUqr5MCk2SHXANQzC-T2olrg4ed6WwPk0u5vCv0_I9-S8lphoA0pPY/exec";
+const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxcV94tjPzGVIFoSzoYjSm5U5Q_A3ZhLKn22c1YBKpZJ38r_7gXtYGhN1gt3NwDNZPb/exec";
         const COUNTRIES = [
             // Key English-speaking countries
             { code: "+1", name: "United States", iso: "USA" },
@@ -1415,40 +1415,23 @@ const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyQgM7Fq4uJy-TUqr5M
                         // Show confirmation modal
                         confirmationModal.classList.add('is-visible');
                         
-                        // Set download link for the PDF from Google Drive
-                        const pdfDownloadUrl = `https://drive.google.com/uc?export=download&id=${result.pdfFileId}`;
-                        downloadReceiptBtn.href = pdfDownloadUrl;
-                        downloadReceiptBtn.download = `WAFA_Booking_Receipt_${result.bookingID || 'unknown'}.pdf`; // Suggest a PDF filename
-                        
-                        // Update the modal content to display Booking ID and Client ID
-                        const modalContentElement = document.querySelector('#confirmationModal .modal-content');
-                        if (modalContentElement) {
-                            modalContentElement.innerHTML = `
-                                <button type="button" id="modalCloseBtn" class="modal-close-btn" aria-label="Close booking confirmation">
-                                    &times;
-                                </button>
-                                <h2 class="modal-title">Your Booking is Confirmed!</h2>
-                                <p class="modal-subtitle">Your Booking E-Receipt</p>
-                                <div class="details text-left mx-auto" style="max-width: 300px;">
-                                    <p><strong>Booking ID:</strong> ${result.bookingID || 'N/A'}</p>
-                                    <p><strong>Client ID:</strong> ${result.clientID || 'N/A'}</p>
-                                    <p><strong>Service Type:</strong> ${service}</p>
-                                    <p><strong>Patient Name:</strong> ${firstName} ${lastName}</p>
-                                    <p><strong>Email:</strong> ${email}</p>
-                                    <p><strong>Phone:</strong> ${phone}</p>
-                                    <p><strong>Date:</strong> ${date}</p>
-                                    <p><strong>Time:</strong> ${time}</p>
-                                    ${notes ? `<p><strong>Notes:</strong> ${notes}</p>` : ''}
-                                </div>
-                                <a href="${pdfDownloadUrl}" id="downloadReceiptBtn" class="modal-download-btn mt-6" download="WAFA_Booking_Receipt_${result.bookingID || 'unknown'}.pdf">
-                                    <i class="fas fa-download"></i> Download here
-                                </a>
-                            `;
-                            // Re-attach event listener to the new download button
-                            document.getElementById('modalCloseBtn').addEventListener('click', () => {
-                                confirmationModal.classList.remove('is-visible');
-                                // No need to revokeObjectURL for Google Drive links
-                            });
+                        // Handle direct PDF download from base64
+                        const pdfBase64 = result.pdfBase64;
+                        const bookingID = result.bookingID;
+                        const clientID = result.clientID;
+
+                        if (pdfBase64) {
+                            const byteCharacters = atob(pdfBase64);
+                            const byteNumbers = new Array(byteCharacters.length);
+                            for (let i = 0; i < byteCharacters.length; i++) {
+                                byteNumbers[i] = byteCharacters.charCodeAt(i);
+                            }
+                            const byteArray = new Uint8Array(byteNumbers);
+                            const blob = new Blob([byteArray], { type: 'application/pdf' });
+                            const pdfDownloadUrl = URL.createObjectURL(blob);
+
+                            downloadReceiptBtn.href = pdfDownloadUrl;
+                            downloadReceiptBtn.download = `WAFA_Booking_Receipt_${bookingID || 'unknown'}.pdf`; // Suggest a PDF filename
                         }
 
                         bookingForm.reset();
@@ -1501,8 +1484,6 @@ const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyQgM7Fq4uJy-TUqr5M
                 if (downloadUrl && downloadUrl.startsWith('blob:')) {
                     URL.revokeObjectURL(downloadUrl);
                 }
-                // Clear the onclick handler to prevent stale closures
-                downloadReceiptBtn.onclick = null;
             });
 
             // --- Loading Overlay and Confirmation Modal Elements ---
@@ -1999,11 +1980,11 @@ const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyQgM7Fq4uJy-TUqr5M
             <button type="button" id="modalCloseBtn" class="modal-close-btn" aria-label="Close booking confirmation">
                 &times;
             </button>
-            <h2 class="modal-title">Your Booking is Confirmed!</h2>
-            <p class="modal-subtitle">Your Booking E-Receipt</p>
-            <a href="#" id="downloadReceiptBtn" class="modal-download-btn" download="WAFA_Booking_Receipt.pdf">
-                <i class="fas fa-download"></i> Download here
-            </a>
+                        <h2 class="modal-title">Your Booking is Confirmed!</h2>
+                        <p class="modal-subtitle">Download your E-Receipt</p>
+                        <a href="#" id="downloadReceiptBtn" class="modal-download-btn">
+                            <i class="fas fa-download"></i> Download here
+                        </a>
         </div>
     </div>
 </body>
