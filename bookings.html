@@ -1469,10 +1469,20 @@ const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyQgM7Fq4uJy-TUqr5M
                         const blob = new Blob([receiptContent], { type: 'text/html' });
                         const downloadUrl = URL.createObjectURL(blob);
 
-                        // Set download link and trigger download
+                        // Set download link and store downloadUrl for later use
                         downloadReceiptBtn.href = downloadUrl;
                         downloadReceiptBtn.download = `WAFA_Booking_Receipt_${result.bookingID || 'unknown'}.html`; // Suggest an HTML filename
                         
+                        // Add event listener for explicit download click
+                        downloadReceiptBtn.onclick = () => {
+                            const a = document.createElement('a');
+                            a.href = downloadUrl;
+                            a.download = downloadReceiptBtn.download;
+                            document.body.appendChild(a);
+                            a.click();
+                            document.body.removeChild(a);
+                        };
+
                         bookingForm.reset();
                         if (typeof grecaptcha !== 'undefined') { grecaptcha.reset(); }
                         // Clear selected service and time display
@@ -1523,6 +1533,8 @@ const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyQgM7Fq4uJy-TUqr5M
                 if (downloadUrl && downloadUrl.startsWith('blob:')) {
                     URL.revokeObjectURL(downloadUrl);
                 }
+                // Clear the onclick handler to prevent stale closures
+                downloadReceiptBtn.onclick = null;
             });
 
             // --- Loading Overlay and Confirmation Modal Elements ---
