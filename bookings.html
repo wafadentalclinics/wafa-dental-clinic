@@ -1409,12 +1409,26 @@ const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyQgM7Fq4uJy-TUqr5M
                     const result = await fetchResponse.json();
 
                     if (result.success) {
+                        // Clear the status message
+                        statusMessage.textContent = '';
+                        statusMessage.classList.remove('text-gray-500'); // Remove loading text styling
+
                         // Hide loading overlay
                         loadingOverlay.classList.remove('is-visible');
                         // Show confirmation modal
                         confirmationModal.classList.add('is-visible');
-                        // Set download link
-                        downloadReceiptBtn.href = `https://drive.google.com/uc?export=download&id=${result.pdfFileId}`;
+                        
+                        // Set download link and trigger download
+                        const downloadUrl = `https://drive.google.com/uc?export=download&id=${result.pdfFileId}`;
+                        downloadReceiptBtn.href = downloadUrl;
+                        // Trigger a click on the download button to initiate download
+                        // This is a common workaround for direct downloads in JavaScript
+                        const tempLink = document.createElement('a');
+                        tempLink.href = downloadUrl;
+                        tempLink.download = 'WAFA_Booking_Receipt.pdf'; // Suggest a filename
+                        document.body.appendChild(tempLink);
+                        tempLink.click();
+                        document.body.removeChild(tempLink); // Clean up the temporary link
                         
                         bookingForm.reset();
                         if (typeof grecaptcha !== 'undefined') { grecaptcha.reset(); }
@@ -1475,85 +1489,7 @@ const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyQgM7Fq4uJy-TUqr5M
             const countryList = document.getElementById('countryList');
             // const customDropdownContainer = countryCodeInput.closest('.custom-dropdown-container'); // Already defined above
 
-            const renderCountries = (filter = '') => {
-                countryList.innerHTML = '';
-                const filteredCountries = COUNTRIES.filter(country => 
-                    country.name.toLowerCase().includes(filter.toLowerCase()) || 
-                    country.code.includes(filter) ||
-                    country.iso.toLowerCase().includes(filter.toLowerCase())
-                );
-                filteredCountries.forEach(country => {
-                    const li = document.createElement('li');
-                    li.textContent = `${country.code} (${country.iso}) ${country.name}`;
-                    li.dataset.code = country.code;
-                    countryList.appendChild(li);
-                });
-            };
 
-            const toggleDropdown = (show, inputElement, listElement) => {
-                if (show) {
-                    listElement.classList.add('is-open');
-                    inputElement.setAttribute('aria-expanded', 'true');
-                } else {
-                    listElement.classList.remove('is-open');
-                    inputElement.setAttribute('aria-expanded', 'false');
-                }
-            };
-
-            countryCodeInput.addEventListener('click', () => {
-                countryCodeInput.readOnly = false;
-                countryCodeInput.value = '';
-                countryCodeInput.focus();
-                renderCountries();
-                toggleDropdown(true, countryCodeInput, countryList);
-            });
-
-            countryCodeInput.addEventListener('input', (e) => {
-                renderCountries(e.target.value);
-                toggleDropdown(true, countryCodeInput, countryList);
-            });
-
-            countryList.addEventListener('click', (e) => {
-                const selectedLi = e.target.closest('li');
-                if (selectedLi) {
-                    countryCodeInput.value = selectedLi.textContent;
-                    countryCodeHidden.value = selectedLi.dataset.code;
-                    countryCodeInput.readOnly = true;
-                    toggleDropdown(false, countryCodeInput, countryList);
-                }
-            });
-
-            document.addEventListener('click', (e) => {
-                // Close country code, hour, minute dropdowns and calendar if click is outside their containers
-                if (!e.target.closest('.custom-dropdown-container') && !e.target.closest('.calendar-popup')) {
-                    toggleDropdown(false, countryCodeInput, countryList);
-                    toggleDropdown(false, bookingHourInput, bookingHourList);
-                    toggleDropdown(false, bookingMinuteInput, bookingMinuteList);
-                    calendarPopup.classList.remove('is-open');
-                    dateInput.setAttribute('aria-expanded', 'false');
-                }
-
-                // Close service sub-options if click is outside the services section
-                if (!e.target.closest('#servicesSection')) {
-                    if (activeServiceButton) {
-                        activeServiceButton.classList.remove('active');
-                        const prevSubOptions = document.getElementById(`sub-options-${activeServiceButton.dataset.service.replace(/\s/g, '-')}`);
-                        if (prevSubOptions) {
-                            prevSubOptions.classList.remove('is-open');
-                        }
-                        activeServiceButton = null;
-                    }
-                }
-            });
-            
-            // Initial render
-            renderCountries();
-
-            // --- Hour Dropdown Logic ---
-            const bookingHourInput = document.getElementById('bookingHourInput');
-            const bookingHourHidden = document.getElementById('bookingHourHidden');
-            const bookingHourList = document.getElementById('bookingHourList');
-            const selectedTimeDisplay = document.getElementById('selectedTimeDisplay');
 
             const HOURS = [
                 { value: "16", display: "4 PM" },
