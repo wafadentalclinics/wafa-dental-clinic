@@ -750,7 +750,6 @@
                                     id="countryCodeInput"
                                     class="apple-input custom-dropdown-input"
                                     placeholder="+92 (PK)"
-                                    readonly
                                     aria-haspopup="listbox"
                                     aria-expanded="false"
                                 >
@@ -824,7 +823,6 @@
                                     id="bookingHourInput"
                                     class="apple-input custom-dropdown-input"
                                     placeholder="Hours"
-                                    readonly
                                     aria-haspopup="listbox"
                                     aria-expanded="false"
                                 >
@@ -841,7 +839,6 @@
                                     id="bookingMinuteInput"
                                     class="apple-input custom-dropdown-input"
                                     placeholder="Interval - Select Minute(s)"
-                                    readonly
                                     aria-haspopup="listbox"
                                     aria-expanded="false"
                                 >
@@ -1489,7 +1486,89 @@ const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyQgM7Fq4uJy-TUqr5M
             const countryList = document.getElementById('countryList');
             // const customDropdownContainer = countryCodeInput.closest('.custom-dropdown-container'); // Already defined above
 
+            const renderCountries = (filter = '') => {
+                countryList.innerHTML = '';
+                const filteredCountries = COUNTRIES.filter(country => 
+                    country.name.toLowerCase().includes(filter.toLowerCase()) || 
+                    country.code.includes(filter) ||
+                    country.iso.toLowerCase().includes(filter.toLowerCase())
+                );
+                filteredCountries.forEach(country => {
+                    const li = document.createElement('li');
+                    li.textContent = `${country.code} (${country.iso})`; // Display code + ISO
+                    li.dataset.code = country.code;
+                    li.dataset.iso = country.iso;
+                    countryList.appendChild(li);
+                });
+            };
 
+            const toggleDropdown = (show, inputElement, listElement) => {
+                if (show) {
+                    listElement.classList.add('is-open');
+                    inputElement.setAttribute('aria-expanded', 'true');
+                } else {
+                    listElement.classList.remove('is-open');
+                    inputElement.setAttribute('aria-expanded', 'false');
+                }
+            };
+
+            countryCodeInput.addEventListener('click', () => {
+                countryCodeInput.value = ''; // Clear input for typing
+                countryCodeInput.focus();
+                renderCountries();
+                toggleDropdown(true, countryCodeInput, countryList);
+            });
+
+            countryCodeInput.addEventListener('input', (e) => {
+                renderCountries(e.target.value);
+                toggleDropdown(true, countryCodeInput, countryList);
+            });
+
+            countryList.addEventListener('click', (e) => {
+                const selectedLi = e.target.closest('li');
+                if (selectedLi) {
+                    countryCodeInput.value = `${selectedLi.dataset.code} (${selectedLi.dataset.iso})`; // Display code + abbreviation
+                    countryCodeHidden.value = selectedLi.dataset.code;
+                    toggleDropdown(false, countryCodeInput, countryList);
+                }
+            });
+
+            document.addEventListener('click', (e) => {
+                // Close country code, hour, minute dropdowns and calendar if click is outside their containers
+                if (!e.target.closest('.custom-dropdown-container') && !e.target.closest('.calendar-popup')) {
+                    toggleDropdown(false, countryCodeInput, countryList);
+                    toggleDropdown(false, bookingHourInput, bookingHourList);
+                    toggleDropdown(false, bookingMinuteInput, bookingMinuteList);
+                    calendarPopup.classList.remove('is-open');
+                    dateInput.setAttribute('aria-expanded', 'false');
+                }
+
+                // Close service sub-options if click is outside the services section
+                if (!e.target.closest('#servicesSection')) {
+                    if (activeServiceButton) {
+                        activeServiceButton.classList.remove('active');
+                        const prevSubOptions = document.getElementById(`sub-options-${activeServiceButton.dataset.service.replace(/\s/g, '-')}`);
+                        if (prevSubOptions) {
+                            prevSubOptions.classList.remove('is-open');
+                        }
+                        activeServiceButton = null;
+                    }
+                }
+            });
+            
+            // Initial render and set default value for country code input
+            const defaultCountry = COUNTRIES.find(country => country.code === "+92"); // Find Pakistan
+            if (defaultCountry) {
+                countryCodeInput.value = `${defaultCountry.code} (${defaultCountry.iso})`;
+                countryCodeHidden.value = defaultCountry.code;
+            }
+            renderCountries(); // Render all countries initially for search functionality
+
+            // --- Hour Dropdown Logic ---
+            const bookingHourInput = document.getElementById('bookingHourInput');
+            const bookingHourHidden = document.getElementById('bookingHourHidden');
+            const bookingHourList = document.getElementById('bookingHourList');
+            const selectedTimeDisplay = document.getElementById('selectedTimeDisplay');
 
             const HOURS = [
                 { value: "16", display: "4 PM" },
@@ -1513,7 +1592,6 @@ const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyQgM7Fq4uJy-TUqr5M
             };
 
             bookingHourInput.addEventListener('click', () => {
-                bookingHourInput.readOnly = false;
                 bookingHourInput.value = '';
                 bookingHourInput.focus();
                 renderHours();
@@ -1530,7 +1608,6 @@ const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyQgM7Fq4uJy-TUqr5M
                 if (selectedLi) {
                     bookingHourInput.value = selectedLi.textContent;
                     bookingHourHidden.value = selectedLi.dataset.value;
-                    bookingHourInput.readOnly = true;
                     toggleDropdown(false, bookingHourInput, bookingHourList);
                     updateSelectedTimeDisplay();
                 }
@@ -1562,7 +1639,6 @@ const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyQgM7Fq4uJy-TUqr5M
             };
 
             bookingMinuteInput.addEventListener('click', () => {
-                bookingMinuteInput.readOnly = false;
                 bookingMinuteInput.value = '';
                 bookingMinuteInput.focus();
                 renderMinutes();
@@ -1579,7 +1655,6 @@ const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyQgM7Fq4uJy-TUqr5M
                 if (selectedLi) {
                     bookingMinuteInput.value = selectedLi.textContent;
                     bookingMinuteHidden.value = selectedLi.dataset.value;
-                    bookingMinuteInput.readOnly = true;
                     toggleDropdown(false, bookingMinuteInput, bookingMinuteList);
                     updateSelectedTimeDisplay();
                 }
