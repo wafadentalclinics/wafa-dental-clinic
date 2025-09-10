@@ -1415,73 +1415,41 @@ const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyQgM7Fq4uJy-TUqr5M
                         // Show confirmation modal
                         confirmationModal.classList.add('is-visible');
                         
-                        // Construct the premium HTML receipt content
-                        const receiptContent = `
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Booking Confirmation - WAFA Dental Clinic</title>
-    <style>
-        body { font-family: 'Inter', sans-serif; line-height: 1.6; color: #2D3748; margin: 0; padding: 20px; background-color: #f9f9f9; }
-        .container { max-width: 600px; margin: 20px auto; background: #ffffff; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); border: 1px solid #e0e0e0; }
-        .header { text-align: center; margin-bottom: 30px; }
-        .header h1 { font-family: 'DM Serif Display', serif; color: #010245; font-size: 32px; margin-bottom: 5px; }
-        .header p { color: #555; font-size: 16px; margin-top: 0; }
-        .section-title { font-size: 20px; color: #010245; border-bottom: 1px solid #e0e0e0; padding-bottom: 10px; margin-bottom: 20px; }
-        .details p { margin: 8px 0; font-size: 15px; }
-        .details strong { color: #010245; display: inline-block; width: 120px; }
-        .footer { text-align: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid #e0e0e0; color: #777; font-size: 14px; }
-        .logo { max-width: 60px; margin-bottom: 15px; }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <div class="header">
-            <img src="images/logo.png" alt="WAFA Dental Clinic Logo" class="logo">
-            <h1>WAFA Dental Clinic</h1>
-            <p>Your Booking is Confirmed</p>
-        </div>
-
-        <div class="section-title">Booking Details</div>
-        <div class="details">
-            <p><strong>Booking ID:</strong> ${result.bookingID || 'N/A'}</p>
-            <p><strong>Client ID:</strong> ${result.clientID || 'N/A'}</p>
-            <p><strong>Service Type:</strong> ${service}</p>
-            <p><strong>Patient Name:</strong> ${firstName} ${lastName}</p>
-            <p><strong>Email:</strong> ${email}</p>
-            <p><strong>Phone:</strong> ${phone}</p>
-            <p><strong>Date:</strong> ${date}</p>
-            <p><strong>Time:</strong> ${time}</p>
-            ${notes ? `<p><strong>Notes:</strong> ${notes}</p>` : ''}
-        </div>
-
-        <div class="footer">
-            <p>Thank you for choosing WAFA Dental Clinic</p>
-        </div>
-    </div>
-</body>
-</html>
-                        `.trim();
-
-                        // Create a Blob from the HTML content
-                        const blob = new Blob([receiptContent], { type: 'text/html' });
-                        const downloadUrl = URL.createObjectURL(blob);
-
-                        // Set download link and store downloadUrl for later use
-                        downloadReceiptBtn.href = downloadUrl;
-                        downloadReceiptBtn.download = `WAFA_Booking_Receipt_${result.bookingID || 'unknown'}.html`; // Suggest an HTML filename
+                        // Set download link for the PDF from Google Drive
+                        const pdfDownloadUrl = `https://drive.google.com/uc?export=download&id=${result.pdfFileId}`;
+                        downloadReceiptBtn.href = pdfDownloadUrl;
+                        downloadReceiptBtn.download = `WAFA_Booking_Receipt_${result.bookingID || 'unknown'}.pdf`; // Suggest a PDF filename
                         
-                        // Add event listener for explicit download click
-                        downloadReceiptBtn.onclick = () => {
-                            const a = document.createElement('a');
-                            a.href = downloadUrl;
-                            a.download = downloadReceiptBtn.download;
-                            document.body.appendChild(a);
-                            a.click();
-                            document.body.removeChild(a);
-                        };
+                        // Update the modal content to display Booking ID and Client ID
+                        const modalContentElement = document.querySelector('#confirmationModal .modal-content');
+                        if (modalContentElement) {
+                            modalContentElement.innerHTML = `
+                                <button type="button" id="modalCloseBtn" class="modal-close-btn" aria-label="Close booking confirmation">
+                                    &times;
+                                </button>
+                                <h2 class="modal-title">Your Booking is Confirmed!</h2>
+                                <p class="modal-subtitle">Your Booking E-Receipt</p>
+                                <div class="details text-left mx-auto" style="max-width: 300px;">
+                                    <p><strong>Booking ID:</strong> ${result.bookingID || 'N/A'}</p>
+                                    <p><strong>Client ID:</strong> ${result.clientID || 'N/A'}</p>
+                                    <p><strong>Service Type:</strong> ${service}</p>
+                                    <p><strong>Patient Name:</strong> ${firstName} ${lastName}</p>
+                                    <p><strong>Email:</strong> ${email}</p>
+                                    <p><strong>Phone:</strong> ${phone}</p>
+                                    <p><strong>Date:</strong> ${date}</p>
+                                    <p><strong>Time:</strong> ${time}</p>
+                                    ${notes ? `<p><strong>Notes:</strong> ${notes}</p>` : ''}
+                                </div>
+                                <a href="${pdfDownloadUrl}" id="downloadReceiptBtn" class="modal-download-btn mt-6" download="WAFA_Booking_Receipt_${result.bookingID || 'unknown'}.pdf">
+                                    <i class="fas fa-download"></i> Download here
+                                </a>
+                            `;
+                            // Re-attach event listener to the new download button
+                            document.getElementById('modalCloseBtn').addEventListener('click', () => {
+                                confirmationModal.classList.remove('is-visible');
+                                // No need to revokeObjectURL for Google Drive links
+                            });
+                        }
 
                         bookingForm.reset();
                         if (typeof grecaptcha !== 'undefined') { grecaptcha.reset(); }
@@ -2040,3 +2008,71 @@ const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyQgM7Fq4uJy-TUqr5M
     </div>
 </body>
 </html>
+
+</final_file_content>
+
+IMPORTANT: For any future changes to this file, use the final_file_content shown above as your reference. This content reflects the current state of the file, including any auto-formatting (e.g., if you used single quotes but the formatter converted them to double quotes). Always base your SEARCH/REPLACE operations on this final version to ensure accuracy.
+
+
+
+# TODO LIST RECOMMENDED
+When starting a new task, it is recommended to create a todo list.
+
+
+
+
+1. Include the task_progress parameter in your next tool call
+
+2. Create a comprehensive checklist of all steps needed
+
+3. Use markdown format: - [ ] for incomplete, - [x] for complete
+
+
+
+**Benefits of creating a todo list now:**
+
+	- Clear roadmap for implementation
+
+	- Progress tracking throughout the task
+
+	- Nothing gets forgotten or missed
+
+	- Users can see, monitor, and edit the plan
+
+
+
+**Example structure:**
+```
+
+- [ ] Analyze requirements
+
+- [ ] Set up necessary files
+
+- [ ] Implement main functionality
+
+- [ ] Handle edge cases
+
+- [ ] Test the implementation
+
+- [ ] Verify results
+```
+
+
+
+Keeping the todo list updated helps track progress and ensures nothing is missed.
+<environment_details>
+# VSCode Visible Files
+bookings.html
+
+# VSCode Open Tabs
+bookings.html
+
+# Current Time
+9/10/2025, 11:14:00 PM (Asia/Riyadh, UTC+3:00)
+
+# Context Window Usage
+907,440 / 1,048.576K tokens used (87%)
+
+# Current Mode
+ACT MODE
+</environment_details>
