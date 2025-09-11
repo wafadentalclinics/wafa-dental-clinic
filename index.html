@@ -15,7 +15,8 @@
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" xintegrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXUxC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <style>
@@ -257,7 +258,7 @@
 
     <main>
         <!-- Hero Section - Live Gradient Background -->
-        <section id="hero" class="relative min-h-screen flex flex-col items-center justify-center text-center">
+        <section id="hero" class="relative min-h-screen flex flex-col items-center justify-center text-center overflow-hidden">
             <!-- Live Gradient Effect -->
             <div class="absolute inset-0 z-0 gradient-background"></div>
             
@@ -271,11 +272,11 @@
                     <h1 class="text-3xl sm:text-4xl md:text-6xl font-normal text-white tracking-tight font-dm-serif">WAFA Dental Clinic</h1>
                 </div>
 
-                <!-- Main Content Flex Container for Desktop -->
+                <!-- Main Content Grid for Desktop -->
                 <div class="w-full grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8 lg:gap-12 items-center justify-center">
                     <!-- Image Tile (Mobile first order) -->
                     <div class="order-1 md:order-1 card-with-glass p-6 sm:p-8 md:p-10 rounded-3xl flex flex-col justify-center items-center text-center space-y-6 h-full w-full" style="--delay: 0.2s;">
-                        <img src="images/hero.jpg" alt="WAFA Dental Clinic professional working with a patient" class="w-full h-auto max-h-[500px] object-cover rounded-3xl shadow-2xl transition-transform transform hover:scale-105" decoding="async">
+                    <img src="images/hero.jpg" alt="WAFA Dental Clinic professional working with a patient" class="w-full h-auto max-h-[500px] object-cover rounded-3xl shadow-2xl transition-transform transform hover:scale-105" loading="lazy">
                         <p class="text-lg md:text-xl text-white font-dm-serif font-medium" style="--delay: 0.3s;">
                             Providing premium dental care to the community.
                         </p>
@@ -292,10 +293,10 @@
                         
                         <div class="flex flex-col items-center space-y-4" style="--delay: 0.7s;">
                             <!-- The buttons have been updated with new Tailwind classes -->
-                            <a href="#contact" class="px-6 py-2.5 font-semibold rounded-full shadow-lg button-glass-white text-gray-800 hover:bg-white transition-all duration-300 transform hover:translate-y-[-2px] hover:shadow-2xl">
+                            <a href="bookings.html" class="px-6 py-2.5 font-semibold rounded-full shadow-lg bg-white text-primary-blue hover:bg-gray-100 transition-all duration-300 transform hover:translate-y-[-2px] hover:shadow-2xl">
                                 Book an Appointment
                             </a>
-                            <a href="#services" class="px-6 py-2.5 font-semibold rounded-full shadow-lg button-glass-white text-gray-800 hover:bg-white transition-all duration-300 transform hover:translate-y-[-2px] hover:shadow-2xl">
+                            <a href="#services" class="px-6 py-2.5 font-semibold rounded-full shadow-lg bg-primary-blue text-white hover:bg-accent-blue transition-all duration-300 transform hover:translate-y-[-2px] hover:shadow-2xl">
                                 Explore our Services
                             </a>
                         </div>
@@ -316,11 +317,8 @@
                         We are passionate about what we do and committed to making your dental experience as comfortable and stress-free as possible. From routine checkups to complex procedures, we are here to guide you every step of the way.
                     </p>
                     <div class="mt-8 flex flex-col sm:flex-row gap-4 justify-center md:justify-start" style="--delay: 0.5s;">
-                        <a href="our-story.html" class="px-6 py-3 font-semibold rounded-full shadow-lg button-glass-white text-gray-800 transition-all duration-300 transform hover:scale-105">
+                        <a href="our-story.html" class="px-6 py-3 font-semibold rounded-full shadow-lg bg-primary-blue text-white transition-all duration-300 transform hover:scale-105">
                             Our Story
-                        </a>
-                        <a href="#" class="px-6 py-3 font-semibold rounded-full shadow-lg button-glass-white text-gray-800 transition-all duration-300 transform hover:scale-105">
-                            Meet the Team
                         </a>
                     </div>
                 </div>
@@ -333,7 +331,7 @@
             <div class="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 <!-- Service Card 1: Cosmetic Dentistry -->
                 <div class="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-105" style="--delay: 0.2s;">
-                    <img src="images/servicephotos/cosmeticdentistry.jpg" alt="Cosmetic Dentistry" class="w-full h-48 object-cover rounded-t-2xl" loading="lazy" decoding="async">
+                    <img src="images/servicephotos/cosmeticdentistry.jpg" alt="Cosmetic Dentistry" class="w-full h-48 object-cover rounded-t-2xl" loading="lazy">
                     <div class="p-8">
                         <h3 class="text-xl font-normal mb-2 text-gray-800 font-dm-serif">Cosmetic Dentistry</h3>
                         <p class="text-gray-600">Achieve the smile of your dreams with our cosmetic treatments, including professional whitening, veneers, and bonding for a stunning, radiant look.</p>
@@ -341,7 +339,7 @@
                 </div>
                 <!-- Service Card 2: General Dentistry -->
                 <div class="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-105" style="--delay: 0.3s;">
-                    <img src="images/servicephotos/generaldentistry.jpg" alt="General Dentistry" class="w-full h-48 object-cover rounded-t-2xl" loading="lazy" decoding="async">
+                    <img src="images/servicephotos/generaldentistry.jpg" alt="General Dentistry" class="w-full h-48 object-cover rounded-t-2xl" loading="lazy">
                     <div class="p-8">
                         <h3 class="text-xl font-normal mb-2 text-gray-800 font-dm-serif">General Dentistry</h3>
                         <p class="text-gray-600">Maintain optimal oral health with our comprehensive general dentistry services, from routine check-ups and cleanings to expert fillings and preventative care.</p>
@@ -349,7 +347,7 @@
                 </div>
                 <!-- Service Card 3: Orthodontics -->
                 <div class="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-105" style="--delay: 0.4s;">
-                    <img src="images/servicephotos/orthodontics.jpg" alt="Orthodontics" class="w-full h-48 object-cover rounded-t-2xl" loading="lazy" decoding="async">
+                    <img src="images/servicephotos/orthodontics.jpg" alt="Orthodontics" class="w-full h-48 object-cover rounded-t-2xl" loading="lazy">
                     <div class="p-8">
                         <h3 class="text-xl font-normal mb-2 text-gray-800 font-dm-serif">Orthodontics</h3>
                         <p class="text-gray-600">Correct misalignments and perfect your bite with our orthodontic solutions, including modern braces and clear aligners for a beautiful, straight smile.</p>
@@ -357,7 +355,7 @@
                 </div>
                 <!-- Service Card 4: Oral Surgery -->
                 <div class="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-105" style="--delay: 0.5s;">
-                    <img src="images/servicephotos/oralsurgery.jpg" alt="Oral Surgery" class="w-full h-48 object-cover rounded-t-2xl" loading="lazy" decoding="async">
+                    <img src="images/servicephotos/oralsurgery.jpg" alt="Oral Surgery" class="w-full h-48 object-cover rounded-t-2xl" loading="lazy">
                     <div class="p-8">
                         <h3 class="text-xl font-normal mb-2 text-gray-800 font-dm-serif">Oral Surgery</h3>
                         <p class="text-gray-600">Our experienced team provides safe and comfortable oral surgery, handling everything from wisdom tooth extractions to more complex surgical procedures with expert care.</p>
@@ -365,7 +363,7 @@
                 </div>
                 <!-- Service Card 5: Pediatric Care -->
                 <div class="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-105" style="--delay: 0.6s;">
-                    <img src="images/servicephotos/pediatriccare.jpg" alt="Pediatric Care" class="w-full h-48 object-cover rounded-t-2xl" loading="lazy" decoding="async">
+                    <img src="images/servicephotos/pediatriccare.jpg" alt="Pediatric Care" class="w-full h-48 object-cover rounded-t-2xl" loading="lazy">
                     <div class="p-8">
                         <h3 class="text-xl font-normal mb-2 text-gray-800 font-dm-serif">Pediatric Care</h3>
                         <p class="text-gray-600">We offer gentle and friendly dental care for children, focusing on creating a positive and fun experience that establishes a strong foundation for lifelong oral health.</p>
@@ -373,7 +371,7 @@
                 </div>
                 <!-- Service Card 6: Preventive Care -->
                 <div class="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-105" style="--delay: 0.7s;">
-                    <img src="images/servicephotos/preventivecare.jpg" alt="Preventive Care" class="w-full h-48 object-cover rounded-t-2xl" loading="lazy" decoding="async">
+                    <img src="images/servicephotos/preventivecare.jpg" alt="Preventive Care" class="w-full h-48 object-cover rounded-t-2xl" loading="lazy">
                     <div class="p-8">
                         <h3 class="text-xl font-normal mb-2 text-gray-800 font-dm-serif">Preventive Care</h3>
                         <p class="text-gray-600">Protect your smile from future issues with our personalized preventive care services. We provide thorough cleanings, detailed exams, and education to help you maintain impeccable hygiene.</p>
@@ -382,7 +380,7 @@
                 
                 <!-- Service Card 7: Prosthodontic Services (NEW) -->
                 <div class="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-105" style="--delay: 0.8s;">
-                    <img src="images/servicephotos/prosthodonticservices.jpg" alt="Prosthodontic Services" class="w-full h-48 object-cover rounded-t-2xl" loading="lazy" decoding="async">
+                    <img src="images/servicephotos/prosthodonticservices.jpg" alt="Prosthodontic Services" class="w-full h-48 object-cover rounded-t-2xl" loading="lazy">
                     <div class="p-8">
                         <h3 class="text-xl font-normal mb-2 text-gray-800 font-dm-serif">Prosthodontic Services</h3>
                         <p class="text-gray-600">We restore smiles with high-quality prosthodontic services, offering custom-designed crowns, bridges, dentures, and implants to replace missing or damaged teeth with precision and comfort.</p>
@@ -391,7 +389,7 @@
 
                 <!-- Service Card 8: Implantology (NEW) -->
                 <div class="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-105" style="--delay: 0.9s;">
-                    <img src="images/servicephotos/Implantology.jpg" alt="Implantology" class="w-full h-48 object-cover rounded-t-2xl" loading="lazy" decoding="async">
+                    <img src="images/servicephotos/Implantology.jpg" alt="Implantology" class="w-full h-48 object-cover rounded-t-2xl" loading="lazy">
                     <div class="p-8">
                         <h3 class="text-xl font-normal mb-2 text-gray-800 font-dm-serif">Implantology</h3>
                         <p class="text-gray-600">Replace missing teeth with our expert implantology services. We offer durable, natural-looking dental implants from surgical placement to final restoration for a secure and long-lasting solution.</p>
@@ -593,24 +591,12 @@
                         </a>
                     </p>
                 </div>
-                <!-- Services re-added to footer -->
-                <div>
-                    <h3 class="text-base font-normal text-white mb-4 font-dm-serif">Our Services</h3>
-                    <ul class="space-y-2">
-                        <li><a href="#services" class="text-xs hover:text-white transition-colors duration-200">Cosmetic Dentistry</a></li>
-                        <li><a href="#services" class="text-xs hover:text-white transition-colors duration-200">General Dentistry</a></li>
-                        <li><a href="#services" class="text-xs hover:text-white transition-colors duration-200">Orthodontics</a></li>
-                        <li><a href="#services" class="text-xs hover:text-white transition-colors duration-200">Oral Surgery</a></li>
-                        <li><a href="#services" class="text-xs hover:text-white transition-colors duration-200">Pediatric Care</a></li>
-                        <li><a href="#services" class="text-xs hover:text-white transition-colors duration-200">Preventive Care</a></li>
-                    </ul>
-                </div>
                 <div>
                     <h3 class="text-base font-normal text-white mb-4 font-dm-serif">About Us</h3>
                     <ul class="space-y-2">
                         <li><a href="our-story.html" class="text-xs hover:text-white transition-colors duration-200">Our Story</a></li>
-                        <li><a href="#" class="text-xs hover:text-white transition-colors duration-200">Meet the Team</a></li>
-                        <li><a href="#" class="text-xs hover:text-white transition-colors duration-200">Careers</a></li>
+                        <li><a href="careers.html" class="text-xs hover:text-white transition-colors duration-200">Careers</a></li>
+                        <li><a href="#services" class="text-xs hover:text-white transition-colors duration-200">Our Services</a></li>
                     </ul>
                 </div>
                 <div>

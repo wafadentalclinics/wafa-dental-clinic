@@ -14,7 +14,8 @@
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <!-- Google reCAPTCHA v2 script -->
@@ -22,7 +23,7 @@
     
     <style>
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            font-family: 'Inter', sans-serif;
             background: #f9f9f9;
             color: #2D3748;
             scroll-behavior: smooth;
@@ -568,9 +569,9 @@
     width: 40px;
     height: 40px;
     border: 4px solid rgba(0, 0, 0, 0.1);
-    border-top-color: var(--primary-blue); /* Apple-like blue spinner */
+    border-top-color: #007AFF; /* A common Apple-like blue */
     border-radius: 50%;
-    animation: spin 0.8s linear infinite;
+    animation: spin 0.8s cubic-bezier(0.4, 0, 0.2, 1) infinite; /* Smoother animation curve */
 }
 
 @keyframes spin {
@@ -706,7 +707,7 @@
         <section id="booking" class="relative container mx-auto px-6 py-24 md:py-40 fade-in">
             <div class="max-w-3xl mx-auto p-10 md:p-16 rounded-3xl shadow-2xl card-with-glass">
                 <div class="text-center relative">
-                    <button type="button" id="backToPatientTypeBtn" class="absolute top-2 left-2 w-6 h-6 rounded-full bg-primary-blue flex items-center justify-center shadow-md transition-all duration-300 transform hover:scale-110 focus:outline-none z-10 hidden">
+                    <button type="button" id="backToPatientTypeBtn" class="absolute top-2 left-2 w-6 h-6 rounded-full bg-primary-blue flex items-center justify-center shadow-md transition-all duration-300 transform hover:scale-110 focus:outline-none z-10 opacity-0 scale-0">
                         <i class="fas fa-arrow-left text-white text-xs"></i>
                     </button>
                     <h2 class="text-3xl md:text-4xl font-normal text-primary-blue font-dm-serif pl-8">Book an Appointment</h2>
@@ -716,7 +717,7 @@
                 </div>
 
                 <!-- Patient Type Selection -->
-                <div id="patientTypeSelection" class="flex flex-col md:flex-row gap-4 justify-center mt-8">
+                <div id="patientTypeSelection" class="flex flex-col md:flex-row gap-4 justify-center mt-8 text-center">
                     <button type="button" id="firstTimePatientBtn" class="button-glass-white px-6 py-3 font-semibold rounded-xl shadow-md text-primary-blue hover:bg-opacity-80 transition-all duration-300 transform hover:scale-105">
                         First Time Patient
                     </button>
@@ -725,7 +726,7 @@
                     </button>
                 </div>
                 
-                <form id="bookingForm" class="space-y-8 form-hidden relative" style="--delay: 0.3s;">
+                <form id="bookingForm" class="space-y-8 form-hidden relative mx-auto" style="--delay: 0.3s;">
                     <!-- Updated Name fields to be First Name and Last Name -->
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
@@ -1006,22 +1007,11 @@
                 </div>
                 <!-- Services re-added to footer -->
                 <div>
-                    <h3 class="text-base font-normal text-white mb-4 font-dm-serif">Our Services</h3>
-                    <ul class="space-y-2">
-                        <li><a href="#services" class="text-xs hover:text-white transition-colors duration-200">Cosmetic Dentistry</a></li>
-                        <li><a href="#services" class="text-xs hover:text-white transition-colors duration-200">General Dentistry</a></li>
-                        <li><a href="#services" class="text-xs hover:text-white transition-colors duration-200">Orthodontics</a></li>
-                        <li><a href="#services" class="text-xs hover:text-white transition-colors duration-200">Oral Surgery</a></li>
-                        <li><a href="#services" class="text-xs hover:text-white transition-colors duration-200">Pediatric Care</a></li>
-                        <li><a href="#services" class="text-xs hover:text-white transition-colors duration-200">Preventive Care</a></li>
-                    </ul>
-                </div>
-                <div>
                     <h3 class="text-base font-normal text-white mb-4 font-dm-serif">About Us</h3>
                     <ul class="space-y-2">
                         <li><a href="our-story.html" class="text-xs hover:text-white transition-colors duration-200">Our Story</a></li>
-                        <li><a href="#" class="text-xs hover:text-white transition-colors duration-200">Meet the Team</a></li>
-                        <li><a href="#" class="text-xs hover:text-white transition-colors duration-200">Careers</a></li>
+                        <li><a href="careers.html" class="text-xs hover:text-white transition-colors duration-200">Careers</a></li>
+                        <li><a href="#services" class="text-xs hover:text-white transition-colors duration-200">Our Services</a></li>
                     </ul>
                 </div>
                 <div>
@@ -1216,7 +1206,8 @@ const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbykWDfhp8TZmVkFCzcV
             bookingForm.classList.add('form-hidden');
 
             const backToPatientTypeBtn = document.getElementById('backToPatientTypeBtn');
-            backToPatientTypeBtn.classList.add('hidden'); // Initially hide the back button
+            // Initially hide the back button using opacity and scale for animation
+            backToPatientTypeBtn.classList.add('opacity-0', 'scale-0');
 
             const showPatientTypeSelection = () => {
                 patientTypeSelection.classList.remove('hidden');
@@ -1224,7 +1215,7 @@ const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbykWDfhp8TZmVkFCzcV
                 bookingForm.classList.add('form-hidden');
                 bookingForm.classList.remove('form-visible');
                 servicePrompt.classList.remove('is-visible'); // Hide the prompt when going back
-                backToPatientTypeBtn.classList.add('hidden'); // Hide back button
+                backToPatientTypeBtn.classList.add('opacity-0', 'scale-0'); // Hide back button with animation
                 bookingForm.reset();
                 serviceHidden.value = '';
                 if (selectedSubOption) {
@@ -1244,7 +1235,7 @@ const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbykWDfhp8TZmVkFCzcV
                 bookingForm.classList.remove('form-hidden'); // Animate form to visible
                 bookingForm.classList.add('form-visible');
                 servicePrompt.classList.add('is-visible'); // Show the prompt
-                backToPatientTypeBtn.classList.remove('hidden'); // Show back button
+                backToPatientTypeBtn.classList.remove('opacity-0', 'scale-0'); // Show back button with animation
                 // Reset form for new patient
                 bookingForm.reset();
                 serviceHidden.value = '';
@@ -1264,7 +1255,7 @@ const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbykWDfhp8TZmVkFCzcV
                 bookingForm.classList.add('form-hidden'); // Ensure booking form is hidden initially
                 bookingForm.classList.remove('form-visible'); // Remove visible class if it was there
                 servicePrompt.classList.add('is-visible'); // Show the prompt
-                backToPatientTypeBtn.classList.remove('hidden'); // Show back button
+                backToPatientTypeBtn.classList.remove('opacity-0', 'scale-0'); // Show back button with animation
                 // Clear form for returning patient to enter ID
                 bookingForm.reset();
                 serviceHidden.value = '';
@@ -1583,7 +1574,8 @@ const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbykWDfhp8TZmVkFCzcV
             });
             
             // Initial render and set default value for country code input
-            const defaultCountry = COUNTRIES.find(country => country.code === "+92"); // Find Pakistan
+            // Set default selected country to Pakistan (+92)
+            const defaultCountry = COUNTRIES.find(country => country.code === "+92");
             if (defaultCountry) {
                 countryCodeInput.value = `${defaultCountry.code} (${defaultCountry.iso})`;
                 countryCodeHidden.value = defaultCountry.code;
@@ -1995,7 +1987,7 @@ const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbykWDfhp8TZmVkFCzcV
                 &times;
             </button>
                         <h2 class="modal-title">Your Booking is Confirmed!</h2>
-                        <p class="modal-subtitle">Download your E-Receipt</p>
+                        <p class="modal-subtitle">Your E-ticket Receipt is downloading.</p>
                         <a href="#" id="downloadReceiptBtn" class="modal-download-btn">
                             <i class="fas fa-download"></i> Download here
                         </a>
