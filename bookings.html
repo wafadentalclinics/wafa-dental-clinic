@@ -1432,6 +1432,7 @@ const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbw8VxkzaCJP3Pmfr0Ap
 
                             downloadReceiptBtn.href = pdfUrl;
                             downloadReceiptBtn.download = `WAFA_Medical_Receipt_${bookingID}_${clientID}.pdf`; // Suggest a professional filename
+                            downloadReceiptBtn.click(); // Programmatically click to trigger download immediately
                         } else {
                             console.error("PDF base64 string not received.");
                             downloadReceiptBtn.href = "#"; // Disable download if no PDF
