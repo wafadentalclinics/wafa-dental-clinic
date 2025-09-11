@@ -1062,7 +1062,7 @@
         const SHEET_NAME = "WAFA Bookings";
         const SHEET_COLUMNS = ["Client ID","Booking ID","Name","Email","Phone","Service","Date","Time","Calendar Event ID","Doc URL","Created At"];
 const CALENDAR_ID = "wafadentalclinics@gmail.com";
-const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxcV94tjPzGVIFoSzoYjSm5U5Q_A3ZhLKn22c1YBKpZJ38r_7gXtYGhN1gt3NwDNZPb/exec";
+const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbw8VxkzaCJP3Pmfr0ApHUt8jxYud-a1tx-_GT-wXFwQ96T8wzClj5VUEEk5sQG9WaUK/exec";
         const COUNTRIES = [
             // Key English-speaking countries
             { code: "+1", name: "United States", iso: "USA" },
@@ -1415,13 +1415,29 @@ const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxcV94tjPzGVIFoSzoY
                         // Show confirmation modal
                         confirmationModal.classList.add('is-visible');
                         
-                        // Set download link for the PDF from Google Drive
-                        const pdfFileId = result.pdfFileId;
+                        // Handle PDF download
+                        const pdfBase64 = result.pdfBase64; // Expecting base64 encoded PDF
                         const bookingID = result.bookingID;
                         const clientID = result.clientID;
-                        const pdfDownloadUrl = `https://drive.google.com/uc?export=download&id=${pdfFileId}`;
-                        downloadReceiptBtn.href = pdfDownloadUrl;
-                        downloadReceiptBtn.download = `WAFA_Booking_Receipt_${bookingID || 'unknown'}.pdf`; // Suggest a PDF filename
+
+                        if (pdfBase64) {
+                            const byteCharacters = atob(pdfBase64);
+                            const byteNumbers = new Array(byteCharacters.length);
+                            for (let i = 0; i < byteCharacters.length; i++) {
+                                byteNumbers[i] = byteCharacters.charCodeAt(i);
+                            }
+                            const byteArray = new Uint8Array(byteNumbers);
+                            const pdfBlob = new Blob([byteArray], { type: 'application/pdf' });
+                            const pdfUrl = URL.createObjectURL(pdfBlob);
+
+                            downloadReceiptBtn.href = pdfUrl;
+                            downloadReceiptBtn.download = `WAFA_Medical_Receipt_${bookingID}_${clientID}.pdf`; // Suggest a professional filename
+                        } else {
+                            console.error("PDF base64 string not received.");
+                            downloadReceiptBtn.href = "#"; // Disable download if no PDF
+                            downloadReceiptBtn.download = "";
+                            // Optionally, show an error message to the user
+                        }
 
                         bookingForm.reset();
                         if (typeof grecaptcha !== 'undefined') { grecaptcha.reset(); }
@@ -1470,7 +1486,9 @@ const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxcV94tjPzGVIFoSzoY
                 confirmationModal.classList.remove('is-visible');
                 // Revoke the object URL when the modal is closed
                 const downloadUrl = downloadReceiptBtn.href;
-                // No need to revokeObjectURL for Google Drive links
+                if (downloadUrl && downloadUrl.startsWith('blob:')) {
+                    URL.revokeObjectURL(downloadUrl);
+                }
             });
 
             // --- Loading Overlay and Confirmation Modal Elements ---

@@ -144,81 +144,162 @@ function generatePDF(bookingID, clientID, data){
     <!DOCTYPE html>
     <html>
     <head>
-      <title>WAFA Dental Clinic - Booking Receipt</title>
+      <title>WAFA Dental Clinic - Medical Receipt</title>
       <style>
-        body { font-family: Arial, sans-serif; margin: 20px; color: #333; }
-        .container { max-width: 600px; margin: 0 auto; border: 1px solid #eee; padding: 30px; box-shadow: 0 0 10px rgba(0,0,0,0.05); }
-        .header { text-align: center; margin-bottom: 30px; }
-        .header h1 { color: #010245; font-size: 28px; margin: 0; }
-        .header p { color: #555; font-size: 14px; margin-top: 5px; }
-        .section-title { color: #010245; font-size: 20px; margin-top: 30px; margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 5px; }
-        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
-        th, td { border: 1px solid #eee; padding: 10px; text-align: left; font-size: 14px; }
-        th { background-color: #f8f8f8; color: #010245; }
-        .footer { text-align: center; margin-top: 40px; font-size: 12px; color: #888; }
-        .important-note { background-color: #fff3cd; border-left: 5px solid #ffc107; padding: 10px; margin-top: 20px; font-size: 13px; color: #664d03; }
+        body { font-family: 'Inter', sans-serif; margin: 0; padding: 0; background-color: #f8f9fa; color: #343a40; }
+        .receipt-container {
+          width: 100%;
+          max-width: 700px;
+          margin: 30px auto;
+          background-color: #ffffff;
+          border: 1px solid #e9ecef;
+          border-radius: 12px;
+          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+          overflow: hidden;
+        }
+        .header {
+          background-color: #010245; /* Primary Blue */
+          color: #ffffff;
+          padding: 25px 30px;
+          text-align: center;
+          border-bottom: 5px solid #4c4e9e; /* Accent Blue */
+        }
+        .header h1 {
+          font-family: 'DM Serif Display', serif;
+          font-size: 32px;
+          margin: 0;
+          line-height: 1.2;
+        }
+        .header p {
+          font-size: 15px;
+          margin: 5px 0 0;
+          opacity: 0.9;
+        }
+        .content {
+          padding: 30px;
+        }
+        .section-title {
+          font-family: 'DM Serif Display', serif;
+          font-size: 24px;
+          color: #010245;
+          margin-top: 35px;
+          margin-bottom: 18px;
+          padding-bottom: 8px;
+          border-bottom: 2px solid #e9ecef;
+        }
+        .section-title:first-of-type {
+          margin-top: 0;
+        }
+        .info-grid {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 15px 25px;
+          margin-bottom: 25px;
+        }
+        .info-item strong {
+          display: block;
+          font-size: 13px;
+          color: #6c757d;
+          margin-bottom: 3px;
+        }
+        .info-item span {
+          font-size: 16px;
+          color: #343a40;
+          font-weight: 500;
+        }
+        .notes {
+          background-color: #f0f8ff;
+          border-left: 4px solid #007bff;
+          padding: 15px;
+          margin-top: 25px;
+          border-radius: 8px;
+          font-size: 14px;
+          color: #004085;
+        }
+        .notes strong {
+          color: #004085;
+        }
+        .footer {
+          background-color: #f1f3f5;
+          padding: 20px 30px;
+          text-align: center;
+          font-size: 12px;
+          color: #6c757d;
+          border-top: 1px solid #e9ecef;
+          margin-top: 40px;
+        }
+        .footer a {
+          color: #010245;
+          text-decoration: none;
+        }
+        .footer a:hover {
+          text-decoration: underline;
+        }
       </style>
+      <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     </head>
     <body>
-      <div class="container">
+      <div class="receipt-container">
         <div class="header">
           <h1>WAFA Dental Clinic</h1>
           <p>Your Health, Our Priority</p>
-          <p>Booking Confirmation & E-Receipt</p>
+          <p>Official Medical Receipt & Appointment Confirmation</p>
         </div>
 
-        <h2 class="section-title">Appointment Details</h2>
-        <table>
-          <tr>
-            <th>Booking ID:</th>
-            <td>${bookingID}</td>
-          </tr>
-          <tr>
-            <th>Client ID:</th>
-            <td>${clientID}</td>
-          </tr>
-          <tr>
-            <th>Service:</th>
-            <td>${data.Service}</td>
-          </tr>
-          <tr>
-            <th>Date:</th>
-            <td>${data.Date}</td>
-          </tr>
-          <tr>
-            <th>Time:</th>
-            <td>${data.Time}</td>
-          </tr>
-          <tr>
-            <th>Notes:</th>
-            <td>${data.Notes || 'N/A'}</td>
-          </tr>
-        </table>
+        <div class="content">
+          <h2 class="section-title">Patient Details</h2>
+          <div class="info-grid">
+            <div class="info-item">
+              <strong>Client ID:</strong>
+              <span>${clientID}</span>
+            </div>
+            <div class="info-item">
+              <strong>Patient Name:</strong>
+              <span>${fullName}</span>
+            </div>
+            <div class="info-item">
+              <strong>Email:</strong>
+              <span>${data.Email}</span>
+            </div>
+            <div class="info-item">
+              <strong>Phone:</strong>
+              <span>${data.Phone}</span>
+            </div>
+          </div>
 
-        <h2 class="section-title">Patient Information</h2>
-        <table>
-          <tr>
-            <th>Name:</th>
-            <td>${fullName}</td>
-          </tr>
-          <tr>
-            <th>Email:</th>
-            <td>${data.Email}</td>
-          </tr>
-          <tr>
-            <th>Phone:</th>
-            <td>${data.Phone}</td>
-          </tr>
-        </table>
+          <h2 class="section-title">Appointment Information</h2>
+          <div class="info-grid">
+            <div class="info-item">
+              <strong>Booking ID:</strong>
+              <span>${bookingID}</span>
+            </div>
+            <div class="info-item">
+              <strong>Service:</strong>
+              <span>${data.Service}</span>
+            </div>
+            <div class="info-item">
+              <strong>Date:</strong>
+              <span>${data.Date}</span>
+            </div>
+            <div class="info-item">
+              <strong>Time:</strong>
+              <span>${data.Time}</span>
+            </div>
+          </div>
 
-        <div class="important-note">
-          Please keep this receipt for your records. We look forward to seeing you!
+          ${data.Notes ? `<div class="notes"><strong>Notes/Previous Issues:</strong> ${data.Notes}</div>` : ''}
+
+          <div class="notes" style="background-color: #d4edda; border-left-color: #28a745; color: #155724; margin-top: 30px;">
+            <strong>Important:</strong> Please arrive 15 minutes prior to your scheduled appointment. For any changes or cancellations, kindly contact us at least 24 hours in advance.
+          </div>
         </div>
 
         <div class="footer">
           &copy; ${new Date().getFullYear()} WAFA Dental Clinic. All rights reserved.
           <br>
           Office #7 · 3rd Floor · The Ark Building · I-8 Markaz · Islamabad 44000 · Pakistan
+          <br>
+          <a href="https://www.wafadentalclinic.com" target="_blank">www.wafadentalclinic.com</a>
         </div>
       </div>
     </body>
@@ -227,9 +308,13 @@ function generatePDF(bookingID, clientID, data){
   
   const blob = Utilities.newBlob(htmlContent, 'text/html', bookingID + '.html');
   const pdf = blob.getAs('application/pdf').setName(bookingID + '.pdf');
-  const file = DriveApp.createFile(pdf);
-  // MODIFIED: Return file ID
-  return file.getId();
+  
+  // Save a copy to Google Drive as requested for the backend
+  const file = DriveApp.createFile(pdf); 
+  const pdfFileId = file.getId(); // Get the ID of the file saved in Drive
+
+  // Return base64 encoded PDF content for direct download on the frontend
+  return Utilities.base64Encode(pdf.getBytes()); 
 }
 
 // === UTILITY: Fetch booked slots for real-time availability ===
