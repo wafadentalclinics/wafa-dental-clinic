@@ -1432,7 +1432,18 @@ const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbw8VxkzaCJP3Pmfr0Ap
 
                             downloadReceiptBtn.href = pdfUrl;
                             downloadReceiptBtn.download = `WAFA_Medical_Receipt_${bookingID}_${clientID}.pdf`; // Suggest a professional filename
-                            downloadReceiptBtn.click(); // Programmatically click to trigger download immediately
+                            
+                            // Create a temporary anchor element to trigger download
+                            const tempLink = document.createElement('a');
+                            tempLink.href = pdfUrl;
+                            tempLink.download = `WAFA_Medical_Receipt_${bookingID}_${clientID}.pdf`;
+                            document.body.appendChild(tempLink);
+                            tempLink.click();
+                            document.body.removeChild(tempLink);
+                            
+                            // Revoke the object URL after a short delay to allow download to start
+                            setTimeout(() => URL.revokeObjectURL(pdfUrl), 100);
+
                         } else {
                             console.error("PDF base64 string not received.");
                             downloadReceiptBtn.href = "#"; // Disable download if no PDF
@@ -1485,11 +1496,8 @@ const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbw8VxkzaCJP3Pmfr0Ap
             const confirmationModal = document.getElementById('confirmationModal');
             modalCloseBtn.addEventListener('click', () => {
                 confirmationModal.classList.remove('is-visible');
-                // Revoke the object URL when the modal is closed
-                const downloadUrl = downloadReceiptBtn.href;
-                if (downloadUrl && downloadUrl.startsWith('blob:')) {
-                    URL.revokeObjectURL(downloadUrl);
-                }
+                // The object URL is now revoked immediately after download is triggered,
+                // so no need to revoke here again.
             });
 
             // --- Loading Overlay and Confirmation Modal Elements ---
