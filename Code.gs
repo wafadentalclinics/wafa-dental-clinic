@@ -96,8 +96,11 @@ function doPost(e) {
       new Date()         // Column 11: Created At
     ]);
     
-    // MODIFIED: Return pdfFileId, bookingID, and clientID
-    return ContentService.createTextOutput(JSON.stringify({success:true, pdfFileId: pdfFileId, bookingID: bookingID, clientID: clientID}))
+    // MODIFIED: Get file ID instead of URL
+    const pdfBase64 = generatePDF(bookingID, clientID, data); // Capture the base64 string
+
+    // MODIFIED: Return pdfFileId, bookingID, clientID, AND pdfBase64
+    return ContentService.createTextOutput(JSON.stringify({success:true, pdfFileId: pdfFileId, bookingID: bookingID, clientID: clientID, pdfBase64: pdfBase64}))
                          .setMimeType(ContentService.MimeType.JSON);
     
   } catch(err){
