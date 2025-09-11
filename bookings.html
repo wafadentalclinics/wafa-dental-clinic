@@ -1429,14 +1429,11 @@ const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbykWDfhp8TZmVkFCzcV
                             const byteArray = new Uint8Array(byteNumbers);
                             const pdfBlob = new Blob([byteArray], { type: 'application/pdf' });
                             const pdfUrl = URL.createObjectURL(pdfBlob);
-
-                            downloadReceiptBtn.href = pdfUrl;
-                            downloadReceiptBtn.download = `WAFA_Medical_Receipt_${bookingID}_${clientID}.pdf`; // Suggest a professional filename
                             
                             // Create a temporary anchor element to trigger download
                             const tempLink = document.createElement('a');
                             tempLink.href = pdfUrl;
-                            tempLink.download = `WAFA_Medical_Receipt_${bookingID}_${clientID}.pdf`;
+                            tempLink.download = `WAFA_Medical_Receipt_${bookingID}_${clientID}.pdf`; // Suggest a professional filename
                             document.body.appendChild(tempLink);
                             tempLink.click();
                             document.body.removeChild(tempLink);
@@ -1446,8 +1443,6 @@ const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbykWDfhp8TZmVkFCzcV
 
                         } else {
                             console.error("PDF base64 string not received.");
-                            downloadReceiptBtn.href = "#"; // Disable download if no PDF
-                            downloadReceiptBtn.download = "";
                             // Optionally, show an error message to the user
                         }
 
@@ -1502,7 +1497,6 @@ const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbykWDfhp8TZmVkFCzcV
 
             // --- Loading Overlay and Confirmation Modal Elements ---
             const loadingOverlay = document.getElementById('loadingOverlay');
-            const downloadReceiptBtn = document.getElementById('downloadReceiptBtn');
             const submitButton = bookingForm.querySelector('button[type="submit"]');
 
 
