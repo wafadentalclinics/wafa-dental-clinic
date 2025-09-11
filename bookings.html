@@ -1415,24 +1415,13 @@ const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxcV94tjPzGVIFoSzoY
                         // Show confirmation modal
                         confirmationModal.classList.add('is-visible');
                         
-                        // Handle direct PDF download from base64
-                        const pdfBase64 = result.pdfBase64;
+                        // Set download link for the PDF from Google Drive
+                        const pdfFileId = result.pdfFileId;
                         const bookingID = result.bookingID;
                         const clientID = result.clientID;
-
-                        if (pdfBase64) {
-                            const byteCharacters = atob(pdfBase64);
-                            const byteNumbers = new Array(byteCharacters.length);
-                            for (let i = 0; i < byteCharacters.length; i++) {
-                                byteNumbers[i] = byteCharacters.charCodeAt(i);
-                            }
-                            const byteArray = new Uint8Array(byteNumbers);
-                            const blob = new Blob([byteArray], { type: 'application/pdf' });
-                            const pdfDownloadUrl = URL.createObjectURL(blob);
-
-                            downloadReceiptBtn.href = pdfDownloadUrl;
-                            downloadReceiptBtn.download = `WAFA_Booking_Receipt_${bookingID || 'unknown'}.pdf`; // Suggest a PDF filename
-                        }
+                        const pdfDownloadUrl = `https://drive.google.com/uc?export=download&id=${pdfFileId}`;
+                        downloadReceiptBtn.href = pdfDownloadUrl;
+                        downloadReceiptBtn.download = `WAFA_Booking_Receipt_${bookingID || 'unknown'}.pdf`; // Suggest a PDF filename
 
                         bookingForm.reset();
                         if (typeof grecaptcha !== 'undefined') { grecaptcha.reset(); }
@@ -1481,9 +1470,7 @@ const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxcV94tjPzGVIFoSzoY
                 confirmationModal.classList.remove('is-visible');
                 // Revoke the object URL when the modal is closed
                 const downloadUrl = downloadReceiptBtn.href;
-                if (downloadUrl && downloadUrl.startsWith('blob:')) {
-                    URL.revokeObjectURL(downloadUrl);
-                }
+                // No need to revokeObjectURL for Google Drive links
             });
 
             // --- Loading Overlay and Confirmation Modal Elements ---

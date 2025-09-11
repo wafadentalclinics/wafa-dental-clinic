@@ -76,8 +76,8 @@ function doPost(e) {
     const calendarEventId = calendarEvent.getId();
     
     // --- Step 4: Generate downloadable PDF ---
-    // MODIFIED: Get base64 encoded PDF content instead of file ID
-    const pdfBase64 = generatePDF(bookingID, clientID, data);
+    // MODIFIED: Get file ID instead of URL
+    const pdfFileId = generatePDF(bookingID, clientID, data);
 
     // --- Step 5: Append booking to Sheet ---
     // The order of items must match your Google Sheet's columns:
@@ -92,12 +92,12 @@ function doPost(e) {
       data.Date,         // Column 7: Date
       data.Time,         // Column 8: Time
       calendarEventId,   // Column 9: Calendar Event ID
-      `https://drive.google.com/uc?export=download&id=${pdfBase64}`, // Column 10: Doc URL (This will be a placeholder, as we're not using Drive for direct download)
+      `https://drive.google.com/uc?export=download&id=${pdfFileId}`, // Column 10: Doc URL (direct download link)
       new Date()         // Column 11: Created At
     ]);
     
-    // MODIFIED: Return pdfBase64, bookingID, and clientID
-    return ContentService.createTextOutput(JSON.stringify({success:true, pdfBase64: pdfBase64, bookingID: bookingID, clientID: clientID}))
+    // MODIFIED: Return pdfFileId, bookingID, and clientID
+    return ContentService.createTextOutput(JSON.stringify({success:true, pdfFileId: pdfFileId, bookingID: bookingID, clientID: clientID}))
                          .setMimeType(ContentService.MimeType.JSON);
     
   } catch(err){
@@ -227,9 +227,9 @@ function generatePDF(bookingID, clientID, data){
   
   const blob = Utilities.newBlob(htmlContent, 'text/html', bookingID + '.html');
   const pdf = blob.getAs('application/pdf').setName(bookingID + '.pdf');
-  
-  // Instead of creating a file in Drive, return the base64 encoded content
-  return Utilities.base64Encode(pdf.getBytes());
+  const file = DriveApp.createFile(pdf);
+  // MODIFIED: Return file ID
+  return file.getId();
 }
 
 // === UTILITY: Fetch booked slots for real-time availability ===
