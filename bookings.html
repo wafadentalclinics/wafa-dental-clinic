@@ -566,17 +566,19 @@
 }
 
 .spinner {
-    width: 40px;
-    height: 40px;
+    width: 50px;
+    height: 50px;
     border: 4px solid rgba(0, 0, 0, 0.1);
-    border-top-color: #007AFF; /* A common Apple-like blue */
+    border-top-color: var(--primary-blue); /* Use primary blue for a premium feel */
     border-radius: 50%;
-    animation: spin 0.8s cubic-bezier(0.4, 0, 0.2, 1) infinite; /* Smoother animation curve */
+    animation: spin 1s cubic-bezier(0.68, -0.55, 0.27, 1.55) infinite; /* More dynamic animation curve */
+    box-shadow: 0 0 15px rgba(1, 2, 69, 0.2); /* Subtle shadow for depth */
 }
 
 @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% { transform: rotate(0deg) scale(1); }
+    50% { transform: rotate(180deg) scale(1.1); } /* Slight scale for bounce effect */
+    100% { transform: rotate(360deg) scale(1); }
 }
 
 .whatsapp-float {
@@ -1009,9 +1011,9 @@
                 <div>
                     <h3 class="text-base font-normal text-white mb-4 font-dm-serif">About Us</h3>
                     <ul class="space-y-2">
+                        <li><a href="#services" class="text-xs hover:text-white transition-colors duration-200">Our Services</a></li>
                         <li><a href="our-story.html" class="text-xs hover:text-white transition-colors duration-200">Our Story</a></li>
                         <li><a href="careers.html" class="text-xs hover:text-white transition-colors duration-200">Careers</a></li>
-                        <li><a href="#services" class="text-xs hover:text-white transition-colors duration-200">Our Services</a></li>
                     </ul>
                 </div>
                 <div>
@@ -1036,6 +1038,14 @@
                             TikTok
                         </a>
                     </div>
+                </div>
+                <div>
+                    <h3 class="text-base font-normal text-white mb-4 font-dm-serif">Legal</h3>
+                    <ul class="space-y-2">
+                        <li><span class="text-xs hover:text-white transition-colors duration-200 cursor-pointer">Legal</span></li>
+                        <li><span class="text-xs hover:text-white transition-colors duration-200 cursor-pointer">Privacy Policy</span></li>
+                        <li><span class="text-xs hover:text-white transition-colors duration-200 cursor-pointer">Terms and Conditions</span></li>
+                    </ul>
                 </div>
             </div>
             <hr class="my-8 border-gray-200">
@@ -1995,71 +2005,3 @@ const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbykWDfhp8TZmVkFCzcV
     </div>
 </body>
 </html>
-
-</final_file_content>
-
-IMPORTANT: For any future changes to this file, use the final_file_content shown above as your reference. This content reflects the current state of the file, including any auto-formatting (e.g., if you used single quotes but the formatter converted them to double quotes). Always base your SEARCH/REPLACE operations on this final version to ensure accuracy.
-
-
-
-# TODO LIST RECOMMENDED
-When starting a new task, it is recommended to create a todo list.
-
-
-
-
-1. Include the task_progress parameter in your next tool call
-
-2. Create a comprehensive checklist of all steps needed
-
-3. Use markdown format: - [ ] for incomplete, - [x] for complete
-
-
-
-**Benefits of creating a todo list now:**
-
-	- Clear roadmap for implementation
-
-	- Progress tracking throughout the task
-
-	- Nothing gets forgotten or missed
-
-	- Users can see, monitor, and edit the plan
-
-
-
-**Example structure:**
-```
-
-- [ ] Analyze requirements
-
-- [ ] Set up necessary files
-
-- [ ] Implement main functionality
-
-- [ ] Handle edge cases
-
-- [ ] Test the implementation
-
-- [ ] Verify results
-```
-
-
-
-Keeping the todo list updated helps track progress and ensures nothing is missed.
-<environment_details>
-# VSCode Visible Files
-bookings.html
-
-# VSCode Open Tabs
-bookings.html
-
-# Current Time
-9/10/2025, 11:14:00 PM (Asia/Riyadh, UTC+3:00)
-
-# Context Window Usage
-907,440 / 1,048.576K tokens used (87%)
-
-# Current Mode
-ACT MODE
-</environment_details>
