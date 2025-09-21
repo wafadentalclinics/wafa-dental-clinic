@@ -1,0 +1,27 @@
+{
+  "name": "wafa-dental-clinic-backend",
+  "version": "1.0.0",
+  "description": "Backend service for sending booking confirmation emails.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node test-endpoint.js"
+  },
+  "keywords": [
+    "nodemailer",
+    "express",
+    "pdfkit",
+    "titan"
+  ],
+  "author": "Sixth",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "nodemailer": "^6.9.7",
+    "pdfkit": "^0.13.0"
+  },
+  "devDependencies": {
+    "node-fetch": "^2.7.0"
+  }
+}
