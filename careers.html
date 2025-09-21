@@ -3,14 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Careers - WAFA Dental Clinic</title>
+    <title>Careers - WAFA Dental Clinic</title> <!-- Preserving original title -->
+    <!-- Theme Color for Browser UI (e.g., Safari, Chrome mobile) -->
+    <meta name="theme-color" content="#010245">
     <!-- Favicon and Open Graph tags -->
     <link rel="icon" type="image/png" href="images/favicon.png">
-    <meta property="og:title" content="Careers - WAFA Dental Clinic">
-    <meta property="og:description" content="Join the WAFA Dental Clinic team.">
+    <meta property="og:title" content="WAFA Dental Clinic">
+    <meta property="og:description" content="Never Too Late To Improve Your Smile!">
     <link rel="icon" type="image/x-icon" href="images/favicon.ico" />
     <meta property="og:image" content="images/og-picture.png">
-    <meta property="og:url" content="https://www.wafadentalclinic.com/careers.html">
+    <meta property="og:url" content="https://www.wafadentalclinic.com">
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -34,15 +36,32 @@
             font-family: 'Inter', sans-serif;
             color: #2D3748;
             scroll-behavior: smooth;
-            background-color: #F7F7F7;
+            background-color: #F7F7F7; /* Reverted to original light gray */
         }
 
         .font-dm-serif {
             font-family: 'DM Serif Display', serif;
         }
-        
-        /* Styling for the new white frosted glass effect */
-        .card-frosted-white {
+
+        /* Fade-in animation for sections and elements with a smoother feel */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 1.2s cubic-bezier(0.25, 1, 0.5, 1), transform 1.2s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        .fade-in.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Adds a subtle delay for children elements */
+        .fade-in.is-visible > * {
+            transition: opacity 0.8s cubic-bezier(0.25, 1, 0.5, 1), transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+            transition-delay: var(--delay);
+        }
+
+        .card-with-glass {
             background-color: rgba(255, 255, 255, 0.2);
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
@@ -64,8 +83,8 @@
 
         /* Apple-like hover effect for the 'Book Now' button */
         .book-now-button:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2), 0 6px 12px rgba(0, 0, 0, 0.15);
+            transform: translateY(-4px); /* Reverted translateY to match Our Story button */
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2), 0 6px 12px rgba(0, 0, 0, 0.15); /* Reverted box-shadow to match Our Story button */
         }
 
         /* Apple-like form field styling */
@@ -85,35 +104,54 @@
         
         /* Mobile menu animation */
         #mobile-menu {
-            transition: max-height 0.3s ease-in-out, padding 0.3s ease-in-out;
+            transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1);
             max-height: 0;
             overflow: hidden;
+            opacity: 0;
         }
         #mobile-menu.is-open {
             max-height: 500px; /* A value large enough to contain all content */
+            opacity: 1;
         }
-        /* Mobile menu icon animation */
+        /* Mobile menu icon animation (Apple-like) */
         #mobile-menu-button {
-            transition: transform 0.3s ease;
+            width: 20px; /* Maintain current width */
+            height: 14px; /* Adjusted height for a more minimal look and better spacing */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            cursor: pointer;
+            padding: 0;
+            position: relative;
+            z-index: 20;
+            transition: none; /* Ensure no hover effect on the button itself */
         }
-        #mobile-menu-button.is-open {
-            transform: rotate(90deg);
+        #mobile-menu-button span {
+            display: block;
+            width: 100%;
+            height: 1.2px; /* Thinner bars for a more refined look */
+            background-color: white;
+            border-radius: 0px; /* Keep corners sharp for a modern, unified look */
+            transition: transform 0.3s cubic-bezier(0.25, 0.1, 0.25, 1), opacity 0.3s cubic-bezier(0.25, 0.1, 0.25, 1); /* Explicitly define transitions for transform and opacity */
+        }
+        #mobile-menu-button.is-open span:nth-child(1) {
+            transform: translateY(6.4px) rotate(45deg); /* Recalculated translateY for 1.2px thickness and 14px height */
+        }
+        #mobile-menu-button.is-open span:nth-child(2) {
+            opacity: 0;
+            transform: translateX(-10px); /* Slide out the middle bar */
+        }
+        #mobile-menu-button.is-open span:nth-child(3) {
+            transform: translateY(-6.4px) rotate(-45deg); /* Recalculated translateY for 1.2px thickness and 14px height */
         }
 
-        /* Fade-in animations for page load */
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
+        /* Explicitly hide mobile menu button on medium and larger screens */
+        @media (min-width: 768px) {
+            #mobile-menu-button {
+                display: none !important;
             }
         }
-        .fade-in-on-load {
-            opacity: 0; /* Start invisible */
-        }
+
     </style>
     <style>
 .whatsapp-float {
@@ -122,7 +160,7 @@
   right: 20px;
   width: 58px;
   height: 58px;
-  background: #25d366; /* WhatsApp green (can swap with WAFA brand color) */
+  background: var(--primary-blue); /* Changed to navy blue */
   border-radius: 50%;
   box-shadow: 0 4px 15px rgba(0,0,0,0.2);
   display: flex;
@@ -184,57 +222,60 @@
                         'primary-blue': '#010245',
                         'accent-blue': '#4c4e9e',
                         'light-blue': '#9b9bd1',
+                        'sky-blue': '#4169E1',
                     },
                 },
             },
         };
     </script>
 </head>
-<body class="overflow-x-hidden">
+<body class="overflow-x-hidden font-inter text-gray-800 bg-gray-100 scroll-smooth">
 
     <!-- Elegant WhatsApp Floating Button with Tooltip -->
 <a href="https://wa.me/923295195096?text=Hello,%20I’d%20like%20to%20schedule%20an%20appointment%20at%20WAFA%20Dental%20Clinic." 
-   class="whatsapp-float" 
+   class="fixed bottom-6 right-6 w-14 h-14 bg-[#010245] rounded-full shadow-lg flex items-center justify-center z-[1000] cursor-pointer transition-all duration-300 hover:scale-110 hover:-translate-y-1 hover:shadow-xl group" 
    target="_blank" 
    aria-label="Chat with WAFA Dental">
-   <img src="images/apple.png" alt="WAFA Dental WhatsApp" />
-   <span class="tooltip">Chat with WAFA Dental Support</span>
+   <img src="images/apple.png" alt="WAFA Dental WhatsApp" class="w-7 h-7" />
+   <span class="absolute right-[70px] bg-gray-800 text-white text-sm px-3 py-1.5 rounded-md whitespace-nowrap opacity-0 pointer-events-none transition-opacity duration-300 group-hover:opacity-100 before:content-[''] before:absolute before:top-1/2 before:left-full before:-mt-1.5 before:border-6 before:border-solid before:border-transparent before:border-l-gray-800">Chat with WAFA Dental Support</span>
 </a>
 
     <!-- Header --> 
-    <header class="sticky top-0 z-50 bg-[#010245] bg-opacity-90 backdrop-blur-md shadow-sm"> 
-        <div class="container mx-auto px-6 py-4 flex items-center justify-between"> 
+    <header class="fixed top-0 left-0 w-full z-50 bg-primary-blue shadow-xl">
+        <div class="container mx-auto px-4 py-3 flex items-center justify-between max-w-7xl"> 
             <!-- Logo and Clinic Name as a clickable link --> 
-            <a href="index.html" class="flex items-center space-x-4" aria-label="Home"> 
+            <a href="index.html" class="flex items-center space-x-3" aria-label="Home"> 
                 <img src="images/logo.png" alt="WAFA Dental Clinic Logo" class="w-8 h-7 rounded-full" decoding="async">
-                <span class="text-2xl font-bold font-normal text-white tracking-tight font-dm-serif">WAFA Dental Clinic</span> 
+                <span class="text-xl font-medium text-white tracking-tight font-dm-serif">WAFA Dental Clinic</span> 
             </a>
 
             <!-- Desktop Navigation -->
-            <nav class="hidden md:flex items-center space-x-8 flex-nowrap">
-                <a href="index.html#about" class="text-sm text-gray-300 hover:text-white transition-colors duration-200">About</a>
-                <a href="index.html#services" class="text-sm text-gray-300 hover:text-white transition-colors duration-200">Services</a>
-                <a href="index.html#features" class="text-sm text-gray-300 hover:text-white transition-colors duration-200">Our Promise</a>
-                <a href="index.html#contact" class="px-4 py-2 text-sm font-semibold rounded-full shadow-lg button-glass-white text-gray-800 transition-all duration-300 transform hover:scale-105">
+            <nav id="desktop-nav" class="hidden md:flex items-center space-x-6 flex-nowrap">
+                <a href="index.html#about" class="text-sm text-gray-200 hover:text-white transition-all duration-300 px-2.5 py-1.5 rounded-md hover:bg-white hover:bg-opacity-10">About</a>
+                <a href="index.html#services" class="text-sm text-gray-200 hover:text-white transition-all duration-300 px-2.5 py-1.5 rounded-md hover:bg-white hover:bg-opacity-10">Services</a>
+                <a href="index.html#features" class="text-sm text-gray-200 hover:text-white transition-all duration-300 px-2.5 py-1.5 rounded-md hover:bg-white hover:bg-opacity-10">Our Promise</a>
+                <a href="index.html#inquiries" class="text-sm text-gray-200 hover:text-white transition-all duration-300 px-2.5 py-1.5 rounded-md hover:bg-white hover:bg-opacity-10">Contact</a>
+                <a href="bookings.html" class="px-5 py-1.5 text-sm font-semibold rounded-lg shadow-md bg-white text-primary-blue border border-white transition-all duration-300 transform hover:scale-105 hover:shadow-lg active:scale-95 focus-visible:ring-2 focus-visible:ring-primary-blue focus-visible:ring-opacity-75">
                     Book Now
                 </a>
             </nav>
 
-            <!-- Mobile Navigation Menu -->
-            <button id="mobile-menu-button" class="md:hidden focus:outline-none">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-                </svg>
+            <!-- Mobile Navigation Toggle -->
+            <button id="mobile-menu-button" class="md:hidden focus:outline-none relative z-20 w-8 h-6 flex flex-col justify-around items-center">
+                <span class="block w-full h-0.5 bg-white rounded-full transition-all duration-300 ease-in-out"></span>
+                <span class="block w-full h-0.5 bg-white rounded-full transition-all duration-300 ease-in-out"></span>
+                <span class="block w-full h-0.5 bg-white rounded-full transition-all duration-300 ease-in-out"></span>
             </button>
         </div>
 
         <!-- Mobile Navigation Menu -->
-        <div id="mobile-menu" class="md:hidden bg-[#010245] shadow-lg transition-all duration-300 ease-in-out">
+        <div id="mobile-menu" class="bg-primary-blue transition-all duration-500 ease-in-out max-h-0 overflow-hidden opacity-0">
             <nav class="flex flex-col items-center space-y-4 py-4 px-6">
-                <a href="index.html#about" class="text-sm text-gray-300 hover:text-white transition-colors duration-200" onclick="document.getElementById('mobile-menu').classList.remove('is-open')">About</a>
-                <a href="index.html#services" class="text-sm text-gray-300 hover:text-white transition-colors duration-200" onclick="document.getElementById('mobile-menu').classList.remove('is-open')">Services</a>
-                <a href="index.html#features" class="text-sm text-gray-300 hover:text-white transition-colors duration-200" onclick="document.getElementById('mobile-menu').classList.remove('is-open')">Our Promise</a>
-                <a href="index.html#contact" class="px-5 py-2 font-semibold rounded-full shadow-lg bg-white text-primary-blue transition-all duration-300 transform hover:scale-105" onclick="document.getElementById('mobile-menu').classList.remove('is-open')">
+                <a href="index.html#about" class="text-base text-gray-200 hover:text-white transition-all duration-300 px-4 py-2 rounded-lg hover:bg-white hover:bg-opacity-10 w-full text-center" onclick="toggleMobileMenu()">About</a>
+                <a href="index.html#services" class="text-base text-gray-200 hover:text-white transition-all duration-300 px-4 py-2 rounded-lg hover:bg-white hover:bg-opacity-10 w-full text-center" onclick="toggleMobileMenu()">Services</a>
+                <a href="index.html#features" class="text-base text-gray-200 hover:text-white transition-all duration-300 px-4 py-2 rounded-lg hover:bg-white hover:bg-opacity-10 w-full text-center" onclick="toggleMobileMenu()">Our Promise</a>
+                <a href="index.html#inquiries" class="text-base text-gray-200 hover:text-white transition-all duration-300 px-4 py-2 rounded-lg hover:bg-white hover:bg-opacity-10 w-full text-center" onclick="toggleMobileMenu()">Contact</a>
+                <a href="bookings.html" class="px-6 py-3 font-semibold rounded-xl shadow-lg bg-white text-primary-blue border border-white transition-all duration-300 transform hover:scale-105 hover:shadow-xl active:scale-95 focus-visible:ring-2 focus-visible:ring-primary-blue focus-visible:ring-opacity-75 w-full text-center" onclick="toggleMobileMenu()">
                     Book Now
                 </a>
             </nav>
@@ -243,7 +284,7 @@
 
     <main>
         <!-- Careers Hero Section -->
-        <section id="careers-hero" class="fade-in-on-load relative min-h-[40vh] flex items-center justify-center text-center bg-gradient-to-br from-primary-blue to-accent-blue text-white py-16 md:py-24" data-delay="0.3s">
+        <section id="careers-hero" class="fade-in-on-load relative min-h-[40vh] flex items-center justify-center text-center bg-primary-blue text-white py-16 md:py-24" data-delay="0.3s">
             <div class="relative z-10 p-8 md:p-12 rounded-3xl shadow-2xl w-11/12 max-w-4xl mx-auto bg-white bg-opacity-10 backdrop-blur-md border border-white border-opacity-20">
                 <h1 class="text-4xl md:text-6xl font-normal tracking-tight font-dm-serif drop-shadow-lg">Join Our Team</h1>
                 <p class="text-lg md:text-xl font-medium max-w-3xl mx-auto font-inter mt-6 opacity-90">
@@ -254,88 +295,83 @@
 
         <!-- Current Openings Section -->
         <section id="current-openings" class="fade-in-on-load relative container mx-auto px-6 py-16 md:py-24 text-center" data-delay="0.6s">
-            <div class="max-w-3xl mx-auto p-8 md:p-12 rounded-3xl shadow-xl bg-white bg-opacity-80 backdrop-blur-lg border border-gray-200">
+            <div class="max-w-3xl mx-auto p-8 md:p-12 rounded-3xl shadow-2xl bg-white border border-gray-200">
                 <h2 class="text-3xl md:text-4xl font-normal font-dm-serif mb-8 text-primary-blue">Current Opportunities</h2>
-                <p class="text-base text-gray-700 leading-relaxed mb-6">
-                    Thank you for your interest in career opportunities at WAFA Dental Clinic. We are a dynamic and growing practice dedicated to providing exceptional patient care and fostering a supportive, professional environment for our team members.
-                </p>
-                <p class="text-base text-gray-700 leading-relaxed mb-6">
-                    At this time, we do not have any open positions. We encourage you to check back periodically as new opportunities may arise. We are always keen to connect with talented and passionate individuals who align with our values and commitment to excellence in dental healthcare.
-                </p>
                 <p class="text-base text-gray-700 leading-relaxed">
-                    We appreciate your understanding and look forward to potentially welcoming you to the WAFA Dental Clinic family in the future.
+                    We currently do not have any open positions. We encourage you to check back periodically as new opportunities may arise. Thank you!
                 </p>
             </div>
         </section>
 
         <!-- General Inquiries Section -->
-        <section id="inquiries" class="fade-in-on-load relative container mx-auto px-6 py-24 md:py-40" data-delay="0.9s">
+        <section id="inquiries" class="relative container mx-auto px-6 py-16 md:py-24 fade-in">
             <!-- Increased max-w for overall card and adjusted padding -->
-            <div class="max-w-3xl mx-auto p-8 md:p-12 rounded-3xl shadow-2xl card-frosted-white space-y-12">
+            <div class="max-w-2xl mx-auto p-6 md:p-8 rounded-2xl shadow-2xl bg-gradient-to-br from-white to-gray-50 bg-opacity-90 backdrop-blur-xl space-y-10">
                 <div class="text-center">
-                    <h2 class="text-3xl md:text-4xl font-normal text-primary-blue font-dm-serif" style="--delay: 0.1s;">General Inquiries</h2>
-                    <p class="mt-2 text-base text-gray-600 max-w-2xl mx-auto" style="--delay: 0.2s;">
+                    <h2 class="text-2xl md:text-3xl font-dm-serif text-primary-blue" style="--delay: 0.1s;">General Inquiries</h2>
+                    <p class="mt-1.5 text-base text-gray-600 max-w-xl mx-auto" style="--delay: 0.2s;">
                         Have a question? Fill out the form below or contact us directly.
                     </p>
                 </div>
                 
                 <!-- Reduced the gap on medium screens to give more room -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
                     <!-- Form Column -->
                     <!-- Updated form with id for JavaScript handling -->
-                    <form id="contactForm" class="space-y-6" style="--delay: 0.3s;">
+                    <form id="contactForm" class="space-y-5 p-5 bg-white rounded-xl shadow-lg" style="--delay: 0.3s;">
                         <div>
-                            <label for="inquiries_name" class="block text-sm font-medium text-gray-700 mb-1">Name</label>
-                            <input type="text" id="inquiries_name" name="name" class="apple-input block w-full">
+                            <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Name</label>
+                            <input type="text" id="name" name="name" class="block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-blue focus:border-transparent transition-all duration-200">
                         </div>
                         <div>
-                            <label for="inquiries_email" class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
-                            <input type="email" id="inquiries_email" name="email" class="apple-input block w-full">
+                            <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+                            <input type="email" id="email" name="email" class="block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-blue focus:border-transparent transition-all duration-200">
                         </div>
                         <div>
-                            <label for="inquiries_subject" class="block text-sm font-medium text-gray-700 mb-1">Subject</label>
-                            <input type="text" id="inquiries_subject" name="subject" class="apple-input block w-full">
+                            <label for="subject" class="block text-sm font-medium text-gray-700 mb-1">Subject</label>
+                            <input type="text" id="subject" name="subject" class="block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-blue focus:border-transparent transition-all duration-200">
                         </div>
                         <div>
-                            <label for="inquiries_message" class="block text-sm font-medium text-gray-700 mb-1">Message</label>
-                            <textarea id="inquiries_message" name="message" rows="4" class="apple-input block w-full"></textarea>
+                            <label for="message" class="block text-sm font-medium text-gray-700 mb-1">Message</label>
+                            <textarea id="message" name="message" rows="3" class="block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-blue focus:border-transparent transition-all duration-200"></textarea>
                         </div>
-                        <button type="submit" class="w-full px-6 py-3 font-semibold text-white bg-primary-blue rounded-xl shadow-md hover:bg-accent-blue transition-colors duration-200">
+                        <button type="submit" class="w-full px-5 py-2.5 font-semibold text-white bg-primary-blue rounded-xl shadow-md hover:bg-accent-blue transition-colors duration-200 transform hover:-translate-y-0.5 hover:shadow-lg">
                             Send Message
                         </button>
                     </form>
 
                     <!-- Contact Info Column -->
-                    <div class="space-y-6 md:mt-10" style="--delay: 0.4s;">
-                        <div class="p-6 rounded-2xl bg-white bg-opacity-70 shadow-lg">
-                            <h3 class="text-xl font-normal mb-3 font-dm-serif">Get in Touch Directly</h3>
-                            <div class="space-y-3">
+                    <div class="space-y-5 md:mt-8" style="--delay: 0.4s;">
+                        <div class="p-5 rounded-xl bg-white bg-opacity-70 shadow-lg">
+                            <h3 class="text-lg font-dm-serif mb-2.5 text-gray-900">Get in Touch Directly</h3>
+                            <div class="space-y-2.5">
                                 <!-- Adjusted font size for links to prevent overflow and added whitespace-nowrap -->
-                                <a href="mailto:management@wafadentalclinic.com" class="flex items-center space-x-3 text-gray-700 hover:text-blue-600 transition-colors whitespace-nowrap">
-                                    <i class="fas fa-envelope text-blue-600 text-xs flex-shrink-0"></i>
+                                <a href="mailto:management@wafadentalclinic.com" class="flex items-center space-x-2.5 text-gray-700 hover:text-sky-blue transition-colors whitespace-nowrap">
+                                    <i class="fas fa-envelope text-sky-blue text-xs flex-shrink-0"></i>
                                     <span class="text-xs">management@wafadentalclinic.com</span>
                                 </a>
-                                <a href="tel:+92518448877" class="flex items-center space-x-3 text-gray-700 hover:text-blue-600 transition-colors whitespace-nowrap">
-                                    <i class="fas fa-phone-alt text-blue-600 text-xs"></i>
+                                <a href="tel:+92518448877" class="flex items-center space-x-2.5 text-gray-700 hover:text-sky-blue transition-colors whitespace-nowrap">
+                                    <i class="fas fa-phone-alt text-sky-blue text-xs"></i>
                                     <span class="text-xs">+92 51 8448877</span>
                                 </a>
-                                <a href="https://wa.me/923295195096" class="flex items-center space-x-3 text-gray-700 hover:text-blue-600 transition-colors whitespace-nowrap">
-                                    <i class="fab fa-whatsapp text-blue-600 text-xs"></i>
+                                <a href="https://wa.me/923295195096" class="flex items-center space-x-2.5 text-gray-700 hover:text-sky-blue transition-colors whitespace-nowrap">
+                                    <i class="fab fa-whatsapp text-sky-blue text-xs"></i>
                                     <span class="text-xs">+92 329 5195096</span>
                                 </a>
                             </div>
                         </div>
-                        <div class="p-6 rounded-2xl bg-white bg-opacity-70 shadow-lg">
-                            <h3 class="text-xl font-normal mb-3 font-dm-serif">Book an Appointment</h3>
+                        <div class="p-5 rounded-xl bg-white bg-opacity-70 shadow-lg">
+                            <h3 class="text-lg font-dm-serif mb-2.5 text-gray-900">Book an Appointment</h3>
                             <p class="text-sm text-gray-700">
                                 <!-- Added a hyperlink to "Click Here" -->
-                                To schedule an appointment <a href="bookings.html" class="text-blue-600 hover:underline">Click Here</a> or contact us via phone or WhatsApp during our business hours.
+                                To schedule an appointment <a href="#contact" class="text-sky-blue hover:underline">Click Here</a> or contact us via phone or WhatsApp during our business hours.
                             </p>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
+
     </main>
 
     <!-- Footer -->
@@ -343,7 +379,7 @@
         <div class="container mx-auto px-6 text-gray-300">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
                 <div>
-                    <h3 class="text-base font-normal text-white mb-4 font-dm-serif">WAFA Dental Clinic</h3>
+                    <h3 class="text-base font-dm-serif text-white mb-4">WAFA Dental Clinic</h3>
                     <p class="text-xs">
                         <!-- Make the address clickable -->
                         <a href="https://www.google.com/maps/place/WAFA+Dental+Clinic/@33.6673337,73.0747596,17z/data=!3m1!4b1!4m6!3m5!1s0x38df957cc7644563:0x27a7ae2e6cda42ef!8m2!3d33.6673337!4d73.0747596!16s%2Fg%2F11xd1rytr0?entry=tts&g_ep=EgoyMDI1MDgyNS4wIPu8ASoASAFQAw%3D%3D&skid=3e4f1248-9eac-454b-81b2-2d7b8c2abadb" target="_blank" class="hover:text-white transition-colors duration-200">
@@ -352,7 +388,7 @@
                     </p>
                 </div>
                 <div>
-                    <h3 class="text-base font-normal text-white mb-4 font-dm-serif">About Us</h3>
+                    <h3 class="text-base font-dm-serif text-white mb-4">About Us</h3>
                     <ul class="space-y-2">
                         <li><a href="index.html#services" class="text-xs hover:text-white transition-colors duration-200">Our Services</a></li>
                         <li><a href="our-story.html" class="text-xs hover:text-white transition-colors duration-200">Our Story</a></li>
@@ -360,7 +396,7 @@
                     </ul>
                 </div>
                 <div>
-                    <h3 class="text-base font-normal text-white mb-4 font-dm-serif">Follow Us</h3>
+                    <h3 class="text-base font-dm-serif text-white mb-4">Follow Us</h3>
                     <div class="flex flex-col space-y-2 text-xs">
                         <a href="https://www.facebook.com/wafadentalclinics" target="_blank" rel="noopener noreferrer" class="text-gray-300 hover:text-white transition-colors duration-200" aria-label="Facebook">
                             Facebook
@@ -383,7 +419,7 @@
                     </div>
                 </div>
                 <div>
-                    <h3 class="text-base font-normal text-white mb-4 font-dm-serif">Legal</h3>
+                    <h3 class="text-base font-dm-serif text-white mb-4">Legal</h3>
                     <ul class="space-y-2">
                         <li><span class="text-xs hover:text-white transition-colors duration-200 cursor-pointer">Legal</span></li>
                         <li><span class="text-xs hover:text-white transition-colors duration-200 cursor-pointer">Privacy Policy</span></li>
@@ -391,14 +427,80 @@
                     </ul>
                 </div>
             </div>
-            <hr class="my-8 border-gray-200">
-            <div class="text-center text-xs text-gray-300">
+            <hr class="my-8 border-gray-700">
+            <div class="text-center text-xs text-gray-400">
                 &copy; <span id="current-year"></span> WAFA Dental Clinic. All rights reserved.
             </div>
         </div>
     </footer>
 
     <script>
+        // --- IMPORTANT: CONFIGURATION VARIABLES ---
+        // Please replace these placeholder values with your actual data.
+        const TIMEZONE = "Asia/Islamabad";
+        const SHEET_NAME = "WAFA Bookings";
+        const SHEET_COLUMNS = ["Client ID","Booking ID","Name","Email","Phone","Service","Date","Time","Calendar Event ID","Doc URL","Created At"];
+        const CALENDAR_ID = "wafadentalclinics@gmail.com";
+        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbykWDfhp8TZmVkFCzcVIqKfW-hDVXcPeTB7yJwlMWSto4O7_kzQFlJnTX8YTHV82EY5/exec";
+        const COUNTRIES = [
+            // Key English-speaking countries
+            { code: "+1", name: "United States", iso: "USA" },
+            { code: "+44", name: "United Kingdom", iso: "GBR" },
+            { code: "+1", name: "Canada", iso: "CAN" },
+            { code: "+61", name: "Australia", iso: "AUS" },
+            { code: "+49", name: "Germany", iso: "DEU" },
+            { code: "+33", name: "France", iso: "FRA" },
+            { code: "+64", name: "New Zealand", iso: "NZL" },
+            { code: "+353", name: "Ireland", iso: "IRL" },
+            { code: "+41", name: "Switzerland", iso: "CHE" },
+            { code: "+46", name: "Sweden", iso: "SWE" },
+            { code: "+31", name: "Netherlands", iso: "NLD" },
+            { code: "+81", name: "Japan", iso: "JPN" },
+            { code: "+65", name: "Singapore", iso: "SGP" },
+            { code: "+82", name: "South Korea", iso: "KOR" },
+
+            // Key Source Markets (Asia)
+            { code: "+86", name: "China", iso: "CHN" },
+            { code: "+91", name: "India", iso: "IND" },
+            { code: "+92", name: "Pakistan", iso: "PAK" },
+            { code: "+880", name: "Bangladesh", iso: "BGD" },
+            { code: "+977", name: "Nepal", iso: "NPL" },
+            { code: "+94", name: "Sri Lanka", iso: "LKA" },
+            { code: "+84", name: "Vietnam", iso: "VNM" },
+            { code: "+62", name: "Indonesia", iso: "IDN" },
+            { code: "+60", name: "Malaysia", iso: "MYS" },
+            { code: "+66", name: "Thailand", iso: "THA" },
+            { code: "+63", name: "Philippines", iso: "PHL" },
+
+            // Key Source Markets (Middle East & Africa)
+            { code: "+971", name: "United Arab Emirates", iso: "ARE" },
+            { code: "+966", name: "Saudi Arabia", iso: "SAU" },
+            { code: "+974", name: "Qatar", iso: "QAT" },
+            { code: "+965", name: "Kuwait", iso: "KWT" },
+            { code: "+968", name: "Oman", iso: "OMN" },
+            { code: "+973", name: "Bahrain", iso: "BHR" },
+            { code: "+90", name: "Turkey", iso: "TUR" },
+            { code: "+20", name: "Egypt", iso: "EGY" },
+            { code: "+234", name: "Nigeria", iso: "NGA" },
+            { code: "+233", name: "Ghana", iso: "GHA" },
+            { code: "+254", name: "Kenya", iso: "KEN" },
+            { code: "+27", name: "South Africa", iso: "ZAF" },
+            { code: "+212", name: "Morocco", iso: "MAR" },
+
+            // Key Source Markets (Europe)
+            { code: "+7", name: "Russia", iso: "RUS" },
+            { code: "+39", name: "Italy", iso: "ITA" },
+            { code: "+34", name: "Spain", iso: "ESP" },
+            { code: "+40", name: "Romania", iso: "ROU" },
+            { code: "+380", name: "Ukraine", iso: "UKR" },
+
+            // Key Source Markets (Americas)
+            { code: "+55", name: "Brazil", iso: "BRA" },
+            { code: "+52", name: "Mexico", iso: "MEX" },
+            { code: "+57", name: "Colombia", iso: "COL" },
+            { code: "+54", name: "Argentina", iso: "ARG" }
+        ];
+
         document.addEventListener('DOMContentLoaded', () => {
             // --- Mobile Menu Toggle ---
             const mobileMenuButton = document.getElementById('mobile-menu-button');
@@ -419,21 +521,32 @@
                 });
             });
 
-            // --- Auto-update Footer Year ---
-            const currentYearSpan = document.getElementById('current-year');
-            const currentYear = new Date().getFullYear();
-            currentYearSpan.textContent = currentYear;
+            // --- Scroll-based Fade-in Animation ---
+            const fadeInSections = document.querySelectorAll('.fade-in');
+            const observerOptions = {
+                root: null, // relative to the viewport
+                rootMargin: '0px',
+                threshold: 0.1 // 10% of the item is visible
+            };
 
-            // --- Apply fade-in animation on page load ---
-            const sections = document.querySelectorAll('.fade-in-on-load');
-            sections.forEach((section) => {
-                const delay = parseFloat(section.getAttribute('data-delay'));
-                setTimeout(() => {
-                    section.style.animation = `fadeIn 1.2s ease-out forwards`;
-                }, delay * 1000);
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                        observer.unobserve(entry.target); // Stop observing once it's visible
+                    }
+                });
+            }, observerOptions);
+
+            fadeInSections.forEach(section => {
+                observer.observe(section);
             });
 
-            // --- Form Submission for Mailto Link ---
+            // --- Auto-update Footer Year ---
+            const currentYearSpan = document.getElementById('current-year');
+            currentYearSpan.textContent = new Date().getFullYear();
+
+            // --- General Inquiries Form Submission (Mailto) ---
             const contactForm = document.getElementById('contactForm');
             const recipientEmail = 'management@wafadentalclinic.com'; // You can change this email address
 
@@ -455,7 +568,795 @@
                 // Redirect to the mailto link
                 window.location.href = mailtoLink;
             });
+            
+            // --- Patient Type Selection Logic ---
+            const patientTypeSelection = document.getElementById('patientTypeSelection');
+            const firstTimePatientBtn = document.getElementById('firstTimePatientBtn');
+            const returningPatientBtn = document.getElementById('returningPatientBtn');
+            const servicePrompt = document.getElementById('servicePrompt');
+            const bookingForm = document.getElementById('bookingForm');
+            const statusMessage = document.getElementById('statusMessage');
+            const clientIDSection = document.createElement('div');
+            clientIDSection.innerHTML = `
+                <div>
+                    <label for="clientID" class="block text-sm font-medium text-gray-700 mb-1">Client ID</label>
+                    <input type="text" id="clientID" name="clientID" class="apple-input block w-full" placeholder="Enter your Client ID">
+                </div>
+                <button type="button" id="submitClientIDBtn" class="w-full px-6 py-3 font-semibold text-white bg-primary-blue rounded-xl shadow-md hover:bg-accent-blue transition-colors duration-200 mt-4">
+                    Submit Client ID
+                </button>
+            `;
+            clientIDSection.classList.add('space-y-6', 'hidden'); // Initially hidden
+
+            // Insert clientIDSection right after patientTypeSelection
+            patientTypeSelection.parentNode.insertBefore(clientIDSection, bookingForm);
+
+            // Add a class to the bookingForm for smooth animation
+            bookingForm.classList.add('form-hidden');
+
+            const backToPatientTypeBtn = document.getElementById('backToPatientTypeBtn');
+            // Initially hide the back button using opacity and scale for animation
+            backToPatientTypeBtn.classList.add('opacity-0', 'scale-0');
+
+            const showPatientTypeSelection = () => {
+                patientTypeSelection.classList.remove('hidden');
+                clientIDSection.classList.add('hidden', 'form-hidden');
+                bookingForm.classList.add('form-hidden');
+                bookingForm.classList.remove('form-visible');
+                servicePrompt.classList.remove('is-visible'); // Hide the prompt when going back
+                backToPatientTypeBtn.classList.add('opacity-0', 'scale-0'); // Hide back button with animation
+                bookingForm.reset();
+                serviceHidden.value = '';
+                if (selectedSubOption) {
+                    selectedSubOption.classList.remove('selected');
+                    selectedSubOption.querySelector('.fa-check-circle').classList.remove('opacity-100', 'scale-100');
+                    selectedSubOption = null;
+                }
+                updateSelectedTimeDisplay();
+                // Ensure serviceHidden and selectedSubOption are cleared when going back
+                serviceHidden.value = '';
+                selectedSubOption = null;
+            };
+
+            firstTimePatientBtn.addEventListener('click', () => {
+                patientTypeSelection.classList.add('hidden');
+                clientIDSection.classList.add('hidden'); // Ensure client ID section is hidden
+                bookingForm.classList.remove('form-hidden'); // Animate form to visible
+                bookingForm.classList.add('form-visible');
+                servicePrompt.classList.add('is-visible'); // Show the prompt
+                backToPatientTypeBtn.classList.remove('opacity-0', 'scale-0'); // Show back button with animation
+                // Reset form for new patient
+                bookingForm.reset();
+                serviceHidden.value = '';
+                if (selectedSubOption) {
+                    selectedSubOption.classList.remove('selected');
+                    selectedSubOption.querySelector('.fa-check-circle').classList.remove('opacity-100', 'scale-100');
+                    selectedSubOption = null;
+                }
+                updateSelectedTimeDisplay();
+            });
+
+            returningPatientBtn.addEventListener('click', () => {
+                patientTypeSelection.classList.add('hidden');
+                clientIDSection.classList.remove('hidden'); // Show client ID input and submit button
+                clientIDSection.classList.remove('form-hidden'); // Ensure clientIDSection is visible
+                clientIDSection.classList.add('form-visible'); // Animate clientIDSection
+                bookingForm.classList.add('form-hidden'); // Ensure booking form is hidden initially
+                bookingForm.classList.remove('form-visible'); // Remove visible class if it was there
+                servicePrompt.classList.add('is-visible'); // Show the prompt
+                backToPatientTypeBtn.classList.remove('opacity-0', 'scale-0'); // Show back button with animation
+                // Clear form for returning patient to enter ID
+                bookingForm.reset();
+                serviceHidden.value = '';
+                if (selectedSubOption) {
+                    selectedSubOption.classList.remove('selected');
+                    selectedSubOption.querySelector('.fa-check-circle').classList.remove('opacity-100', 'scale-100');
+                    selectedSubOption = null;
+                }
+                updateSelectedTimeDisplay();
+            });
+
+            backToPatientTypeBtn.addEventListener('click', showPatientTypeSelection);
+
+            const submitClientIDBtn = clientIDSection.querySelector('#submitClientIDBtn');
+            const clientIDInput = clientIDSection.querySelector('#clientID');
+
+            submitClientIDBtn.addEventListener('click', () => {
+                const clientID = clientIDInput.value;
+                if (clientID === '12345') { // Example Client ID
+                    document.getElementById('firstName').value = 'John';
+                    document.getElementById('lastName').value = 'Doe';
+                    document.getElementById('email').value = 'john.doe@example.com';
+                    document.getElementById('phoneNumber').value = '3001234567';
+                    // Keep service and date/time blank as per requirements
+                    clientIDSection.classList.remove('form-visible'); // Hide client ID section
+                    clientIDSection.classList.add('form-hidden');
+                    bookingForm.classList.remove('form-hidden'); // Show form
+                    bookingForm.classList.add('form-visible'); // Animate form
+                } else {
+                    // Clear fields if ID is invalid
+                    document.getElementById('firstName').value = '';
+                    document.getElementById('lastName').value = '';
+                    document.getElementById('email').value = '';
+                    document.getElementById('phoneNumber').value = '';
+                    alert('Invalid Client ID. Please try again.'); // Simple alert for demo
+                }
+            });
+
+
+            bookingForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                // Clear previous messages
+                statusMessage.textContent = '';
+                statusMessage.classList.remove('text-red-500', 'text-green-500');
+
+                // Get values from the new separate fields
+                const firstName = document.getElementById('firstName').value;
+                const lastName = document.getElementById('lastName').value;
+                const name = `${firstName} ${lastName}`;
+                const email = document.getElementById('email').value;
+                const countryCode = document.getElementById('countryCode').value;
+                const phoneNumber = document.getElementById('phoneNumber').value;
+                const service = document.getElementById('serviceHidden').value; // Get value from hidden input
+                const date = document.getElementById('dateInput').value; // Changed to dateInput
+                const bookingHour = document.getElementById('bookingHourHidden').value;
+                const bookingMinute = document.getElementById('bookingMinuteHidden').value;
+                const time = `${bookingHour}:${bookingMinute}`;
+                const notes = document.getElementById("otherIssues").value; // Using 'otherIssues' for notes
+
+                // Combine the country code and phone number
+                const phone = countryCode + ' ' + phoneNumber;
+                const recaptchaResponse = grecaptcha.getResponse();
+                const recaptchaErrorDiv = document.getElementById('recaptchaError');
+
+                // Basic validation
+                if (!firstName || !lastName || !email || !phone || !service || !date || !bookingHour || !bookingMinute) {
+                    statusMessage.textContent = 'Please fill out all fields.';
+                    statusMessage.classList.add('text-red-500');
+                    return;
+                }
+
+                // reCAPTCHA validation
+                if (recaptchaResponse.length === 0) {
+                    recaptchaErrorDiv.classList.remove('hidden');
+                    statusMessage.textContent = 'Please complete the reCAPTCHA.';
+                    statusMessage.classList.add('text-red-500');
+                    return;
+                } else {
+                    recaptchaErrorDiv.classList.add('hidden');
+                }
+
+                // Construct date string in YYYY-MM-DD format for consistent parsing
+                const [month, day, year] = date.split('/');
+                const formattedDate = `${year}-${month}-${day}`;
+                const selectedDate = new Date(`${formattedDate}T${bookingHour}:${bookingMinute}:00`);
+                const dayOfWeek = selectedDate.getDay(); // 0 for Sunday, 1 for Monday...
+
+                // Check for Sunday
+                if (dayOfWeek === 0) {
+                    statusMessage.textContent = 'Appointments are not available on Sundays.';
+                    statusMessage.classList.add('text-red-500');
+                    return;
+                }
+
+                // Check for valid time range (4:00 PM to 9:00 PM)
+                const startTime = 16; // 4:00 PM
+                const endTime = 21; // 9:00 PM
+                const selectedHour = parseInt(bookingHour, 10);
+                const selectedMinutes = parseInt(bookingMinute, 10);
+
+                if (selectedHour < startTime || selectedHour >= endTime || (selectedHour === endTime && selectedMinutes > 0)) {
+                    statusMessage.textContent = 'Please select a time between 4:00 PM and 9:00 PM.';
+                    statusMessage.classList.add('text-red-500');
+                    return;
+                }
+
+                // Disable submit button to prevent double submission
+                submitButton.disabled = true;
+                // Show loading overlay
+                loadingOverlay.classList.add('is-visible');
+                statusMessage.textContent = 'Booking your appointment...';
+                statusMessage.classList.add('text-gray-500');
+
+                const data = { // Renamed to 'data' to match user's script
+                    FirstName: firstName,
+                    LastName: lastName,
+                    Email: email,
+                    Phone: phone,
+                    Service: service,
+                    Date: date,
+                    Time: time,
+                    Notes: notes,
+                    RecaptchaResponse: recaptchaResponse // Send reCAPTCHA response to server
+                };
+                
+                // Google Apps Script expects application/x-www-form-urlencoded for e.parameter
+                const urlEncodedData = new URLSearchParams(data).toString();
+
+                try {
+                    const fetchResponse = await fetch(WEB_APP_URL, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded'
+                        },
+                        body: urlEncodedData
+                    });
+
+                    const result = await fetchResponse.json();
+
+                    if (result.success) {
+                        // Clear the status message
+                        statusMessage.textContent = '';
+                        statusMessage.classList.remove('text-gray-500'); // Remove loading text styling
+
+                        // Hide loading overlay
+                        loadingOverlay.classList.remove('is-visible');
+                        // Show confirmation modal
+                        confirmationModal.classList.add('is-visible');
+                        
+                        // Handle PDF download
+                        const pdfBase64 = result.pdfBase64; // Expecting base64 encoded PDF
+                        const bookingID = result.bookingID;
+                        const clientID = result.clientID;
+
+                        if (pdfBase64) {
+                            const byteCharacters = atob(pdfBase64);
+                            const byteNumbers = new Array(byteCharacters.length);
+                            for (let i = 0; i < byteCharacters.length; i++) {
+                                byteNumbers[i] = byteCharacters.charCodeAt(i);
+                            }
+                            const byteArray = new Uint8Array(byteNumbers);
+                            const pdfBlob = new Blob([byteArray], { type: 'application/pdf' });
+                            const pdfUrl = URL.createObjectURL(pdfBlob);
+                            
+                            // Create a temporary anchor element to trigger download
+                            const tempLink = document.createElement('a');
+                            tempLink.href = pdfUrl;
+                            tempLink.download = `WAFA_Medical_Receipt_${bookingID}_${clientID}.pdf`; // Suggest a professional filename
+                            document.body.appendChild(tempLink);
+                            tempLink.click();
+                            document.body.removeChild(tempLink);
+                            
+                            // Revoke the object URL after a short delay to allow download to start
+                            setTimeout(() => URL.revokeObjectURL(pdfUrl), 100);
+
+                        } else {
+                            console.error("PDF base64 string not received.");
+                            // Optionally, show an error message to the user
+                        }
+
+                        bookingForm.reset();
+                        if (typeof grecaptcha !== 'undefined') { grecaptcha.reset(); }
+                        // Clear selected service and time display
+                        serviceHidden.value = '';
+                        if (selectedSubOption) {
+                            selectedSubOption.classList.remove('selected');
+                            selectedSubOption.querySelector('.fa-check-circle').classList.remove('opacity-100', 'scale-100');
+                            selectedSubOption = null;
+                        }
+                        updateSelectedTimeDisplay();
+
+                    } else {
+                        loadingOverlay.classList.remove('is-visible');
+                        statusMessage.textContent = "Error: " + result.message;
+                        statusMessage.classList.add('text-red-500');
+                        if (typeof grecaptcha !== 'undefined') { grecaptcha.reset(); }
+                    }
+                } catch (error) {
+                    loadingOverlay.classList.remove('is-visible');
+                    console.error('Error submitting form:', error);
+                    statusMessage.textContent = "Error: Could not connect to the booking service. Please try again.";
+                    statusMessage.classList.add('text-red-500');
+                    if (typeof grecaptcha !== 'undefined') { grecaptcha.reset(); }
+                } finally {
+                    // Re-enable submit button
+                    submitButton.disabled = false;
+                }
+            });
+
+            // reCAPTCHA callback functions
+            window.onRecaptchaSuccess = () => {
+                document.getElementById('recaptchaError').classList.add('hidden');
+            };
+
+            window.onRecaptchaExpired = () => {
+                if (typeof grecaptcha !== 'undefined') { grecaptcha.reset(); }
+                document.getElementById('recaptchaError').classList.remove('hidden');
+                document.getElementById('recaptchaError').textContent = 'reCAPTCHA expired. Please complete it again.';
+            };
+
+            // --- Modal Close Button Logic ---
+            const modalCloseBtn = document.getElementById('modalCloseBtn');
+            const confirmationModal = document.getElementById('confirmationModal');
+            modalCloseBtn.addEventListener('click', () => {
+                confirmationModal.classList.remove('is-visible');
+                // The object URL is now revoked immediately after download is triggered,
+                // so no need to revoke here again.
+            });
+
+            // --- Loading Overlay and Confirmation Modal Elements ---
+            const loadingOverlay = document.getElementById('loadingOverlay');
+            const submitButton = bookingForm.querySelector('button[type="submit"]');
+
+
+            // --- Searchable Dropdown Logic ---
+            const countryCodeInput = document.getElementById('countryCodeInput');
+            const countryCodeHidden = document.getElementById('countryCode');
+            const countryList = document.getElementById('countryList');
+            // const customDropdownContainer = countryCodeInput.closest('.custom-dropdown-container'); // Already defined above
+
+            const renderCountries = (filter = '') => {
+                countryList.innerHTML = '';
+                const filteredCountries = COUNTRIES.filter(country => 
+                    country.name.toLowerCase().includes(filter.toLowerCase()) || 
+                    country.code.includes(filter) ||
+                    country.iso.toLowerCase().includes(filter.toLowerCase())
+                );
+                filteredCountries.forEach(country => {
+                    const li = document.createElement('li');
+                    li.textContent = `${country.code} (${country.iso})`; // Display code + ISO
+                    li.dataset.code = country.code;
+                    li.dataset.iso = country.iso;
+                    countryList.appendChild(li);
+                });
+            };
+
+            const toggleDropdown = (show, inputElement, listElement) => {
+                if (show) {
+                    listElement.classList.add('is-open');
+                    inputElement.setAttribute('aria-expanded', 'true');
+                } else {
+                    listElement.classList.remove('is-open');
+                    inputElement.setAttribute('aria-expanded', 'false');
+                }
+            };
+
+            countryCodeInput.addEventListener('click', () => {
+                countryCodeInput.value = ''; // Clear input for typing
+                countryCodeInput.focus();
+                renderCountries();
+                toggleDropdown(true, countryCodeInput, countryList);
+            });
+
+            countryCodeInput.addEventListener('input', (e) => {
+                renderCountries(e.target.value);
+                toggleDropdown(true, countryCodeInput, countryList);
+            });
+
+            countryList.addEventListener('click', (e) => {
+                const selectedLi = e.target.closest('li');
+                if (selectedLi) {
+                    countryCodeInput.value = `${selectedLi.dataset.code} (${selectedLi.dataset.iso})`; // Display code + abbreviation
+                    countryCodeHidden.value = selectedLi.dataset.code;
+                    toggleDropdown(false, countryCodeInput, countryList);
+                }
+            });
+
+            document.addEventListener('click', (e) => {
+                // Close country code, hour, minute dropdowns and calendar if click is outside their containers
+                if (!e.target.closest('.custom-dropdown-container') && !e.target.closest('.calendar-popup')) {
+                    toggleDropdown(false, countryCodeInput, countryList);
+                    toggleDropdown(false, bookingHourInput, bookingHourList);
+                    toggleDropdown(false, bookingMinuteInput, bookingMinuteList);
+                    calendarPopup.classList.remove('is-open');
+                    dateInput.setAttribute('aria-expanded', 'false');
+                }
+
+                // Close service sub-options if click is outside the services section
+                if (!e.target.closest('#servicesSection')) {
+                    if (activeServiceButton) {
+                        activeServiceButton.classList.remove('active');
+                        const prevSubOptions = document.getElementById(`sub-options-${activeServiceButton.dataset.service.replace(/\s/g, '-')}`);
+                        if (prevSubOptions) {
+                            prevSubOptions.classList.remove('is-open');
+                        }
+                        activeServiceButton = null;
+                    }
+                }
+            });
+            
+            // Initial render and set default value for country code input
+            // Set default selected country to Pakistan (+92)
+            const defaultCountry = COUNTRIES.find(country => country.code === "+92");
+            if (defaultCountry) {
+                countryCodeInput.value = `${defaultCountry.code} (${defaultCountry.iso})`;
+                countryCodeHidden.value = defaultCountry.code;
+            }
+            renderCountries(); // Render all countries initially for search functionality
+
+            // --- Hour Dropdown Logic ---
+            const bookingHourInput = document.getElementById('bookingHourInput');
+            const bookingHourHidden = document.getElementById('bookingHourHidden');
+            const bookingHourList = document.getElementById('bookingHourList');
+            const selectedTimeDisplay = document.getElementById('selectedTimeDisplay');
+
+            const HOURS = [
+                { value: "16", display: "4 PM" },
+                { value: "17", display: "5 PM" },
+                { value: "18", display: "6 PM" },
+                { value: "19", display: "7 PM" },
+                { value: "20", display: "8 PM" }
+            ];
+
+            const renderHours = (filter = '') => {
+                bookingHourList.innerHTML = '';
+                const filteredHours = HOURS.filter(hour =>
+                    hour.display.toLowerCase().includes(filter.toLowerCase())
+                );
+                filteredHours.forEach(hour => {
+                    const li = document.createElement('li');
+                    li.textContent = hour.display;
+                    li.dataset.value = hour.value;
+                    bookingHourList.appendChild(li);
+                });
+            };
+
+            bookingHourInput.addEventListener('click', () => {
+                bookingHourInput.value = '';
+                bookingHourInput.focus();
+                renderHours();
+                toggleDropdown(true, bookingHourInput, bookingHourList);
+            });
+
+            bookingHourInput.addEventListener('input', (e) => {
+                renderHours(e.target.value);
+                toggleDropdown(true, bookingHourInput, bookingHourList);
+            });
+
+            bookingHourList.addEventListener('click', (e) => {
+                const selectedLi = e.target.closest('li');
+                if (selectedLi) {
+                    bookingHourInput.value = selectedLi.textContent;
+                    bookingHourHidden.value = selectedLi.dataset.value;
+                    toggleDropdown(false, bookingHourInput, bookingHourList);
+                    updateSelectedTimeDisplay();
+            }
+        });
+
+            // --- Minute Dropdown Logic ---
+            const bookingMinuteInput = document.getElementById('bookingMinuteInput');
+            const bookingMinuteHidden = document.getElementById('bookingMinuteHidden');
+            const bookingMinuteList = document.getElementById('bookingMinuteList');
+
+            const MINUTES = [
+                { value: "00", display: "00" },
+                { value: "15", display: "15" },
+                { value: "30", display: "30" },
+                { value: "45", display: "45" }
+            ];
+
+            const renderMinutes = (filter = '') => {
+                bookingMinuteList.innerHTML = '';
+                const filteredMinutes = MINUTES.filter(minute =>
+                    minute.display.includes(filter)
+                );
+                filteredMinutes.forEach(minute => {
+                    const li = document.createElement('li');
+                    li.textContent = minute.display;
+                    li.dataset.value = minute.value;
+                    bookingMinuteList.appendChild(li);
+                });
+            };
+
+            bookingMinuteInput.addEventListener('click', () => {
+                bookingMinuteInput.value = '';
+                bookingMinuteInput.focus();
+                renderMinutes();
+                toggleDropdown(true, bookingMinuteInput, bookingMinuteList);
+            });
+
+            bookingMinuteInput.addEventListener('input', (e) => {
+                renderMinutes(e.target.value);
+                toggleDropdown(true, bookingMinuteInput, bookingMinuteList);
+            });
+
+            bookingMinuteList.addEventListener('click', (e) => {
+                const selectedLi = e.target.closest('li');
+                if (selectedLi) {
+                    bookingMinuteInput.value = selectedLi.textContent;
+                    bookingMinuteHidden.value = selectedLi.dataset.value;
+                    toggleDropdown(false, bookingMinuteInput, bookingMinuteList);
+                    updateSelectedTimeDisplay();
+                }
+            });
+
+            // --- Update Selected Time Display ---
+            const updateSelectedTimeDisplay = () => {
+                const hour = bookingHourHidden.value;
+                const minute = bookingMinuteHidden.value;
+                const service = serviceHidden.value; // Get selected service
+                const date = dateInput.value; // Get selected date
+                if (hour && minute && date && service && hour !== "" && minute !== "" && service !== "") { // Ensure all are selected
+                    const displayHour = parseInt(hour, 10);
+                    const ampm = displayHour >= 12 ? 'PM' : 'AM';
+                    const formattedHour = displayHour % 12 === 0 ? 12 : displayHour % 12;
+                    selectedTimeDisplay.innerHTML = `Booking Appointment for: ${service}<br>At: ${formattedHour}:${minute} ${ampm}<br>On: ${date}`;
+                    selectedTimeDisplay.classList.add('text-green-600', 'font-semibold'); // Premium styling
+                } else {
+                    selectedTimeDisplay.textContent = '';
+                    selectedTimeDisplay.classList.remove('text-green-600', 'font-semibold'); // Remove styling when text is empty
+                }
+            };
+
+            // --- Service Selection Logic (New Button-based) ---
+            const mainServiceButtonsContainer = document.getElementById('mainServiceButtons');
+            const serviceHidden = document.getElementById('serviceHidden');
+
+            const ALL_SERVICES = {
+                "General Dentistry": [
+                    "Consultation & Check-up",
+                    "Dental Cleaning (Scaling & Polishing)"
+                ],
+                "Cosmetic Dentistry": [
+                    "Teeth Whitening",
+                    "Dental Veneers",
+                    "Smile Makeover (Composite Bonding / Veneers)"
+                ],
+                "Orthodontics": [
+                    "Braces (Metal / Ceramic)",
+                    "Invisalign (Clear Aligners)",
+                    "Retainers"
+                ],
+                "Prosthodontics": [
+                    "Dental Crowns",
+                    "Dental Bridges",
+                    "Complete Dentures",
+                    "Partial Dentures"
+                ],
+                "Operative Dentistry": [
+                    "Single Tooth Root Canal",
+                    "Multi-Root Canal",
+                    "Retreatment (previous RCT)",
+                    "Tooth Filling Composite",
+                    "Tooth Filling Amalgam",
+                    "Tooth Extraction (Simple / Surgical)"
+                ],
+                "Pediatric Dentistry": [
+                    "Kids’ Check-up",
+                    "Fluoride Treatment",
+                    "Fissure Sealants",
+                    "Pediatric Filling",
+                    "Pediatric Extraction"
+                ],
+                "Oral Surgery": [
+                    "Surgical Extraction (Wisdom Tooth)",
+                    "Cyst/Minor Surgery",
+                    "Implant Consultation"
+                ],
+                "Preventive Care": [
+                    "Gum Disease Treatment",
+                    "Deep Cleaning (Scaling & Root Planing)",
+                    "Gum Surgery"
+                ],
+                "Implants & Advanced Restorations": [
+                    "Dental Implant Consultation",
+                    "Single Tooth Implant",
+                    "Full Mouth Implant Solution"
+                ]
+            };
+
+            let activeServiceButton = null;
+            let selectedSubOption = null;
+
+            const renderServiceButtons = () => {
+                mainServiceButtonsContainer.innerHTML = '';
+                for (const mainService in ALL_SERVICES) {
+                    const buttonWrapper = document.createElement('div');
+                    buttonWrapper.classList.add('col-span-1'); // Ensure it takes full width on small screens, half on md
+
+                    const button = document.createElement('button');
+                    button.type = 'button';
+                    button.classList.add('service-button');
+                    button.dataset.service = mainService;
+                    button.innerHTML = `
+                        <span>${mainService}</span>
+                        <svg class="arrow-icon w-4 h-4 text-gray-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                        </svg>
+                    `;
+
+                    const subOptionsContainer = document.createElement('div');
+                    subOptionsContainer.classList.add('sub-options-container', 'space-y-2');
+                    subOptionsContainer.id = `sub-options-${mainService.replace(/\s/g, '-')}`;
+
+                    ALL_SERVICES[mainService].forEach(subOption => {
+                        const subOptionItem = document.createElement('div');
+                        subOptionItem.classList.add('sub-option-item', 'flex', 'items-center', 'justify-between');
+                        subOptionItem.dataset.subOption = subOption;
+                        subOptionItem.innerHTML = `
+                            <span>${subOption}</span>
+                            <i class="fas fa-check-circle text-green-500 opacity-0 transform scale-0 transition-all duration-300 ease-out"></i>
+                        `;
+                        subOptionItem.addEventListener('click', (e) => {
+                            e.stopPropagation(); // Prevent main button from toggling
+                            // If the clicked sub-option is already selected, deselect it
+                            if (subOptionItem.classList.contains('selected')) {
+                                subOptionItem.classList.remove('selected');
+                                subOptionItem.querySelector('.fa-check-circle').classList.remove('opacity-100', 'scale-100');
+                                selectedSubOption = null;
+                                serviceHidden.value = ''; // Clear hidden service value
+                            } else {
+                                // Deselect previously selected sub-option if any
+                                if (selectedSubOption) {
+                                    selectedSubOption.classList.remove('selected');
+                                    selectedSubOption.querySelector('.fa-check-circle').classList.remove('opacity-100', 'scale-100');
+                                }
+                                // Select the current sub-option
+                                subOptionItem.classList.add('selected');
+                                subOptionItem.querySelector('.fa-check-circle').classList.add('opacity-100', 'scale-100');
+                                selectedSubOption = subOptionItem;
+                                serviceHidden.value = subOption; // Update hidden input with selected sub-option
+                            }
+                            updateSelectedTimeDisplay(); // Update confirmation text
+                        });
+                        subOptionsContainer.appendChild(subOptionItem);
+                    });
+
+                    button.addEventListener('click', (e) => {
+                        e.stopPropagation(); // Prevent event from bubbling up to document click listener
+
+                        // If the clicked button is already active, deactivate it
+                        if (button.classList.contains('active')) {
+                            button.classList.remove('active');
+                            subOptionsContainer.classList.remove('is-open');
+                            button.classList.remove('active'); // Ensure the main button also deactivates
+                            activeServiceButton = null;
+                            // Do NOT clear selectedSubOption or serviceHidden.value here,
+                            // as the user wants it to remain selected visually and functionally.
+                            updateSelectedTimeDisplay(); // Update confirmation text
+                        } else {
+                            // Deactivate previously active button and close its sub-options
+                            if (activeServiceButton) {
+                                activeServiceButton.classList.remove('active');
+                                const prevSubOptions = document.getElementById(`sub-options-${activeServiceButton.dataset.service.replace(/\s/g, '-')}`);
+                                if (prevSubOptions) {
+                                    prevSubOptions.classList.remove('is-open');
+                                }
+                            }
+
+                            // Activate the current button and open its sub-options
+                            button.classList.add('active');
+                            subOptionsContainer.classList.add('is-open');
+                            activeServiceButton = button;
+                        }
+                    });
+
+                    buttonWrapper.appendChild(button);
+                    buttonWrapper.appendChild(subOptionsContainer);
+                    mainServiceButtonsContainer.appendChild(buttonWrapper);
+                }
+            };
+
+            // Initial render of service buttons
+            renderServiceButtons();
+
+            // --- Custom Calendar Logic ---
+
+            let today = new Date();
+            let currentMonth = today.getMonth();
+            let currentYear = today.getFullYear();
+            let selectedDate = null;
+
+            const dayNames = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
+
+            function renderCalendar(month, year) {
+                calendarGrid.innerHTML = "";
+
+                // Add day names
+                dayNames.forEach(d => {
+                    const div = document.createElement('div');
+                    div.textContent = d;
+                    div.classList.add("day-name");
+                    calendarGrid.appendChild(div);
+                });
+
+                const firstDay = new Date(year, month).getDay(); 
+                const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+                // Calculate start index (make Monday the first column)
+                const offset = (firstDay + 6) % 7;
+
+                // Fill empty slots
+                for (let i = 0; i < offset; i++) {
+                    const div = document.createElement('div');
+                    calendarGrid.appendChild(div);
+                }
+
+                for (let day = 1; day <= daysInMonth; day++) {
+                    const div = document.createElement('div');
+                    div.textContent = day;
+
+                    const dateObj = new Date(year, month, day);
+
+                    // Sundays in red and disabled
+                    if (dateObj.getDay() === 0) {
+                        div.classList.add("sunday");
+                        div.classList.add("disabled");
+                    }
+
+                    // Disable past dates
+                    if (dateObj < new Date(today.getFullYear(), today.getMonth(), today.getDate())) {
+                        div.classList.add("disabled");
+                    }
+
+                    // Highlight today
+                    if (
+                        day === today.getDate() &&
+                        month === today.getMonth() &&
+                        year === today.getFullYear()
+                    ) {
+                        div.classList.add("today");
+                    }
+
+                    // Highlight previously selected date
+                    if (selectedDate && dateObj.toDateString() === selectedDate.toDateString()) {
+                        div.classList.add("selected");
+                    }
+
+                    // Select date
+                    div.addEventListener("click", () => {
+                        if (!div.classList.contains("disabled")) {
+                            document.querySelectorAll(".calendar-grid .selected").forEach(el => el.classList.remove("selected"));
+                            div.classList.add("selected");
+                            selectedDate = dateObj;
+                            dateInput.value = selectedDate.toLocaleDateString("en-US", { year: "numeric", month: "2-digit", day: "2-digit" });
+                            calendarPopup.classList.remove('is-open');
+                            dateInput.setAttribute('aria-expanded', 'false');
+                            updateSelectedTimeDisplay(); // Update confirmation text when date is selected
+                        }
+                    });
+
+                    calendarGrid.appendChild(div);
+                }
+
+                monthYear.textContent = new Date(year, month).toLocaleDateString("en-US", { month: "long", year: "numeric" });
+            }
+
+            prevMonth.addEventListener("click", () => {
+                currentMonth--;
+                if (currentMonth < 0) {
+                    currentMonth = 11;
+                    currentYear--;
+                }
+                renderCalendar(currentMonth, currentYear);
+            });
+
+            nextMonth.addEventListener("click", () => {
+                currentMonth++;
+                if (currentMonth > 11) {
+                    currentMonth = 0;
+                    currentYear++;
+                }
+                renderCalendar(currentMonth, currentYear);
+            });
+
+            dateInput.addEventListener('click', (e) => {
+                e.stopPropagation(); // Prevent the document click listener from immediately closing it
+                calendarPopup.classList.toggle('is-open');
+                dateInput.setAttribute('aria-expanded', calendarPopup.classList.contains('is-open'));
+                renderCalendar(currentMonth, currentYear);
+            });
+
+            // Set default selected date to today
+            selectedDate = today;
+            dateInput.value = selectedDate.toLocaleDateString("en-US", { year: "numeric", month: "2-digit", day: "2-digit" });
+            renderCalendar(currentMonth, currentYear);
+
+            // Add event listeners for the otherIssues textarea
+            const otherIssuesTextarea = document.getElementById('otherIssues');
+            if (otherIssuesTextarea) {
+                otherIssuesTextarea.addEventListener('focus', function() {
+                    this.rows = 3;
+                });
+                otherIssuesTextarea.addEventListener('blur', function() {
+                    if (this.value === '') {
+                        this.rows = 1;
+                    }
+                });
+            }
         });
     </script>
+
 </body>
 </html>

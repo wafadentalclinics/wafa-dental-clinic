@@ -60,15 +60,26 @@ function doPost(e) {
       clientID = generateClientID(sheet);
     }
     
-    // --- Step 2: Generate Booking ID ---
+    // --- Step 2: Check Slot Availability ---
+    const requestedSlotKey = `${data.Date} ${data.Time}`;
+    const bookedCounts = getBookedSlotsCount();
+    const currentBookings = bookedCounts[requestedSlotKey] || 0;
+    const MAX_BOOKINGS_PER_SLOT = 2; // Define the maximum allowed bookings per slot
+
+    if (currentBookings >= MAX_BOOKINGS_PER_SLOT) {
+      return ContentService.createTextOutput(JSON.stringify({success:false, message:"Time slot not available. Please choose a different time."}))
+                           .setMimeType(ContentService.MimeType.JSON);
+    }
+
+    // --- Step 3: Generate Booking ID ---
     const bookingID = generateBookingID(sheet);
     
-    // --- Step 3: Create Calendar Event ---
+    // --- Step 4: Create Calendar Event ---
     const calendar = CalendarApp.getCalendarById(CALENDAR_ID);
     const startTime = new Date(data.Date + " " + data.Time);
     const endTime = new Date(startTime.getTime() + 30*60000); // 30 min appointment
     const calendarEvent = calendar.createEvent(
-      bookingID + " - " + fullName + " - + " + data.Service,
+      bookingID + " - " + fullName + " - " + data.Service, // Removed '+' before data.Service
       startTime,
       endTime,
       {description: data.Notes || ''} // Include notes in calendar description
@@ -320,12 +331,48 @@ function generatePDF(bookingID, clientID, data){
   return Utilities.base64Encode(pdf.getBytes()); 
 }
 
+// === UTILITY: Get Booked Slots Count ===
+function getBookedSlotsCount() {
+  const spreadsheetUrl = "https://docs.google.com/spreadsheets/d/19iITtL0e8U36frY1TIxx7wZoypPrMPqQLmlMaAPixaI/edit"; // Ensure this URL is correct
+  const spreadsheet = SpreadsheetApp.openByUrl(spreadsheetUrl);
+  const sheet = spreadsheet.getSheetByName(SHEET_NAME);
+
+  if (!sheet) {
+    throw new Error(`Sheet named "${SHEET_NAME}" not found.`);
+  }
+
+  const allData = sheet.getDataRange().getValues();
+  const bookedSlotsCount = {};
+
+  // Assuming Date is column 7 (index 6) and Time is column 8 (index 7)
+  // Start from 1 to skip header row
+  for (let i = 1; i < allData.length; i++) {
+    const row = allData[i];
+    const date = row[6]; // Date column
+    const time = row[7]; // Time column
+    const slotKey = `${date} ${time}`;
+
+    bookedSlotsCount[slotKey] = (bookedSlotsCount[slotKey] || 0) + 1;
+  }
+  return bookedSlotsCount;
+}
+
 // === UTILITY: Fetch booked slots for real-time availability ===
 function doGet(e){
-  const sheet = SpreadsheetApp.openByUrl("https://docs.google.com/spreadsheets/d/19iITtL0e8U36frY1TIxx7wZoypPrMPzQLmlMaAPixaI/edit").getSheetByName(SHEET_NAME);
-  const allData = sheet.getDataRange().getValues();
-  // Assuming Date is column 7 (index 6) and Time is column 8 (index 7)
-  const bookedSlots = allData.slice(1).map(r => r[6] + " " + r[7]); // Date + Time
-  return ContentService.createTextOutput(JSON.stringify(bookedSlots))
-                       .setMimeType(ContentService.MimeType.JSON);
+  try {
+    // Check if an 'action' parameter is provided, e.g., '?action=getBookedSlots'
+    if (e.parameter.action === 'getBookedSlots') {
+      const bookedSlots = getBookedSlotsCount();
+      return ContentService.createTextOutput(JSON.stringify(bookedSlots))
+                           .setMimeType(ContentService.MimeType.JSON);
+    } else {
+      // Handle other GET requests or return a default response
+      return ContentService.createTextOutput(JSON.stringify({success:false, message: "Invalid GET request."}))
+                           .setMimeType(ContentService.MimeType.JSON);
+    }
+  } catch (err) {
+    Logger.log("Error in doGet: " + err.message + " Stack: " + err.stack);
+    return ContentService.createTextOutput(JSON.stringify({success:false, message: err.message}))
+                         .setMimeType(ContentService.MimeType.JSON);
+  }
 }
