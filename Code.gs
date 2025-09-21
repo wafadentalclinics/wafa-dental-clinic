@@ -59,8 +59,8 @@ function doPost(e) {
     );
     const calendarEventId = calendarEvent.getId();
 
-    // --- Step 6: Generate PDF and get Base64 content ---
-    const pdfBase64 = generatePDF(bookingID, clientId, data);
+    // --- Step 6: Generate PDF, save to Drive, and get Base64 content ---
+    const pdfResult = generatePDF(bookingID, clientId, data);
 
     // --- Step 7: Append booking to Sheet ---
     sheet.appendRow([
@@ -73,7 +73,7 @@ function doPost(e) {
       data.Date,
       data.Time,
       calendarEventId,
-      '', // Placeholder for Doc URL, can be generated if needed
+      `https://drive.google.com/uc?export=download&id=${pdfResult.fileId}`, // Doc URL
       new Date()
     ]);
 
@@ -82,13 +82,30 @@ function doPost(e) {
       success: true,
       bookingID: bookingID,
       clientID: clientId,
-      pdfBase64: pdfBase64
+      pdfBase64: pdfResult.base64
     })).setMimeType(ContentService.MimeType.JSON);
 
   } catch (err) {
     Logger.log("Error in doPost: " + err.message + " Stack: " + err.stack);
     return ContentService.createTextOutput(JSON.stringify({ success: false, message: err.message }))
                          .setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+/**
+ * A test function to force the DriveApp authorization prompt.
+ * Run this function manually from the Apps Script editor to grant permissions.
+ */
+function testCreateFile() {
+  try {
+    // This line requires Google Drive permissions. Running it will trigger the auth flow.
+    DriveApp.getRootFolder();
+    Logger.log("Permissions for DriveApp appear to be granted.");
+    // You can show an alert to the user in the editor.
+    SpreadsheetApp.getUi().alert("Success! Permissions for Google Drive have been granted.");
+  } catch (e) {
+    Logger.log("Error while testing DriveApp permissions: " + e.message);
+    SpreadsheetApp.getUi().alert("An error occurred. Please ensure you have completed the authorization steps. Error: " + e.message);
   }
 }
 
@@ -199,8 +216,15 @@ function generatePDF(bookingID, clientID, data) {
   const blob = Utilities.newBlob(htmlContent, 'text/html', `${bookingID}.html`);
   const pdf = blob.getAs('application/pdf').setName(`${bookingID}.pdf`);
   
-  // Return base64 encoded PDF content for the frontend to handle
-  return Utilities.base64Encode(pdf.getBytes());
+  // Save a copy to Google Drive
+  const file = DriveApp.createFile(pdf);
+  const fileId = file.getId();
+
+  // Return both the file ID and the base64 content
+  return {
+    fileId: fileId,
+    base64: Utilities.base64Encode(pdf.getBytes())
+  };
 }
 
 // === UTILITY: Get Booked Slots Count ===
