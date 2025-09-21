@@ -1239,7 +1239,7 @@
         const SHEET_NAME = "WAFA Bookings";
         const SHEET_COLUMNS = ["Client ID","Booking ID","Name","Email","Phone","Service","Date","Time","Calendar Event ID","Doc URL","Created At"];
         const CALENDAR_ID = "wafadentalclinics@gmail.com";
-        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwhDdxESzIqjtMGkGxzhVxrEdwBeY1zAJ4GP5Sbr0nilXDQjDpl8J6e4ZbbUpuRrxFw/exec";
+        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzh3i5vhzqKlMy7JL0FCcFYhRLodTv5hwyKon0BypogdAAq3uh3GEn53D315SWKbeTK/exec";
         const COUNTRIES = [
             // Key English-speaking countries
             { code: "+1", name: "United States", iso: "USA", placeholder: "XXX XXX XXXX" },
@@ -1840,12 +1840,12 @@
             // Set default selected country to Pakistan (+92)
             const defaultCountry = COUNTRIES.find(country => country.code === "+92");
             if (defaultCountry) {
-                selectedCountry = defaultCountry; // Set selectedCountry to default
+                selectedCountry = defaultCountry;
                 countryCodeInput.value = `${defaultCountry.code} (${defaultCountry.iso})`;
                 countryCodeHidden.value = defaultCountry.code;
-                phoneNumberInput.placeholder = defaultCountry.placeholder; // Set initial placeholder
+                phoneNumberInput.placeholder = defaultCountry.placeholder;
             }
-            renderCountries(); // Render all countries initially for search functionality
+            renderCountries();
 
             // --- Hour Dropdown Logic ---
             const bookingHourInputWrapper = document.getElementById('bookingHourInputWrapper');

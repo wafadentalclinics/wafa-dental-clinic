@@ -40,6 +40,7 @@ function doPost(e) {
     const MAX_BOOKINGS_PER_SLOT = 2;
 
     if (currentBookings >= MAX_BOOKINGS_PER_SLOT) {
+      Logger.log(`Slot unavailable. Requested: ${requestedSlotKey}, Found: ${currentBookings}`);
       throw new Error("Time slot not available. Please choose a different time.");
     }
 
@@ -96,16 +97,20 @@ function doPost(e) {
  * A test function to force the DriveApp authorization prompt.
  * Run this function manually from the Apps Script editor to grant permissions.
  */
-function testCreateFile() {
+function testAndAuthorize() {
   try {
+    Logger.log("Starting permission test...");
     // This line requires Google Drive permissions. Running it will trigger the auth flow.
-    DriveApp.getRootFolder();
-    Logger.log("Permissions for DriveApp appear to be granted.");
+    const folder = DriveApp.getRootFolder();
+    Logger.log("Successfully accessed root folder: " + folder.getName());
+    
     // You can show an alert to the user in the editor.
-    SpreadsheetApp.getUi().alert("Success! Permissions for Google Drive have been granted.");
+    SpreadsheetApp.getUi().alert("Success! Permissions for Google Drive have been granted. You can now try submitting a booking on the website.");
+    Logger.log("Permission test successful.");
+
   } catch (e) {
     Logger.log("Error while testing DriveApp permissions: " + e.message);
-    SpreadsheetApp.getUi().alert("An error occurred. Please ensure you have completed the authorization steps. Error: " + e.message);
+    SpreadsheetApp.getUi().alert("An error occurred. Please carefully follow the authorization steps in the pop-up window. If it continues to fail, check the logs. Error: " + e.message);
   }
 }
 
@@ -207,7 +212,7 @@ function generatePDF(bookingID, clientID, data) {
         <div class="footer">
           &copy; ${new Date().getFullYear()} WAFA Dental Clinic. All rights reserved.<br>
           Office #7, 3rd Floor, The Ark Building, I-8 Markaz, Islamabad, Pakistan<br>
-          <a href="https://www.wafadentalclinic.com" target="_blank">www.wafadentalclinic.com</a> | <a href="https://www.google.com/maps/place/WAFA+Dental+Clinic/@33.6673337,73.0747596,17z/data=!3m1!4b1!4m6!3m5!1s0x38df957cc7644563:0x27a7ae2e6cda42ef!8m2!3d33.6673337!4d73.0747596!16s%2Fg%2F11xd1rytr0">View on Google Maps</a>
+          <a href="https://www.wafadentalclinic.com" target="_blank">www.wafadentalclinic.com</a> | <a href="https://www.google.com/maps/place/WAFA+Dental+Clinic/@33.6673337,73.0747596,17z/data=!3m1!4b1!4m6!3m5!1s0x38df957cc7644563:0x27a7ae2e6cda42ef!8m2!3d3d33.6673337!4d73.0747596!16s%2Fg%2F11xd1rytr0">View on Google Maps</a>
         </div>
       </div>
     </body>
@@ -227,20 +232,25 @@ function generatePDF(bookingID, clientID, data) {
   };
 }
 
-// === UTILITY: Get Booked Slots Count ===
+// === UTILITY: Get Booked Slots Count (FIXED) ===
 function getBookedSlotsCount(sheet) {
   const allData = sheet.getDataRange().getValues();
   const bookedSlotsCount = {};
   // Start from 1 to skip header row
   for (let i = 1; i < allData.length; i++) {
     const row = allData[i];
-    const date = row[6]; // Date is in column 7
+    const dateValue = row[6]; // Date is in column 7
     const time = row[7]; // Time is in column 8
-    if (date && time) {
-      const slotKey = `${date} ${time}`;
+    
+    // Check if dateValue is a valid Date object before formatting
+    if (dateValue instanceof Date && time) {
+      // Format the date from the sheet to match the frontend format (MM/dd/yyyy)
+      const formattedDate = Utilities.formatDate(dateValue, TIMEZONE, "MM/dd/yyyy");
+      const slotKey = `${formattedDate} ${time}`;
       bookedSlotsCount[slotKey] = (bookedSlotsCount[slotKey] || 0) + 1;
     }
   }
+  Logger.log("Counted Slots: " + JSON.stringify(bookedSlotsCount));
   return bookedSlotsCount;
 }
 
