@@ -1239,7 +1239,7 @@
         const SHEET_NAME = "WAFA Bookings";
         const SHEET_COLUMNS = ["Client ID","Booking ID","Name","Email","Phone","Service","Date","Time","Calendar Event ID","Doc URL","Created At"];
         const CALENDAR_ID = "wafadentalclinics@gmail.com";
-        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbykWDfhp8TZmVkFCzcVIqKfW-hDVXcPeTB7yJwlMWSto4O7_kzQFlJnTX8YTHV82EY5/exec";
+        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzhiq0HndjyxBwdb0UBQx3dx9HfOFchrB24Z4WFoyuuWwBSh9ri60n-UMEFft3whqC8/exec";
         const COUNTRIES = [
             // Key English-speaking countries
             { code: "+1", name: "United States", iso: "USA", placeholder: "XXX XXX XXXX" },
@@ -1632,6 +1632,9 @@
                     Notes: notes,
                     RecaptchaResponse: recaptchaResponse // Send reCAPTCHA response to server
                 };
+
+                // ** NEW: Send confirmation email via Render backend **
+                sendConfirmationEmail(data);
                 
                 // Google Apps Script expects application/x-www-form-urlencoded for e.parameter
                 const urlEncodedData = new URLSearchParams(data).toString();
@@ -2304,6 +2307,47 @@
                 updateAvailabilityMessage();
             });
         });
+
+        /**
+         * Sends booking data to the Render backend to trigger a confirmation email.
+         * This is a "fire-and-forget" call and does not block the main booking flow.
+         * @param {object} bookingData - The booking data from the form.
+         */
+        async function sendConfirmationEmail(bookingData) {
+            const renderUrl = 'https://wafa-dental-backend.onrender.com/send-confirmation';
+            
+            // Map frontend data to the backend's expected structure
+            const emailPayload = {
+                clientName: `${bookingData.FirstName} ${bookingData.LastName}`,
+                clientEmail: bookingData.Email,
+                service: bookingData.Service,
+                date: bookingData.Date,
+                time: bookingData.Time,
+                additionalInfo: bookingData.Notes || 'No additional information provided.'
+            };
+
+            console.log('Sending confirmation email with payload:', emailPayload);
+
+            try {
+                const response = await fetch(renderUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(emailPayload),
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    console.log('Successfully sent confirmation email request:', result.message);
+                } else {
+                    const errorResult = await response.json();
+                    console.error('Failed to send confirmation email. Server responded with:', errorResult.message);
+                }
+            } catch (error) {
+                console.error('An error occurred while trying to send the confirmation email:', error);
+            }
+        }
     </script>
 
     <!-- Loading Overlay -->
