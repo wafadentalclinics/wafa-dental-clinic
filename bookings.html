@@ -955,8 +955,8 @@
 
                     <!-- New section for Other / Previous Issues -->
                     <div>
-                        <label for="otherIssues" class="block text-sm font-medium text-gray-700 mb-1">Other / Previous Issues (Optional)</label>
-                        <textarea id="otherIssues" name="otherIssues" rows="3" class="apple-input block w-full" style="height: auto;"></textarea>
+                        <label for="Notes" class="block text-sm font-medium text-gray-700 mb-1">Other / Previous Issues (Optional)</label>
+                        <textarea id="Notes" name="Notes" rows="3" class="apple-input block w-full" style="height: auto;"></textarea>
                     </div>
 
                     <div>
@@ -1553,7 +1553,7 @@
                 const bookingHour = document.getElementById('bookingHourHidden').value;
                 const bookingMinute = document.getElementById('bookingMinuteHidden').value;
                 const time = `${bookingHour}:${bookingMinute}`;
-                const notes = document.getElementById("otherIssues").value; // Using 'otherIssues' for notes
+                const notes = document.getElementById("Notes").value;
 
                 // Combine the country code and phone number
                 const phone = countryCode + ' ' + phoneNumber;
@@ -2212,7 +2212,7 @@
             renderCalendar(currentMonth, currentYear);
 
             // Add event listeners for the otherIssues textarea
-            const otherIssuesTextarea = document.getElementById('otherIssues');
+            const otherIssuesTextarea = document.getElementById('Notes');
             if (otherIssuesTextarea) {
                 otherIssuesTextarea.addEventListener('focus', function() {
                     this.rows = 3;

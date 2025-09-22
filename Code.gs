@@ -157,7 +157,6 @@ function generatePremiumPDF(bookingID, clientID, data) {
         .detail-item strong { display: block; font-size: 9pt; color: #888; margin-bottom: 1mm; text-transform: uppercase; letter-spacing: 0.5px; }
         .detail-item span { font-size: 12pt; color: #010245; font-weight: 500; }
         .notes-section { margin-top: 10mm; }
-        .notes-section strong { display: block; font-size: 9pt; color: #888; margin-bottom: 1mm; text-transform: uppercase; letter-spacing: 0.5px; }
         .notes-section p { font-size: 12pt; color: #010245; font-weight: 500; background-color: #f8f9fa; padding: 4mm; border-radius: 8px; min-height: 15mm; }
         .notice { background-color: #f0f4ff; border-left: 4px solid #4c4e9e; padding: 4mm; margin-top: 10mm; border-radius: 8px; font-size: 10pt; color: #334; }
         .content-body { flex-grow: 1; }
@@ -191,10 +190,12 @@ function generatePremiumPDF(bookingID, clientID, data) {
               <div class="detail-item"><strong>Time:</strong><span>${data.Time}</span></div>
             </div>
           </div>
+          ${notes ? `
           <div class="section notes-section">
             <h3 class="section-title">Other / Previous Issues</h3>
-            <p>${notes ? notes : '<i>No additional information provided.</i>'}</p>
+            <p>${notes}</p>
           </div>
+          ` : ''}
           <div class="notice">
             <strong>Important:</strong> Please arrive 15 minutes prior to your scheduled appointment. For any changes or cancellations, kindly contact us at least 24 hours in advance.
           </div>
