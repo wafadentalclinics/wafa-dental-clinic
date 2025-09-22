@@ -447,11 +447,15 @@
 }
 
 .calendar-grid div {
-    padding: 0.4rem 0.2rem; /* Further reduced padding */
-    font-size: 0.8rem; /* Further reduced font size */
+    padding: 0.25rem 0.1rem; /* Optimized padding */
+    font-size: 0.75rem;   /* Optimized font size */
     border-radius: 0.5rem;
     cursor: pointer;
     transition: background-color 0.2s ease, color 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 2rem; /* Explicit height for consistency */
 }
 
 .calendar-grid div.day-name {
@@ -950,25 +954,9 @@
                     </div>
 
                     <!-- New section for Other / Previous Issues -->
-                    <div class="relative mt-6">
-                            <textarea
-                                id="otherIssues"
-                                name="otherIssues"
-                                rows="3"
-                                class="block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-blue focus:border-transparent transition-all duration-200"
-                            ></textarea>
-                        <label
-                            for="otherIssues"
-                            class="absolute left-4 top-2 text-sm text-gray-500 transition-all duration-200 ease-in-out pointer-events-none"
-                        >
-                            Other / Previous Issues (Optional)
-                        </label>
-                        <div class="absolute right-4 top-1 group">
-                            <i class="fas fa-info-circle text-gray-400 text-sm cursor-help"></i>
-                            <div class="absolute hidden group-hover:block bg-gray-800 text-white text-xs rounded py-1 px-2 right-full top-1/2 transform -translate-y-1/2 mr-2 whitespace-nowrap z-10">
-                                Provide details if you have prior dental issues or concerns
-                            </div>
-                        </div>
+                    <div>
+                        <label for="otherIssues" class="block text-sm font-medium text-gray-700 mb-1">Other / Previous Issues (Optional)</label>
+                        <textarea id="otherIssues" name="otherIssues" rows="3" class="apple-input block w-full" style="height: auto;"></textarea>
                     </div>
 
                     <div>
