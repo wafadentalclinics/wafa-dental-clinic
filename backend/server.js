@@ -3,6 +3,7 @@ require('dotenv').config({ path: __dirname + '/.env' });
 
 const express = require('express');
 const { sendEmail, getAppointmentReminderTemplate } = require('./services/resendEmailService');
+const generateConfirmationPdf = require('./services/pdfService');
 
 // Initialize the Express application
 const app = express();
@@ -26,29 +27,35 @@ app.use(express.json());
  * }
  */
 app.post('/send-confirmation', async (req, res) => {
-  // Destructure and validate the request body
-  const { clientName, clientEmail, service, date, time, bookingId, clientId, pdfBase64 } = req.body;
+  console.log('[/send-confirmation] Endpoint hit at:', new Date().toISOString());
+  console.log('Received payload:', JSON.stringify(req.body, null, 2));
 
-  if (!clientName || !clientEmail || !service || !date || !time || !bookingId || !clientId || !pdfBase64) {
+  // Destructure and validate the request body
+  const { clientName, clientEmail, service, date, time, additionalInfo, bookingId, clientId } = req.body;
+
+  if (!clientName || !clientEmail || !service || !date || !time) {
+    console.error('Validation failed: Missing required booking information.');
     return res.status(400).json({ success: false, message: 'Missing required booking information.' });
   }
 
-  const bookingDetails = { name: clientName, clientEmail, service, appointmentDate: date, appointmentTime: time, bookingId, clientId };
+  const bookingDetails = { clientName, clientEmail, service, date, time, additionalInfo, bookingId, clientId };
 
   try {
-    // 1. Decode the Base64 PDF
-    const pdfBuffer = Buffer.from(pdfBase64, 'base64');
+    // 1. Generate the PDF confirmation using the backend service
+    console.log('Generating PDF e-receipt...');
+    const pdfBuffer = await generateConfirmationPdf(bookingDetails);
+    console.log('PDF generated successfully. Buffer length:', pdfBuffer.length);
 
     // 2. Prepare the email content
-    const emailHtml = getAppointmentReminderTemplate(bookingDetails);
-    const subject = `Booking Confirmed: Your Appointment for ${service}`;
+    const emailHtml = getAppointmentReminderTemplate({ name: clientName, appointmentDate: date, appointmentTime: time, service, bookingId, clientId });
+    const subject = `Your Appointment Confirmation with WAFA Dental Clinic`;
     const attachments = [{
-        filename: `WAFA_Dental_Clinic_Booking_${bookingId}.pdf`,
+        filename: `WAFA_Dental_Clinic_Receipt_${bookingId || 'CONFIRMATION'}.pdf`,
         content: pdfBuffer,
     }];
 
     // 3. Send the confirmation email with the PDF attachment
-    console.log(`Sending confirmation email to ${clientEmail}...`);
+    console.log(`Attempting to send email via Resend to: ${clientEmail}...`);
     const emailSent = await sendEmail(clientEmail, subject, emailHtml, attachments);
 
     if (!emailSent) {

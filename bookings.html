@@ -1621,7 +1621,8 @@
                     RecaptchaResponse: recaptchaResponse // Send reCAPTCHA response to server
                 };
 
-                // This function is now handled within the main submission logic after the Apps Script response.
+                // ** NEW: Send confirmation email via Render backend **
+                sendConfirmationEmail(data);
                 
                 // Google Apps Script expects application/x-www-form-urlencoded for e.parameter
                 const urlEncodedData = new URLSearchParams(data).toString();
@@ -1638,20 +1639,19 @@
                     const result = await fetchResponse.json();
 
                     if (result.success) {
-                        // ** NEW: Send data to our backend for email attachment **
-                        sendConfirmationEmailWithAttachment(data, result);
-
                         // Clear the status message
                         statusMessage.textContent = '';
-                        statusMessage.classList.remove('text-gray-500');
+                        statusMessage.classList.remove('text-gray-500'); // Remove loading text styling
 
-                        // Hide loading overlay and show confirmation modal
+                        // Hide loading overlay
                         loadingOverlay.classList.remove('is-visible');
+                        // Show confirmation modal
                         confirmationModal.classList.add('is-visible');
                         
-                        // Handle PDF download from the base64 string
-                        if (result.pdfBase64) {
-                            const byteCharacters = atob(result.pdfBase64);
+                        // Handle PDF download
+                        const pdfBase64 = result.pdfBase64;
+                        if (pdfBase64) {
+                            const byteCharacters = atob(pdfBase64);
                             const byteNumbers = new Array(byteCharacters.length);
                             for (let i = 0; i < byteCharacters.length; i++) {
                                 byteNumbers[i] = byteCharacters.charCodeAt(i);
@@ -1669,7 +1669,7 @@
                             
                             setTimeout(() => URL.revokeObjectURL(pdfUrl), 100);
                         } else {
-                            console.error("PDF base64 string not received.");
+                            console.error("PDF base64 string not received from Apps Script.");
                         }
 
                         bookingForm.reset();
@@ -2374,3 +2374,159 @@
     </div>
 </body>
 </html>
+
+</file_content>
+
+Now that you have the latest state of the file, try the operation again with fewer, more precise SEARCH blocks. For large files especially, it may be prudent to try to limit yourself to <5 SEARCH/REPLACE blocks at a time, then wait for the user to respond with the result of the operation before following up with another replace_in_file call to make additional edits.
+(If you run into this error 3 times in a row, you may use the write_to_file tool as a fallback.)
+</error>
+
+# TODO LIST RECOMMENDED
+When starting a new task, it is recommended to create a todo list.
+
+
+
+
+1. Include the task_progress parameter in your next tool call
+
+2. Create a comprehensive checklist of all steps needed
+
+3. Use markdown format: - [ ] for incomplete, - [x] for complete
+
+
+
+**Benefits of creating a todo list now:**
+
+	- Clear roadmap for implementation
+
+	- Progress tracking throughout the task
+
+	- Nothing gets forgotten or missed
+
+	- Users can see, monitor, and edit the plan
+
+
+
+**Example structure:**
+```
+
+- [ ] Analyze requirements
+
+- [ ] Set up necessary files
+
+- [ ] Implement main functionality
+
+- [ ] Handle edge cases
+
+- [ ] Test the implementation
+
+- [ ] Verify results
+```
+
+
+
+Keeping the todo list updated helps track progress and ensures nothing is missed.
+<environment_details>
+# VSCode Visible Files
+bookings.html
+
+# VSCode Open Tabs
+backend/.gitignore
+backend/.env
+backend/checkVerification.js
+backend/resendTest.js
+backend/services/resendEmailService.js
+backend/services/pdfService.js
+backend/server.js
+bookings.html
+backend/test-email.js
+
+# Recently Modified Files
+These files have been modified since you last accessed them (file was just edited so you may need to re-read it before editing):
+bookings.html
+
+# Current Time
+9/23/2025, 12:44:10 AM (Asia/Riyadh, UTC+3:00)
+
+# Context Window Usage
+386,859 / 1,048.576K tokens used (37%)
+
+# Current Mode
+ACT MODE
+</environment_details>
+
+</final_file_content>
+
+IMPORTANT: For any future changes to this file, use the final_file_content shown above as your reference. This content reflects the current state of the file, including any auto-formatting (e.g., if you used single quotes but the formatter converted them to double quotes). Always base your SEARCH/REPLACE operations on this final version to ensure accuracy.
+
+
+
+# TODO LIST RECOMMENDED
+When starting a new task, it is recommended to create a todo list.
+
+
+
+
+1. Include the task_progress parameter in your next tool call
+
+2. Create a comprehensive checklist of all steps needed
+
+3. Use markdown format: - [ ] for incomplete, - [x] for complete
+
+
+
+**Benefits of creating a todo list now:**
+
+	- Clear roadmap for implementation
+
+	- Progress tracking throughout the task
+
+	- Nothing gets forgotten or missed
+
+	- Users can see, monitor, and edit the plan
+
+
+
+**Example structure:**
+```
+
+- [ ] Analyze requirements
+
+- [ ] Set up necessary files
+
+- [ ] Implement main functionality
+
+- [ ] Handle edge cases
+
+- [ ] Test the implementation
+
+- [ ] Verify results
+```
+
+
+
+Keeping the todo list updated helps track progress and ensures nothing is missed.
+<environment_details>
+# VSCode Visible Files
+bookings.html
+
+# VSCode Open Tabs
+backend/.gitignore
+backend/.env
+backend/checkVerification.js
+backend/resendTest.js
+backend/services/resendEmailService.js
+backend/services/pdfService.js
+backend/server.js
+bookings.html
+backend/test-email.js
+
+# Current Time
+9/23/2025, 12:48:31 AM (Asia/Riyadh, UTC+3:00)
+
+# Context Window Usage
+419,443 / 1,048.576K tokens used (40%)
+
+# Current Mode
+ACT MODE
+</environment_details>
