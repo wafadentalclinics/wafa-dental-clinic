@@ -1239,7 +1239,7 @@
         const SHEET_NAME = "WAFA Bookings";
         const SHEET_COLUMNS = ["Client ID","Booking ID","Name","Email","Phone","Service","Date","Time","Calendar Event ID","Doc URL","Created At"];
         const CALENDAR_ID = "wafadentalclinics@gmail.com";
-        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzh3i5vhzqKlMy7JL0FCcFYhRLodTv5hwyKon0BypogdAAq3uh3GEn53D315SWKbeTK/exec";
+        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwc-n7ysytvb54OnY7XAXcNPdx9LbIBME_AQcBcOyJGa9-km2_sPsbBXBjFilVGB36-/exec";
         const COUNTRIES = [
             // Key English-speaking countries
             { code: "+1", name: "United States", iso: "USA", placeholder: "XXX XXX XXXX" },
@@ -2242,6 +2242,36 @@
             const confirmAppointmentBtn = document.getElementById('confirmAppointmentBtn');
             let bookedSlotsData = {}; // To store fetched availability
 
+            // --- Real-time Availability Check ---
+            const checkSlotAvailability = () => {
+                const date = dateInput.value;
+                const hour = bookingHourHidden.value;
+                const minute = bookingMinuteHidden.value;
+
+                if (date && hour && minute) {
+                    const time = `${hour}:${minute}`;
+                    const slotKey = `${date} ${time}`;
+                    const currentBookings = bookedSlotsData[slotKey] || 0;
+                    const MAX_BOOKINGS_PER_SLOT = 2;
+
+                    if (currentBookings >= MAX_BOOKINGS_PER_SLOT) {
+                        availabilityMessage.textContent = "This time slot is fully booked. Please select another time.";
+                        availabilityMessage.classList.remove('hidden');
+                        confirmAppointmentBtn.disabled = true;
+                        confirmAppointmentBtn.classList.add('opacity-50', 'cursor-not-allowed');
+                    } else {
+                        availabilityMessage.classList.add('hidden');
+                        confirmAppointmentBtn.disabled = false;
+                        confirmAppointmentBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                    }
+                } else {
+                    // If any part of the date/time is missing, hide the message and enable the button
+                    availabilityMessage.classList.add('hidden');
+                    confirmAppointmentBtn.disabled = false;
+                    confirmAppointmentBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                }
+            };
+
             const fetchBookedSlots = async () => {
                 try {
                     const response = await fetch(WEB_APP_URL + '?action=getBookedSlots'); // Use doGet for fetching
@@ -2286,25 +2316,19 @@
             // Call fetchBookedSlots on page load
             fetchBookedSlots();
 
-            // Add event listeners to relevant inputs to trigger availability check
-            dateInput.addEventListener('change', () => {
-                updateAvailabilityMessage();
-            });
-            bookingHourHidden.addEventListener('change', () => {
-                updateAvailabilityMessage();
-            });
-            bookingMinuteHidden.addEventListener('change', () => {
-                updateAvailabilityMessage();
-            });
-            // Also call updateAvailabilityMessage when the form is initially shown
-            // or when patient type changes to ensure initial state is correct.
+            // Add event listeners to relevant inputs to trigger the real-time availability check
+            dateInput.addEventListener('change', checkSlotAvailability);
+            
+            // Since the hidden inputs don't have a change event, we'll re-check when the visible inputs are updated.
+            bookingHourList.addEventListener('click', () => setTimeout(checkSlotAvailability, 0));
+            bookingMinuteList.addEventListener('click', () => setTimeout(checkSlotAvailability, 0));
+            
+            // Also call the check when the form becomes visible
             firstTimePatientBtn.addEventListener('click', () => {
-                // ... existing logic ...
-                updateAvailabilityMessage();
+                setTimeout(checkSlotAvailability, 100); // Delay to allow form to become visible
             });
             submitClientIDBtn.addEventListener('click', () => {
-                // ... existing logic ...
-                updateAvailabilityMessage();
+                setTimeout(checkSlotAvailability, 100);
             });
         });
 

@@ -61,7 +61,7 @@ function doPost(e) {
     const calendarEventId = calendarEvent.getId();
 
     // --- Step 6: Generate PDF, save to Drive, and get Base64 content ---
-    const pdfResult = generatePDF(bookingID, clientId, data);
+    const pdfResult = generatePremiumPDF(bookingID, clientId, data);
 
     // --- Step 7: Append booking to Sheet ---
     sheet.appendRow([
@@ -100,14 +100,10 @@ function doPost(e) {
 function testAndAuthorize() {
   try {
     Logger.log("Starting permission test...");
-    // This line requires Google Drive permissions. Running it will trigger the auth flow.
     const folder = DriveApp.getRootFolder();
     Logger.log("Successfully accessed root folder: " + folder.getName());
-    
-    // You can show an alert to the user in the editor.
     SpreadsheetApp.getUi().alert("Success! Permissions for Google Drive have been granted. You can now try submitting a booking on the website.");
     Logger.log("Permission test successful.");
-
   } catch (e) {
     Logger.log("Error while testing DriveApp permissions: " + e.message);
     SpreadsheetApp.getUi().alert("An error occurred. Please carefully follow the authorization steps in the pop-up window. If it continues to fail, check the logs. Error: " + e.message);
@@ -130,21 +126,19 @@ function generateDeterministicClientId(data) {
     }
     hexString += hex;
   }
-  // Use the first 10 characters of the hash for the ID
   return `WDC-${hexString.substring(0, 10).toUpperCase()}`;
 }
 
 // === CLIENT ID UTILITY: Find a client's first row by their ID ===
 function findClientRowByClientId(sheet, clientId) {
-  const data = sheet.getRange("A:A").getValues(); // Search only in the Client ID column
+  const data = sheet.getRange("A:A").getValues();
   for (let i = 0; i < data.length; i++) {
     if (data[i][0] === clientId) {
-      return i + 1; // Return the 1-based row number
+      return i + 1;
     }
   }
-  return null; // Client not found
+  return null;
 }
-
 
 // === UTILITY: Generate Sequential Booking ID ===
 function generateBookingID(sheet) {
@@ -152,7 +146,7 @@ function generateBookingID(sheet) {
   const lastRow = sheet.getLastRow();
   let lastNum = 0;
   if (lastRow > 1) {
-    const lastBookingID = sheet.getRange(lastRow, 2).getValue(); // Booking ID is in column 2
+    const lastBookingID = sheet.getRange(lastRow, 2).getValue();
     const parts = String(lastBookingID).split('-');
     if (parts.length > 2) {
       lastNum = parseInt(parts[2], 10);
@@ -162,57 +156,75 @@ function generateBookingID(sheet) {
   return `WAFA-${dateStr}-${nextNum}`;
 }
 
-// === UTILITY: Generate PDF Confirmation ===
-function generatePDF(bookingID, clientID, data) {
+// === UTILITY: Fetch Logo and Encode as Base64 ===
+function getLogoBase64() {
+  const logoUrl = "https://raw.githubusercontent.com/wafadentalclinics/wafa-dental-clinic/main/images/logo.png";
+  try {
+    const imageBlob = UrlFetchApp.fetch(logoUrl).getBlob();
+    return `data:image/png;base64,${Utilities.base64Encode(imageBlob.getBytes())}`;
+  } catch (e) {
+    Logger.log("Could not fetch logo image: " + e.message);
+    return ""; // Return empty string if logo fails to load
+  }
+}
+
+// === UTILITY: Generate PREMIUM PDF Confirmation ===
+function generatePremiumPDF(bookingID, clientID, data) {
   const fullName = `${data.FirstName} ${data.LastName}`;
+  const logoBase64 = getLogoBase64();
+
   const htmlContent = `
     <!DOCTYPE html>
     <html>
     <head>
       <title>WAFA Dental Clinic - Booking Confirmation</title>
+      <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
       <style>
-        body { font-family: 'Inter', sans-serif; margin: 0; padding: 0; background-color: #f8f9fa; color: #343a40; }
-        .receipt-container { max-width: 700px; margin: 30px auto; background-color: #ffffff; border-radius: 12px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05); overflow: hidden; }
-        .header { background-color: #010245; color: #ffffff; padding: 25px 30px; text-align: center; }
-        .header h1 { font-family: 'DM Serif Display', serif; font-size: 32px; margin: 0; }
-        .header p { font-size: 15px; margin: 5px 0 0; opacity: 0.9; }
-        .content { padding: 30px; }
-        .section-title { font-family: 'DM Serif Display', serif; font-size: 24px; color: #010245; margin-top: 35px; margin-bottom: 18px; padding-bottom: 8px; border-bottom: 2px solid #e9ecef; }
-        .section-title:first-of-type { margin-top: 0; }
-        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px 25px; margin-bottom: 25px; }
-        .info-item strong { display: block; font-size: 13px; color: #6c757d; margin-bottom: 3px; }
-        .info-item span { font-size: 16px; color: #343a40; font-weight: 500; }
-        .notes { background-color: #f0f8ff; border-left: 4px solid #007bff; padding: 15px; margin-top: 25px; border-radius: 8px; font-size: 14px; color: #004085; }
-        .footer { background-color: #f1f3f5; padding: 20px 30px; text-align: center; font-size: 12px; color: #6c757d; border-top: 1px solid #e9ecef; margin-top: 40px; }
+        body { margin: 0; padding: 0; background-color: #ffffff; font-family: 'Inter', sans-serif; color: #333; -webkit-print-color-adjust: exact; }
+        .page { width: 210mm; height: 297mm; margin: 0 auto; background: #fff; padding: 25mm; box-sizing: border-box; }
+        .header { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 2px solid #010245; padding-bottom: 20px; }
+        .header .logo { width: 80px; height: auto; }
+        .header .clinic-info { text-align: right; }
+        .header .clinic-info h1 { font-family: 'DM Serif Display', serif; font-size: 36pt; color: #010245; margin: 0; }
+        .header .clinic-info p { margin: 2px 0 0; font-size: 10pt; color: #555; }
+        .title { font-family: 'DM Serif Display', serif; font-size: 28pt; color: #010245; text-align: center; margin: 30px 0; }
+        .details-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px 30px; margin-top: 25px; }
+        .detail-item { background-color: #f8f9fa; border-radius: 8px; padding: 15px; }
+        .detail-item strong { display: block; font-size: 10pt; color: #6c757d; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .detail-item span { font-size: 14pt; color: #010245; font-weight: 500; }
+        .section-heading { font-family: 'DM Serif Display', serif; font-size: 18pt; color: #010245; border-bottom: 1px solid #eee; padding-bottom: 8px; margin-top: 40px; }
+        .footer { position: absolute; bottom: 25mm; left: 25mm; right: 25mm; text-align: center; font-size: 9pt; color: #888; border-top: 1px solid #eee; padding-top: 15px; }
         .footer a { color: #010245; text-decoration: none; }
       </style>
-      <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
     </head>
     <body>
-      <div class="receipt-container">
-        <div class="header"><h1>Your Booking is Confirmed!</h1><p>Thank you for choosing WAFA Dental Clinic.</p></div>
-        <div class="content">
-          <h2 class="section-title">Patient Details</h2>
-          <div class="info-grid">
-            <div class="info-item"><strong>Client ID:</strong><span>${clientID}</span></div>
-            <div class="info-item"><strong>Patient Name:</strong><span>${fullName}</span></div>
-            <div class="info-item"><strong>Email:</strong><span>${data.Email}</span></div>
-            <div class="info-item"><strong>Phone:</strong><span>${data.Phone}</span></div>
+      <div class="page">
+        <div class="header">
+          <img src="${logoBase64}" alt="Logo" class="logo"/>
+          <div class="clinic-info">
+            <h1>WAFA Dental Clinic</h1>
+            <p>Your Smile, Our Priority</p>
           </div>
-          <h2 class="section-title">Appointment Information</h2>
-          <div class="info-grid">
-            <div class="info-item"><strong>Booking ID:</strong><span>${bookingID}</span></div>
-            <div class="info-item"><strong>Service:</strong><span>${data.Service}</span></div>
-            <div class="info-item"><strong>Date:</strong><span>${data.Date}</span></div>
-            <div class="info-item"><strong>Time:</strong><span>${data.Time}</span></div>
-          </div>
-          ${data.Notes ? `<div class="notes"><strong>Notes:</strong> ${data.Notes}</div>` : ''}
-          <div class="notes" style="background-color: #d4edda; border-left-color: #28a745; color: #155724; margin-top: 30px;"><strong>Cancellation Policy:</strong> Please contact us at least 24 hours in advance for any changes.</div>
+        </div>
+        <h2 class="title">Your Booking is Confirmed!</h2>
+        <p style="text-align: center; font-size: 12pt; color: #555; margin-top: -20px;">
+          Dear ${fullName}, thank you for choosing us. We look forward to seeing you at your appointment.
+        </p>
+        <h3 class="section-heading">Appointment Details</h3>
+        <div class="details-grid">
+          <div class="detail-item"><strong>Service</strong><span>${data.Service}</span></div>
+          <div class="detail-item"><strong>Booking ID</strong><span>${bookingID}</span></div>
+          <div class="detail-item"><strong>Date</strong><span>${data.Date}</span></div>
+          <div class="detail-item"><strong>Time</strong><span>${data.Time}</span></div>
+        </div>
+        <h3 class="section-heading">Patient Information</h3>
+        <div class="details-grid">
+          <div class="detail-item"><strong>Client ID</strong><span>${clientID}</span></div>
+          <div class="detail-item"><strong>Phone</strong><span>${data.Phone}</span></div>
         </div>
         <div class="footer">
-          &copy; ${new Date().getFullYear()} WAFA Dental Clinic. All rights reserved.<br>
-          Office #7, 3rd Floor, The Ark Building, I-8 Markaz, Islamabad, Pakistan<br>
-          <a href="https://www.wafadentalclinic.com" target="_blank">www.wafadentalclinic.com</a> | <a href="https://www.google.com/maps/place/WAFA+Dental+Clinic/@33.6673337,73.0747596,17z/data=!3m1!4b1!4m6!3m5!1s0x38df957cc7644563:0x27a7ae2e6cda42ef!8m2!3d3d33.6673337!4d73.0747596!16s%2Fg%2F11xd1rytr0">View on Google Maps</a>
+          Office #7, 3rd Floor, The Ark Building, I-8 Markaz, Islamabad, Pakistan<br/>
+          <a href="https://www.wafadentalclinic.com">www.wafadentalclinic.com</a> | For inquiries, please call +92 51 8448877
         </div>
       </div>
     </body>
@@ -221,11 +233,9 @@ function generatePDF(bookingID, clientID, data) {
   const blob = Utilities.newBlob(htmlContent, 'text/html', `${bookingID}.html`);
   const pdf = blob.getAs('application/pdf').setName(`${bookingID}.pdf`);
   
-  // Save a copy to Google Drive
   const file = DriveApp.createFile(pdf);
   const fileId = file.getId();
 
-  // Return both the file ID and the base64 content
   return {
     fileId: fileId,
     base64: Utilities.base64Encode(pdf.getBytes())
@@ -236,15 +246,11 @@ function generatePDF(bookingID, clientID, data) {
 function getBookedSlotsCount(sheet) {
   const allData = sheet.getDataRange().getValues();
   const bookedSlotsCount = {};
-  // Start from 1 to skip header row
   for (let i = 1; i < allData.length; i++) {
     const row = allData[i];
-    const dateValue = row[6]; // Date is in column 7
-    const time = row[7]; // Time is in column 8
-    
-    // Check if dateValue is a valid Date object before formatting
+    const dateValue = row[6];
+    const time = row[7];
     if (dateValue instanceof Date && time) {
-      // Format the date from the sheet to match the frontend format (MM/dd/yyyy)
       const formattedDate = Utilities.formatDate(dateValue, TIMEZONE, "MM/dd/yyyy");
       const slotKey = `${formattedDate} ${time}`;
       bookedSlotsCount[slotKey] = (bookedSlotsCount[slotKey] || 0) + 1;
