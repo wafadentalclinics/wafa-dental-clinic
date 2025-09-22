@@ -2,8 +2,7 @@
 require('dotenv').config({ path: __dirname + '/.env' });
 
 const express = require('express');
-const sendConfirmationEmail = require('./services/emailService');
-const generateConfirmationPdf = require('./services/pdfService');
+const { sendEmail, getAppointmentReminderTemplate } = require('./services/resendEmailService');
 
 // Initialize the Express application
 const app = express();
@@ -28,27 +27,38 @@ app.use(express.json());
  */
 app.post('/send-confirmation', async (req, res) => {
   // Destructure and validate the request body
-  const { clientName, clientEmail, service, date, time, additionalInfo } = req.body;
+  const { clientName, clientEmail, service, date, time, bookingId, clientId, pdfBase64 } = req.body;
 
-  if (!clientName || !clientEmail || !service || !date || !time) {
+  if (!clientName || !clientEmail || !service || !date || !time || !bookingId || !clientId || !pdfBase64) {
     return res.status(400).json({ success: false, message: 'Missing required booking information.' });
   }
 
-  const bookingDetails = { clientName, clientEmail, service, date, time, additionalInfo };
+  const bookingDetails = { name: clientName, clientEmail, service, appointmentDate: date, appointmentTime: time, bookingId, clientId };
 
   try {
-    // 1. Generate the PDF confirmation
-    console.log('Generating PDF...');
-    const pdfBuffer = await generateConfirmationPdf(bookingDetails);
-    console.log('PDF generated successfully.');
+    // 1. Decode the Base64 PDF
+    const pdfBuffer = Buffer.from(pdfBase64, 'base64');
 
-    // 2. Send the confirmation email with the PDF attachment
+    // 2. Prepare the email content
+    const emailHtml = getAppointmentReminderTemplate(bookingDetails);
+    const subject = `Booking Confirmed: Your Appointment for ${service}`;
+    const attachments = [{
+        filename: `WAFA_Dental_Clinic_Booking_${bookingId}.pdf`,
+        content: pdfBuffer,
+    }];
+
+    // 3. Send the confirmation email with the PDF attachment
     console.log(`Sending confirmation email to ${clientEmail}...`);
-    await sendConfirmationEmail(bookingDetails, pdfBuffer);
+    const emailSent = await sendEmail(clientEmail, subject, emailHtml, attachments);
+
+    if (!emailSent) {
+      throw new Error('Failed to send confirmation email via Resend.');
+    }
+    
     console.log('Email sent successfully.');
 
-    // 3. Send a success response
-    res.status(200).json({ success: true, message: 'Booking confirmation email sent successfully!' });
+    // 4. Send a success response
+    res.status(200).json({ success: true, message: 'Booking confirmation email with PDF sent successfully!' });
   } catch (error) {
     // Log the error and send a failure response
     console.error('Failed to send confirmation email:', error);
