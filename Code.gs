@@ -290,7 +290,13 @@ function doGet(e) {
 
 function getEmailHtml_(bookingDetails) {
   const { clientName, service, date, time } = bookingDetails;
-  const primaryColor = '#007BFF';
+  const primaryColor = '#010245';
+  const logoUrl = 'https://www.wafadentalclinic.com/images/logo.png';
+
+  // Format the date to include the day of the week
+  const bookingDate = new Date(date);
+  const dayOfWeek = bookingDate.toLocaleDateString('en-US', { weekday: 'long' });
+  const formattedDate = `${bookingDate.getDate()}th ${bookingDate.toLocaleDateString('en-US', { month: 'long' })} ${bookingDate.getFullYear()}, ${dayOfWeek}`;
 
   return `
     <!DOCTYPE html>
@@ -299,55 +305,53 @@ function getEmailHtml_(bookingDetails) {
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <title>Booking Confirmation</title>
+      <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
       <style>
-        body { font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f4f4f4; }
-        .container { max-width: 600px; margin: 20px auto; background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
-        .header { background-color: ${primaryColor}; color: #ffffff; padding: 40px; text-align: center; }
-        .header h1 { margin: 0; font-size: 28px; }
-        .content { padding: 30px; color: #333333; line-height: 1.6; }
-        .booking-details { background-color: #f9f9f9; border-left: 4px solid ${primaryColor}; padding: 20px; margin: 20px 0; }
-        .booking-details p { margin: 10px 0; }
-        .policy, .location { margin-top: 20px; }
-        .footer { background-color: #333333; color: #ffffff; text-align: center; padding: 20px; font-size: 12px; }
-        .footer a { color: #ffffff; text-decoration: underline; }
-        .social-links a { margin: 0 10px; display: inline-block; text-decoration: none; }
-        .social-links img { width: 24px; height: 24px; vertical-align: middle; }
+        body { font-family: 'Inter', sans-serif; margin: 0; padding: 0; background-color: #f4f7f6; color: #333; }
+        .container { max-width: 600px; margin: 20px auto; background-color: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 6px 18px rgba(0,0,0,0.05); }
+        .header { display: flex; align-items: center; padding: 20px 30px; background-color: #ffffff; border-bottom: 1px solid #eeeeee; }
+        .header img { width: 40px; height: 40px; margin-right: 15px; }
+        .header h1 { font-family: 'DM Serif Display', serif; font-size: 24px; color: ${primaryColor}; margin: 0; }
+        .content { padding: 30px; line-height: 1.7; }
+        .content h2 { font-size: 20px; color: ${primaryColor}; margin-top: 0; }
+        .booking-details { background-color: #f9f9f9; border-left: 4px solid ${primaryColor}; padding: 20px; margin: 25px 0; }
+        .booking-details p { margin: 12px 0; font-size: 16px; }
+        .policy { background-color: #fff8e1; border: 1px solid #ffecb3; padding: 20px; border-radius: 8px; }
+        .location a.button { background-color: #000000; color: #ffffff; padding: 12px 20px; text-decoration: none; border-radius: 8px; display: inline-block; font-weight: 500; }
+        .footer { background-color: #333333; color: #cccccc; text-align: center; padding: 25px; font-size: 12px; }
+        .footer a { color: #ffffff; text-decoration: none; }
+        .social-links a { margin: 0 8px; }
+        .social-links img { width: 20px; height: 20px; }
       </style>
     </head>
     <body>
       <div class="container">
         <div class="header">
-          <h1>Your Booking is Confirmed!</h1>
+          <img src="${logoUrl}" alt="Wafa Dental Clinic Logo">
+          <h1>WAFA Dental Clinic</h1>
         </div>
         <div class="content">
           <h2>Dear ${clientName},</h2>
-          <p>Thank you for choosing Wafa Dental Clinic. We are pleased to confirm your appointment with us. Please find the details of your booking below.</p>
+          <p>Thank you for choosing Wafa Dental Clinic. We are pleased to confirm your appointment. Your e-receipt is attached.</p>
           <div class="booking-details">
             <p><strong>Service:</strong> ${service}</p>
-            <p><strong>Date:</strong> ${date}</p>
+            <p><strong>Date:</strong> ${formattedDate}</p>
             <p><strong>Time:</strong> ${time}</p>
           </div>
           <div class="policy">
-            <h3>Cancellation & Rescheduling Policy</h3>
-            <p>If you need to cancel or reschedule your appointment, please contact us at least 24 hours in advance. You can reach us at <a href="tel:+92518448877">+92 51 8448877</a>.</p>
+            <p><strong>Cancellation & Rescheduling Policy:</strong> If you need to cancel or reschedule, please contact us at least 24 hours in advance at <a href="tel:+92518448877">+92 51 8448877</a> or on WhatsApp at <a href="https://wa.me/923295195096">+92 329 5195096</a>.</p>
           </div>
-          <div class="location">
-            <h3>Our Location</h3>
-            <p>Office #7, 3rd Floor, The Ark Building, Markaz, I-8 Markaz I 8 Markaz I-8, Islamabad, 44000, Pakistan</p>
-            <p><a href="https://www.google.com/maps/place/WAFA+Dental+Clinic/@33.6673337,73.0747596,17z/data=!3m1!4b1!4m6!3m5!1s0x38df957cc7644563:0x27a7ae2e6cda42ef!8m2!3d33.6673337!4d73.0747596!16s%2Fg%2F11xd1rytr0?entry=tts" style="color: ${primaryColor};">Get Directions on Google Maps</a></p>
+          <div class="location" style="margin-top: 25px;">
+            <p><strong>Our Location:</strong><br>Office #7, 3rd Floor, The Ark Building, Markaz, I-8, Islamabad, 44000, Pakistan</p>
+            <a href="https://www.google.com/maps/place/WAFA+Dental+Clinic/@33.6673337,73.0747596,17z" class="button" target="_blank">Get Directions on Google Maps ↗</a>
           </div>
         </div>
         <div class="footer">
-          <div class="social-links">
-            <a href="https://www.facebook.com/wafadentalclinics" target="_blank" title="Facebook">
-              <img src="https://img.icons8.com/ios-filled/50/ffffff/facebook-new.png" alt="Facebook">
-            </a>
-            <a href="https://www.instagram.com/wafadentalclinic.pk/" target="_blank" title="Instagram">
-              <img src="https://img.icons8.com/ios-filled/50/ffffff/instagram-new.png" alt="Instagram">
-            </a>
-            <a href="https://x.com/TeamWafaDental" target="_blank" title="Twitter">
-              <img src="https://img.icons8.com/ios-filled/50/ffffff/twitterx.png" alt="Twitter">
-            </a>
+          <div class="social-links" style="margin-bottom: 15px;">
+            <a href="https://www.facebook.com/wafadentalclinics"><img src="https://img.icons8.com/ios-filled/50/ffffff/facebook-new.png" alt="Facebook"></a>
+            <a href="https://www.instagram.com/wafadentalclinic.pk/"><img src="https://img.icons8.com/ios-filled/50/ffffff/instagram-new.png" alt="Instagram"></a>
+            <a href="https://x.com/TeamWafaDental"><img src="https://img.icons8.com/ios-filled/50/ffffff/twitterx.png" alt="Twitter"></a>
+            <a href="https://www.linkedin.com/company/wafa-dental-clinic/"><img src="https://img.icons8.com/ios-filled/50/ffffff/linkedin.png" alt="LinkedIn"></a>
           </div>
           <p>Wafa Dental Clinic | +92 51 8448877 | <a href="mailto:management@wafadentalclinic.com">management@wafadentalclinic.com</a></p>
           <p>&copy; ${new Date().getFullYear()} Wafa Dental Clinic. All rights reserved.</p>
