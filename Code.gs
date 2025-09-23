@@ -1,4 +1,5 @@
 // === CONFIGURATION ===
+const RESEND_API_KEY = "re_BtcZWuVZ_NJhAQBudfFufERALf1aXQQAk";
 const SHEET_NAME = "WAFA Bookings";
 const CALENDAR_ID = "wafadentalclinics@gmail.com";
 const TIMEZONE = "Asia/Karachi";
@@ -70,6 +71,9 @@ function doPost(e) {
       `https://drive.google.com/uc?export=download&id=${pdfResult.fileId}`,
       new Date()
     ]);
+
+    // Send email confirmation
+    sendBookingConfirmation(data, bookingID, clientId, pdfResult.fileId);
 
     return ContentService.createTextOutput(JSON.stringify({
       success: true,
@@ -255,5 +259,57 @@ function doGet(e) {
     Logger.log("Error in doGet: " + err.message);
     return ContentService.createTextOutput(JSON.stringify({ success: false, message: err.message }))
                          .setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+// === NEW FUNCTION: SEND BOOKING CONFIRMATION EMAIL ===
+function sendBookingConfirmation(clientData, bookingID, clientID, pdfFileId) {
+  try {
+    const pdfBlob = DriveApp.getFileById(pdfFileId).getBlob();
+    const pdfBase64 = Utilities.base64Encode(pdfBlob.getBytes());
+
+    const emailPayload = {
+      from: "Wafa Dental Clinic <management@wafadentalclinic.com>",
+      to: [clientData.Email],
+      subject: `Booking Confirmed - ${bookingID}`,
+      html: `
+        <html>
+          <body>
+            <h2>Booking Confirmation</h2>
+            <p>Dear ${clientData.FirstName} ${clientData.LastName},</p>
+            <p>Your booking is confirmed. Please find the details below:</p>
+            <ul>
+              <li><strong>Booking ID:</strong> ${bookingID}</li>
+              <li><strong>Client ID:</strong> ${clientID}</li>
+              <li><strong>Service:</strong> ${clientData.Service}</li>
+              <li><strong>Date:</strong> ${clientData.Date}</li>
+              <li><strong>Time:</strong> ${clientData.Time}</li>
+            </ul>
+            <p>Your PDF receipt is attached to this email.</p>
+            <p>Thank you for choosing Wafa Dental Clinic.</p>
+          </body>
+        </html>
+      `,
+      attachments: [
+        {
+          filename: `${bookingID}.pdf`,
+          content: pdfBase64,
+        },
+      ],
+    };
+
+    const options = {
+      method: "post",
+      contentType: "application/json",
+      headers: {
+        Authorization: `Bearer ${RESEND_API_KEY}`,
+      },
+      payload: JSON.stringify(emailPayload),
+    };
+
+    const response = UrlFetchApp.fetch("https://api.resend.com/emails", options);
+    Logger.log("Resend API Response: " + response.getContentText());
+  } catch (error) {
+    Logger.log("Failed to send confirmation email: " + error.toString());
   }
 }
