@@ -293,7 +293,6 @@ function getEmailHtml_(bookingDetails) {
   const primaryColor = '#010245';
   const logoUrl = 'https://www.wafadentalclinic.com/images/logo.png';
 
-  // Format the date to include the day of the week
   const bookingDate = new Date(date);
   const dayOfWeek = bookingDate.toLocaleDateString('en-US', { weekday: 'long' });
   const formattedDate = `${bookingDate.getDate()}th ${bookingDate.toLocaleDateString('en-US', { month: 'long' })} ${bookingDate.getFullYear()}, ${dayOfWeek}`;
@@ -309,14 +308,16 @@ function getEmailHtml_(bookingDetails) {
       <style>
         body { font-family: 'Inter', sans-serif; margin: 0; padding: 0; background-color: #f4f7f6; color: #333; }
         .container { max-width: 600px; margin: 20px auto; background-color: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 6px 18px rgba(0,0,0,0.05); }
-        .header { display: flex; align-items: center; padding: 20px 30px; background-color: #ffffff; border-bottom: 1px solid #eeeeee; }
-        .header img { width: 40px; height: 40px; margin-right: 15px; }
-        .header h1 { font-family: 'DM Serif Display', serif; font-size: 24px; color: ${primaryColor}; margin: 0; }
+        .header { display: flex; align-items: center; padding: 20px 30px; background-color: ${primaryColor}; color: #ffffff; }
+        .header img { width: 35px; height: 35px; margin-right: 15px; }
+        .header-text { text-align: left; }
+        .header-text h1 { font-family: 'DM Serif Display', serif; font-size: 24px; margin: 0; }
+        .header-text p { font-family: 'Inter', sans-serif; margin: 4px 0 0; font-size: 16px; }
         .content { padding: 30px; line-height: 1.7; }
         .content h2 { font-size: 20px; color: ${primaryColor}; margin-top: 0; }
         .booking-details { background-color: #f9f9f9; border-left: 4px solid ${primaryColor}; padding: 20px; margin: 25px 0; }
         .booking-details p { margin: 12px 0; font-size: 16px; }
-        .policy { background-color: #fff8e1; border: 1px solid #ffecb3; padding: 20px; border-radius: 8px; }
+        .policy { background-color: #e3f2fd; border: 1px solid #bbdefb; padding: 20px; border-radius: 8px; }
         .location a.button { background-color: #000000; color: #ffffff; padding: 12px 20px; text-decoration: none; border-radius: 8px; display: inline-block; font-weight: 500; }
         .footer { background-color: #333333; color: #cccccc; text-align: center; padding: 25px; font-size: 12px; }
         .footer a { color: #ffffff; text-decoration: none; }
@@ -328,7 +329,10 @@ function getEmailHtml_(bookingDetails) {
       <div class="container">
         <div class="header">
           <img src="${logoUrl}" alt="Wafa Dental Clinic Logo">
-          <h1>WAFA Dental Clinic</h1>
+          <div class="header-text">
+            <h1>WAFA Dental Clinic</h1>
+            <p>Your Booking is Confirmed!</p>
+          </div>
         </div>
         <div class="content">
           <h2>Dear ${clientName},</h2>
