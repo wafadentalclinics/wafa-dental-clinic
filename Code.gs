@@ -297,6 +297,24 @@ function getEmailHtml_(bookingDetails) {
   const dayOfWeek = bookingDate.toLocaleDateString('en-US', { weekday: 'long' });
   const formattedDate = `${bookingDate.getDate()}th ${bookingDate.toLocaleDateString('en-US', { month: 'long' })} ${bookingDate.getFullYear()}, ${dayOfWeek}`;
 
+  let appointmentDateTime;
+  if (time instanceof Date) {
+    const hours = time.getHours();
+    const minutes = time.getMinutes();
+    appointmentDateTime = new Date(bookingDate);
+    appointmentDateTime.setHours(hours);
+    appointmentDateTime.setMinutes(minutes);
+  } else {
+    const timeParts = time.toString().split(':');
+    const hours = parseInt(timeParts[0], 10);
+    const minutes = parseInt(timeParts[1], 10);
+    appointmentDateTime = new Date(bookingDate);
+    appointmentDateTime.setHours(hours);
+    appointmentDateTime.setMinutes(minutes);
+  }
+
+  const formattedTime = Utilities.formatDate(appointmentDateTime, TIMEZONE, "hh:mm a");
+
   return `
     <!DOCTYPE html>
     <html lang="en">
@@ -340,7 +358,7 @@ function getEmailHtml_(bookingDetails) {
           <div class="booking-details">
             <p><strong>Service:</strong> ${service}</p>
             <p><strong>Date:</strong> ${formattedDate}</p>
-            <p><strong>Time:</strong> ${time}</p>
+            <p><strong>Time:</strong> ${formattedTime}</p>
           </div>
           <div class="policy">
             <p><strong>Cancellation & Rescheduling Policy:</strong> If you need to cancel or reschedule, please contact us at least 24 hours in advance at <a href="tel:+92518448877">+92 51 8448877</a> or on WhatsApp at <a href="https://wa.me/923295195096">+92 329 5195096</a>.</p>
@@ -364,4 +382,4 @@ function getEmailHtml_(bookingDetails) {
     </body>
     </html>
   `;
-};
+}
