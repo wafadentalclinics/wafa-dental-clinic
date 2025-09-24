@@ -297,23 +297,19 @@ function getEmailHtml_(bookingDetails) {
   const dayOfWeek = bookingDate.toLocaleDateString('en-US', { weekday: 'long' });
   const formattedDate = `${bookingDate.getDate()}th ${bookingDate.toLocaleDateString('en-US', { month: 'long' })} ${bookingDate.getFullYear()}, ${dayOfWeek}`;
 
-  let appointmentDateTime;
+  let formattedTime;
   if (time instanceof Date) {
-    const hours = time.getHours();
-    const minutes = time.getMinutes();
-    appointmentDateTime = new Date(bookingDate);
-    appointmentDateTime.setHours(hours);
-    appointmentDateTime.setMinutes(minutes);
+    formattedTime = Utilities.formatDate(time, TIMEZONE, "hh:mm a");
   } else {
-    const timeParts = time.toString().split(':');
+    // Assuming time is a string like "HH:mm"
+    const timeParts = time.split(':');
     const hours = parseInt(timeParts[0], 10);
     const minutes = parseInt(timeParts[1], 10);
-    appointmentDateTime = new Date(bookingDate);
-    appointmentDateTime.setHours(hours);
-    appointmentDateTime.setMinutes(minutes);
+    const tempDate = new Date();
+    tempDate.setHours(hours);
+    tempDate.setMinutes(minutes);
+    formattedTime = Utilities.formatDate(tempDate, TIMEZONE, "hh:mm a");
   }
-
-  const formattedTime = Utilities.formatDate(appointmentDateTime, TIMEZONE, "hh:mm a");
 
   return `
     <!DOCTYPE html>
