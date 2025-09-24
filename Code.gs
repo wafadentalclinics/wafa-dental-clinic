@@ -139,7 +139,7 @@ function queueEmail_(spreadsheet, fileId, data, bookingID, clientId) {
     sheet.appendRow(["File ID", "Recipient", "First Name", "Last Name", "Service", "Date", "Time", "Booking ID", "Client ID", "Status", "Attempts", "Last Response"]);
   }
   sheet.appendRow([
-    fileId, data.Email, data.FirstName, data.LastName, data.Service, data.Date, data.Time,
+    fileId, data.Email, data.FirstName, data.LastName, data.Service, data.Date, `'${data.Time}`,
     bookingID, clientId, "QUEUED", 0, ""
   ]);
 }
