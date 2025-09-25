@@ -2,6 +2,7 @@
 require('dotenv').config({ path: __dirname + '/.env' });
 
 const express = require('express');
+const fetch = require('node-fetch');
 const { sendEmail, getAppointmentReminderTemplate } = require('./services/resendEmailService');
 const generateConfirmationPdf = require('./services/pdfService');
 
@@ -9,8 +10,9 @@ const generateConfirmationPdf = require('./services/pdfService');
 const app = express();
 const port = process.env.PORT || 3000;
 
-// Middleware to parse JSON bodies
+// Middleware to parse JSON and URL-encoded bodies
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 /**
  * POST /send-confirmation
@@ -72,6 +74,43 @@ app.post('/send-confirmation', async (req, res) => {
     res.status(500).json({ success: false, message: 'An error occurred while sending the confirmation email.' });
   }
 });
+
+/**
+ * POST /book-appointment
+ * Acts as a proxy to the Google Apps Script to bypass CORS issues.
+ */
+app.post('/book-appointment', async (req, res) => {
+  console.log('[/book-appointment] Endpoint hit at:', new Date().toISOString());
+  const webAppUrl = process.env.WEB_APP_URL;
+
+  if (!webAppUrl) {
+    console.error('WEB_APP_URL is not defined in the environment variables.');
+    return res.status(500).json({ success: false, message: 'Server configuration error.' });
+  }
+
+  try {
+    const response = await fetch(webAppUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: new URLSearchParams(req.body).toString(),
+    });
+
+    const resultText = await response.text();
+    const result = JSON.parse(resultText);
+
+    if (result.success) {
+      res.status(200).json(result);
+    } else {
+      res.status(400).json(result);
+    }
+  } catch (error) {
+    console.error('Error proxying request to Google Apps Script:', error);
+    res.status(500).json({ success: false, message: 'Could not connect to the booking service.' });
+  }
+});
+
 
 // Start the server
 app.listen(port, () => {

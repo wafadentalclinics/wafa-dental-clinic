@@ -18,11 +18,10 @@
   "dependencies": {
     "dotenv": "^16.6.1",
     "express": "^4.18.2",
+    "node-fetch": "^2.7.0",
     "nodemailer": "^6.9.7",
     "pdfkit": "^0.13.0",
     "resend": "^6.1.0"
   },
-  "devDependencies": {
-    "node-fetch": "^2.7.0"
-  }
+  "devDependencies": {}
 }
