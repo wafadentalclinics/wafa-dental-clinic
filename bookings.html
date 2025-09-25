@@ -1547,6 +1547,91 @@
             });
 
 
+            async function submitBookingForm(data) {
+                statusMessage.textContent = '';
+                loadingOverlay.classList.add('is-visible');
+
+                const payload = {
+                    parameter: data,
+                    context: {
+                        source: "WebApp"
+                    }
+                };
+
+                try {
+                    const response = await fetch(WEB_APP_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    // Read as text first (handles Google's redirect quirks)
+                    const text = await response.text();
+                    let result;
+
+                    // Try parsing JSON; if fails, log the raw response
+                    try {
+                        result = JSON.parse(text);
+                    } catch (err) {
+                        console.error("Failed to parse response as JSON:", text);
+                        throw new Error("Invalid server response. Please try again.");
+                    }
+
+                    if (result.success) {
+                        sendConfirmationEmailWithAttachment(data, result);
+                        loadingOverlay.classList.remove('is-visible');
+                        confirmationModal.classList.add('is-visible');
+                        
+                        // Handle PDF download from the base64 string
+                        if (result.pdfBase64) {
+                            const byteCharacters = atob(result.pdfBase64);
+                            const byteNumbers = new Array(byteCharacters.length);
+                            for (let i = 0; i < byteCharacters.length; i++) {
+                                byteNumbers[i] = byteCharacters.charCodeAt(i);
+                            }
+                            const byteArray = new Uint8Array(byteNumbers);
+                            const pdfBlob = new Blob([byteArray], { type: 'application/pdf' });
+                            const pdfUrl = URL.createObjectURL(pdfBlob);
+                            
+                            const tempLink = document.createElement('a');
+                            tempLink.href = pdfUrl;
+                            tempLink.download = `WAFA_Medical_Receipt_${result.bookingID}_${result.clientID}.pdf`;
+                            document.body.appendChild(tempLink);
+                            tempLink.click();
+                            document.body.removeChild(tempLink);
+                            
+                            setTimeout(() => URL.revokeObjectURL(pdfUrl), 100);
+                        } else {
+                            console.error("PDF base64 string not received.");
+                        }
+
+                        bookingForm.reset();
+                        if (typeof grecaptcha !== 'undefined') { grecaptcha.reset(); }
+                        // Clear selected service and time display
+                        serviceHidden.value = '';
+                        if (selectedSubOption) {
+                            selectedSubOption.classList.remove('selected');
+                            selectedSubOption.querySelector('.fa-check-circle').classList.remove('opacity-100', 'scale-100');
+                            selectedSubOption = null;
+                        }
+                        updateSelectedTimeDisplay();
+                    } else {
+                        loadingOverlay.classList.remove('is-visible');
+                        statusMessage.textContent = "Error: " + result.message;
+                        statusMessage.classList.add('text-red-500');
+                    }
+
+                } catch (err) {
+                    loadingOverlay.classList.remove('is-visible');
+                    console.error("Booking submission error:", err);
+                    statusMessage.textContent = "Error: Could not connect to the booking service. Please try again.";
+                    statusMessage.classList.add('text-red-500');
+                } finally {
+                    if (typeof grecaptcha !== 'undefined') grecaptcha.reset();
+                    submitButton.disabled = false;
+                }
+            }
+
             bookingForm.addEventListener('submit', async (e) => {
                 e.preventDefault();
                 
@@ -1617,10 +1702,6 @@
 
                 // Disable submit button to prevent double submission
                 submitButton.disabled = true;
-                // Show loading overlay
-                loadingOverlay.classList.add('is-visible');
-                statusMessage.textContent = 'Booking your appointment...';
-                statusMessage.classList.add('text-gray-500');
 
                 const data = { // Renamed to 'data' to match user's script
                     FirstName: firstName,
@@ -1634,89 +1715,7 @@
                     RecaptchaResponse: recaptchaResponse // Send reCAPTCHA response to server
                 };
                 
-                // Send data as a JSON payload to avoid redirect issues with Google Apps Script
-                const payload = {
-                    parameter: data,
-                    // Adding context if needed by the script, though not strictly necessary for this fix
-                    context: {
-                        source: "WebApp"
-                    }
-                };
-
-                try {
-                    const fetchResponse = await fetch(WEB_APP_URL, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'text/plain;charset=utf-8', // Use text/plain to avoid CORS preflight
-                        },
-                        body: JSON.stringify(payload)
-                    });
-
-                    const resultText = await fetchResponse.text();
-                    const result = JSON.parse(resultText);
-
-                    if (result.success) {
-                        // ** NEW: Send data to our backend for email attachment **
-                        sendConfirmationEmailWithAttachment(data, result);
-
-                        // Clear the status message
-                        statusMessage.textContent = '';
-                        statusMessage.classList.remove('text-gray-500');
-
-                        // Hide loading overlay and show confirmation modal
-                        loadingOverlay.classList.remove('is-visible');
-                        confirmationModal.classList.add('is-visible');
-                        
-                        // Handle PDF download from the base64 string
-                        if (result.pdfBase64) {
-                            const byteCharacters = atob(result.pdfBase64);
-                            const byteNumbers = new Array(byteCharacters.length);
-                            for (let i = 0; i < byteCharacters.length; i++) {
-                                byteNumbers[i] = byteCharacters.charCodeAt(i);
-                            }
-                            const byteArray = new Uint8Array(byteNumbers);
-                            const pdfBlob = new Blob([byteArray], { type: 'application/pdf' });
-                            const pdfUrl = URL.createObjectURL(pdfBlob);
-                            
-                            const tempLink = document.createElement('a');
-                            tempLink.href = pdfUrl;
-                            tempLink.download = `WAFA_Medical_Receipt_${result.bookingID}_${result.clientID}.pdf`;
-                            document.body.appendChild(tempLink);
-                            tempLink.click();
-                            document.body.removeChild(tempLink);
-                            
-                            setTimeout(() => URL.revokeObjectURL(pdfUrl), 100);
-                        } else {
-                            console.error("PDF base64 string not received.");
-                        }
-
-                        bookingForm.reset();
-                        if (typeof grecaptcha !== 'undefined') { grecaptcha.reset(); }
-                        // Clear selected service and time display
-                        serviceHidden.value = '';
-                        if (selectedSubOption) {
-                            selectedSubOption.classList.remove('selected');
-                            selectedSubOption.querySelector('.fa-check-circle').classList.remove('opacity-100', 'scale-100');
-                            selectedSubOption = null;
-                        }
-                        updateSelectedTimeDisplay();
-
-                    } else {
-                        loadingOverlay.classList.remove('is-visible');
-                        statusMessage.textContent = "Error: " + result.message;
-                        statusMessage.classList.add('text-red-500');
-                        if (typeof grecaptcha !== 'undefined') { grecaptcha.reset(); }
-                    }
-                } catch (error) {
-                    loadingOverlay.classList.remove('is-visible');
-                    console.error('Error submitting form:', error);
-                    statusMessage.textContent = "Error: Could not connect to the booking service. Please try again.";
-                    statusMessage.classList.add('text-red-500');
-                    if (typeof grecaptcha !== 'undefined') { grecaptcha.reset(); }
-                } finally {
-                    // Re-enable submit button
-                    submitButton.disabled = false;
-                }
+                submitBookingForm(data);
             });
 
             // reCAPTCHA callback functions
