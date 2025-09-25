@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Book an Appointment - Wafa Dental Clinic</title>
     <meta name="description" content="Schedule your appointment with Wafa Dental Clinic in Islamabad. Use our easy online booking form to find a convenient time for your dental needs.">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.tailwindcss.com https://www.google.com https://www.gstatic.com 'unsafe-inline'; style-src 'self' https://fonts.googleapis.com https://cdnjs.cloudflare.com 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; frame-src https://www.google.com; connect-src 'self' https://script.google.com/macros/s/AKfycbyeAtM6pgLhEKa-dkHosk0IRhU6O-6u-dj6XLsTaOv_LxQ0WSuaJQtzkI4HjFm7_K7_/exec https://wafa-dental-backend.onrender.com;">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.tailwindcss.com https://www.google.com https://www.gstatic.com 'unsafe-inline'; style-src 'self' https://fonts.googleapis.com https://cdnjs.cloudflare.com 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data:; frame-src https://www.google.com; connect-src 'self' https://script.google.com/macros/s/AKfycbyeAtM6pgLhEKa-dkHosk0IRhU6O-6u-dj6XLsTaOv_LxQ0WSuaJQtzkI4HjFm7_K7_/exec https://wafa-dental-backend.onrender.com;">
     <meta name="referrer" content="no-referrer">
     <link rel="canonical" href="https://www.wafadentalclinic.com/bookings.html" />
 
@@ -1643,46 +1643,64 @@
                         headers: {
                             'Content-Type': 'application/x-www-form-urlencoded'
                         },
-                        body: urlEncodedData,
-                        mode: 'no-cors' // Add this to handle opaque responses
+                        body: urlEncodedData
                     });
 
-                    // Since we are using 'no-cors', we can't read the response directly.
-                    // We will assume success and proceed, as the backend is handling the email.
-                    // The user has confirmed that the booking is working and emails are being received.
-                    // This change is to prevent the frontend from showing a false error.
+                    const resultText = await fetchResponse.text();
+                    const result = JSON.parse(resultText);
 
-                    // ** NEW: Send data to our backend for email attachment **
-                    // We need to simulate the result object that was previously received.
-                    // This is a bit of a workaround due to the 'no-cors' limitation.
-                    const simulatedResult = {
-                        success: true,
-                        bookingID: "Awaiting Confirmation", // Placeholder
-                        clientID: "Awaiting Confirmation", // Placeholder
-                        pdfBase64: "" // We can't get this from the response anymore
-                    };
+                    if (result.success) {
+                        // ** NEW: Send data to our backend for email attachment **
+                        sendConfirmationEmailWithAttachment(data, result);
 
-                    sendConfirmationEmailWithAttachment(data, simulatedResult);
+                        // Clear the status message
+                        statusMessage.textContent = '';
+                        statusMessage.classList.remove('text-gray-500');
 
-                    // Clear the status message
-                    statusMessage.textContent = '';
-                    statusMessage.classList.remove('text-gray-500');
+                        // Hide loading overlay and show confirmation modal
+                        loadingOverlay.classList.remove('is-visible');
+                        confirmationModal.classList.add('is-visible');
+                        
+                        // Handle PDF download from the base64 string
+                        if (result.pdfBase64) {
+                            const byteCharacters = atob(result.pdfBase64);
+                            const byteNumbers = new Array(byteCharacters.length);
+                            for (let i = 0; i < byteCharacters.length; i++) {
+                                byteNumbers[i] = byteCharacters.charCodeAt(i);
+                            }
+                            const byteArray = new Uint8Array(byteNumbers);
+                            const pdfBlob = new Blob([byteArray], { type: 'application/pdf' });
+                            const pdfUrl = URL.createObjectURL(pdfBlob);
+                            
+                            const tempLink = document.createElement('a');
+                            tempLink.href = pdfUrl;
+                            tempLink.download = `WAFA_Medical_Receipt_${result.bookingID}_${result.clientID}.pdf`;
+                            document.body.appendChild(tempLink);
+                            tempLink.click();
+                            document.body.removeChild(tempLink);
+                            
+                            setTimeout(() => URL.revokeObjectURL(pdfUrl), 100);
+                        } else {
+                            console.error("PDF base64 string not received.");
+                        }
 
-                    // Hide loading overlay and show confirmation modal
-                    loadingOverlay.classList.remove('is-visible');
-                    confirmationModal.classList.add('is-visible');
-                    
-                    bookingForm.reset();
-                    if (typeof grecaptcha !== 'undefined') { grecaptcha.reset(); }
-                    // Clear selected service and time display
-                    serviceHidden.value = '';
-                    if (selectedSubOption) {
-                        selectedSubOption.classList.remove('selected');
-                        selectedSubOption.querySelector('.fa-check-circle').classList.remove('opacity-100', 'scale-100');
-                        selectedSubOption = null;
+                        bookingForm.reset();
+                        if (typeof grecaptcha !== 'undefined') { grecaptcha.reset(); }
+                        // Clear selected service and time display
+                        serviceHidden.value = '';
+                        if (selectedSubOption) {
+                            selectedSubOption.classList.remove('selected');
+                            selectedSubOption.querySelector('.fa-check-circle').classList.remove('opacity-100', 'scale-100');
+                            selectedSubOption = null;
+                        }
+                        updateSelectedTimeDisplay();
+
+                    } else {
+                        loadingOverlay.classList.remove('is-visible');
+                        statusMessage.textContent = "Error: " + result.message;
+                        statusMessage.classList.add('text-red-500');
+                        if (typeof grecaptcha !== 'undefined') { grecaptcha.reset(); }
                     }
-                    updateSelectedTimeDisplay();
-
                 } catch (error) {
                     loadingOverlay.classList.remove('is-visible');
                     console.error('Error submitting form:', error);
