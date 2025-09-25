@@ -1646,7 +1646,9 @@
                         body: urlEncodedData
                     });
 
-                    const result = await fetchResponse.json();
+                    // Using .text() and then JSON.parse() is a more robust workaround for Google Apps Script redirects.
+                    const responseText = await fetchResponse.text();
+                    const result = JSON.parse(responseText);
 
                     if (result.success) {
                         // ** NEW: Send data to our backend for email attachment **
@@ -1702,8 +1704,13 @@
                     }
                 } catch (error) {
                     loadingOverlay.classList.remove('is-visible');
-                    console.error('Error submitting form:', error);
-                    statusMessage.textContent = "Error: Could not connect to the booking service. Please try again.";
+                    console.error('Error submitting form:', error); // Keep detailed error in console
+                    // Differentiate between connection and parsing errors
+                    if (error instanceof SyntaxError) {
+                        statusMessage.textContent = "Error: Received an invalid response from the server. Please contact support.";
+                    } else {
+                        statusMessage.textContent = "Error: Could not connect to the booking service. Please try again.";
+                    }
                     statusMessage.classList.add('text-red-500');
                     if (typeof grecaptcha !== 'undefined') { grecaptcha.reset(); }
                 } finally {
@@ -2387,4 +2394,3 @@
 </html>
 
 </file_content>
-
