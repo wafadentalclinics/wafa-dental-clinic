@@ -11,31 +11,59 @@ function doPost(e) {
     const data = e.parameter;
     Logger.log("Received data for doPost: " + JSON.stringify(data));
 
-    const spreadsheet = SpreadsheetApp.openByUrl("https://docs.google.com/spreadsheets/d/19iITtL0e8U36frY1TIxx7wZoypPrMPzQLmlMaAPixaI/edit");
+    // Validate incoming data
+    if (!data.FirstName || !data.LastName || !data.Email || !data.Phone || !data.Service || !data.Date || !data.Time) {
+      throw new Error("Missing required booking information.");
+    }
+
+    let spreadsheet;
+    try {
+      spreadsheet = SpreadsheetApp.openByUrl("https://docs.google.com/spreadsheets/d/19iITtL0e8U36frY1TIxx7wZoypPrMPzQLmlMaAPixaI/edit");
+    } catch (sheetError) {
+      throw new Error("Could not open the spreadsheet. Please check the URL and permissions.");
+    }
+
     const sheet = spreadsheet.getSheetByName(SHEET_NAME);
+    if (!sheet) {
+      throw new Error(`Sheet with name "${SHEET_NAME}" not found.`);
+    }
 
     const clientId = generateDeterministicClientId_(data);
     const bookingID = generateBookingID_(sheet);
     const fullName = `${data.FirstName} ${data.LastName}`;
 
-    const calendar = CalendarApp.getCalendarById(CALENDAR_ID);
-    const startTime = new Date(`${data.Date} ${data.Time}`);
-    const endTime = new Date(startTime.getTime() + 30 * 60000);
-    const calendarEvent = calendar.createEvent(
-      `${bookingID} - ${fullName} - ${data.Service}`,
-      startTime,
-      endTime,
-      { description: data.Notes || '' }
-    );
-    const calendarEventId = calendarEvent.getId();
+    let calendarEventId;
+    try {
+      const calendar = CalendarApp.getCalendarById(CALENDAR_ID);
+      const startTime = new Date(`${data.Date} ${data.Time}`);
+      const endTime = new Date(startTime.getTime() + 30 * 60000);
+      const calendarEvent = calendar.createEvent(
+        `${bookingID} - ${fullName} - ${data.Service}`,
+        startTime,
+        endTime,
+        { description: data.Notes || '' }
+      );
+      calendarEventId = calendarEvent.getId();
+    } catch (calendarError) {
+      throw new Error("Failed to create calendar event. Please check calendar permissions.");
+    }
     
-    const pdfResult = generatePremiumPDF_(bookingID, clientId, data);
+    let pdfResult;
+    try {
+      pdfResult = generatePremiumPDF_(bookingID, clientId, data);
+    } catch (pdfError) {
+      throw new Error("Failed to generate PDF. Please check Drive permissions.");
+    }
 
-    sheet.appendRow([
-      clientId, bookingID, fullName, data.Email, `'${data.Phone}`,
-      data.Service, data.Date, data.Time, calendarEventId, 
-      `https://drive.google.com/uc?export=download&id=${pdfResult.fileId}`, new Date()
-    ]);
+    try {
+      sheet.appendRow([
+        clientId, bookingID, fullName, data.Email, `'${data.Phone}`,
+        data.Service, data.Date, data.Time, calendarEventId, 
+        `https://drive.google.com/uc?export=download&id=${pdfResult.fileId}`, new Date()
+      ]);
+    } catch (appendError) {
+      throw new Error("Failed to write to the spreadsheet. Please check sheet permissions.");
+    }
 
     queueEmail_(spreadsheet, pdfResult.fileId, data, bookingID, clientId);
 
@@ -48,7 +76,7 @@ function doPost(e) {
 
   } catch (err) {
     Logger.log("CRITICAL Error in doPost: " + err.message + " Stack: " + err.stack);
-    return ContentService.createTextOutput(JSON.stringify({ success: false, message: err.message }))
+    return ContentService.createTextOutput(JSON.stringify({ success: false, message: "An internal error occurred: " + err.message }))
                          .setMimeType(ContentService.MimeType.JSON);
   }
 }
