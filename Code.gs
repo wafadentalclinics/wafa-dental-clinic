@@ -39,17 +39,21 @@ function doPost(e) {
 
     queueEmail_(spreadsheet, pdfResult.fileId, data, bookingID, clientId);
 
-    return ContentService.createTextOutput(JSON.stringify({
+    const response = ContentService.createTextOutput(JSON.stringify({
       success: true,
       bookingID: bookingID,
       clientID: clientId,
       pdfBase64: pdfResult.base64
     })).setMimeType(ContentService.MimeType.JSON);
+    response.setHeader("Access-Control-Allow-Origin", "*");
+    return response;
 
   } catch (err) {
     Logger.log("CRITICAL Error in doPost: " + err.message + " Stack: " + err.stack);
-    return ContentService.createTextOutput(JSON.stringify({ success: false, message: err.message }))
+    const errorResponse = ContentService.createTextOutput(JSON.stringify({ success: false, message: err.message }))
                          .setMimeType(ContentService.MimeType.JSON);
+    errorResponse.setHeader("Access-Control-Allow-Origin", "*");
+    return errorResponse;
   }
 }
 
