@@ -3,16 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WDC - Bookings</title> <!-- Title from bookings.html -->
+    <title>Book an Appointment - Wafa Dental Clinic</title>
+    <meta name="description" content="Schedule your appointment with Wafa Dental Clinic in Islamabad. Use our easy online booking form to find a convenient time for your dental needs.">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.tailwindcss.com https://www.google.com https://www.gstatic.com 'unsafe-inline'; style-src 'self' https://fonts.googleapis.com https://cdnjs.cloudflare.com 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; frame-src https://www.google.com;">
+    <meta name="referrer" content="no-referrer">
+    <link rel="canonical" href="https://www.wafadentalclinic.com/bookings.html" />
+
     <!-- Theme Color for Browser UI (e.g., Safari, Chrome mobile) -->
     <meta name="theme-color" content="#010245">
     <!-- Favicon and Open Graph tags -->
     <link rel="icon" type="image/png" href="images/favicon.png">
-    <meta property="og:title" content="WAFA Dental Clinic">
-    <meta property="og:description" content="Never Too Late To Improve Your Smile!">
+    <meta property="og:title" content="Book an Appointment - Wafa Dental Clinic">
+    <meta property="og:description" content="Schedule your appointment with Wafa Dental Clinic in Islamabad. Use our easy online booking form to find a convenient time for your dental needs.">
     <link rel="icon" type="image/x-icon" href="images/favicon.ico" />
-    <meta property="og:image" content="images/og-picture.png">
-    <meta property="og:url" content="https://www.wafadentalclinic.com">
+    <meta property="og:image" content="https://www.wafadentalclinic.com/images/og-picture.png">
+    <meta property="og:url" content="https://www.wafadentalclinic.com/bookings.html">
+    <meta property="og:type" content="website" />
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -23,6 +29,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" xintegrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXUxC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <!-- Google reCAPTCHA v2 script -->
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    <script src="assets/js/config.js"></script>
     <style>
         /* Custom Tailwind configuration */
         :root {
@@ -850,10 +857,10 @@
 
             <!-- Desktop Navigation -->
             <nav id="desktop-nav" class="hidden md:flex items-center space-x-6 flex-nowrap">
-                <a href="index.html#about" class="text-sm text-gray-200 hover:text-white transition-all duration-300 px-2.5 py-1.5 rounded-md hover:bg-white hover:bg-opacity-10">About</a>
-                <a href="index.html#services" class="text-sm text-gray-200 hover:text-white transition-all duration-300 px-2.5 py-1.5 rounded-md hover:bg-white hover:bg-opacity-10">Services</a>
-                <a href="index.html#features" class="text-sm text-gray-200 hover:text-white transition-all duration-300 px-2.5 py-1.5 rounded-md hover:bg-white hover:bg-opacity-10">Our Promise</a>
-                <a href="index.html#inquiries" class="text-sm text-gray-200 hover:text-white transition-all duration-300 px-2.5 py-1.5 rounded-md hover:bg-white hover:bg-opacity-10">Contact</a>
+                <a href="/#about" class="text-sm text-gray-200 hover:text-white transition-all duration-300 px-2.5 py-1.5 rounded-md hover:bg-white hover:bg-opacity-10">About</a>
+                <a href="/#services" class="text-sm text-gray-200 hover:text-white transition-all duration-300 px-2.5 py-1.5 rounded-md hover:bg-white hover:bg-opacity-10">Services</a>
+                <a href="/#features" class="text-sm text-gray-200 hover:text-white transition-all duration-300 px-2.5 py-1.5 rounded-md hover:bg-white hover:bg-opacity-10">Our Promise</a>
+                <a href="/#inquiries" class="text-sm text-gray-200 hover:text-white transition-all duration-300 px-2.5 py-1.5 rounded-md hover:bg-white hover:bg-opacity-10">Contact</a>
                 <a href="bookings.html" class="px-5 py-1.5 text-sm font-semibold rounded-lg shadow-md bg-white text-primary-blue border border-white transition-all duration-300 transform hover:scale-105 hover:shadow-lg active:scale-95 focus-visible:ring-2 focus-visible:ring-primary-blue focus-visible:ring-opacity-75">
                     Book Now
                 </a>
@@ -870,10 +877,10 @@
         <!-- Mobile Navigation Menu -->
         <div id="mobile-menu" class="bg-primary-blue transition-all duration-500 ease-in-out max-h-0 overflow-hidden opacity-0">
             <nav class="flex flex-col items-center space-y-4 py-4 px-6">
-                <a href="index.html#about" class="text-base text-gray-200 hover:text-white transition-all duration-300 px-4 py-2 rounded-lg hover:bg-white hover:bg-opacity-10 w-full text-center" onclick="toggleMobileMenu()">About</a>
-                <a href="index.html#services" class="text-base text-gray-200 hover:text-white transition-all duration-300 px-4 py-2 rounded-lg hover:bg-white hover:bg-opacity-10 w-full text-center" onclick="toggleMobileMenu()">Services</a>
-                <a href="index.html#features" class="text-base text-gray-200 hover:text-white transition-all duration-300 px-4 py-2 rounded-lg hover:bg-white hover:bg-opacity-10 w-full text-center" onclick="toggleMobileMenu()">Our Promise</a>
-                <a href="index.html#inquiries" class="text-base text-gray-200 hover:text-white transition-all duration-300 px-4 py-2 rounded-lg hover:bg-white hover:bg-opacity-10 w-full text-center" onclick="toggleMobileMenu()">Contact</a>
+                <a href="/#about" class="text-base text-gray-200 hover:text-white transition-all duration-300 px-4 py-2 rounded-lg hover:bg-white hover:bg-opacity-10 w-full text-center" onclick="toggleMobileMenu()">About</a>
+                <a href="/#services" class="text-base text-gray-200 hover:text-white transition-all duration-300 px-4 py-2 rounded-lg hover:bg-white hover:bg-opacity-10 w-full text-center" onclick="toggleMobileMenu()">Services</a>
+                <a href="/#features" class="text-base text-gray-200 hover:text-white transition-all duration-300 px-4 py-2 rounded-lg hover:bg-white hover:bg-opacity-10 w-full text-center" onclick="toggleMobileMenu()">Our Promise</a>
+                <a href="/#inquiries" class="text-base text-gray-200 hover:text-white transition-all duration-300 px-4 py-2 rounded-lg hover:bg-white hover:bg-opacity-10 w-full text-center" onclick="toggleMobileMenu()">Contact</a>
                 <a href="bookings.html" class="px-6 py-3 font-semibold rounded-xl shadow-lg bg-white text-primary-blue border border-white transition-all duration-300 transform hover:scale-105 hover:shadow-xl active:scale-95 focus-visible:ring-2 focus-visible:ring-primary-blue focus-visible:ring-opacity-75 w-full text-center" onclick="toggleMobileMenu()">
                     Book Now
                 </a>
@@ -1021,7 +1028,7 @@
                         <p id="selectedTimeDisplay" class="mt-2 text-center text-sm font-medium text-green-600" style="--delay: 0.4s;"></p>
                     </div>
                     <div id="availabilityMessage" class="mt-2 text-center text-sm font-medium text-red-500 hidden"></div>
-                    <div class="g-recaptcha" data-sitekey="6LfGh8ArAAAAAPaLcU1FX-nE_nrufknfUfA49LEq" data-callback="onRecaptchaSuccess" data-expired-callback="onRecaptchaExpired"></div>
+                    <div class="g-recaptcha" data-sitekey="" data-callback="onRecaptchaSuccess" data-expired-callback="onRecaptchaExpired"></div>
                     <!-- Inline comment for site key -->
                     <!-- The reCAPTCHA site key has been updated. -->
                     <div id="recaptchaError" class="text-red-500 text-sm mt-2 hidden">Please complete the reCAPTCHA.</div>
@@ -1227,7 +1234,7 @@
         const SHEET_NAME = "WAFA Bookings";
         const SHEET_COLUMNS = ["Client ID","Booking ID","Name","Email","Phone","Service","Date","Time","Calendar Event ID","Doc URL","Created At"];
         const CALENDAR_ID = "wafadentalclinics@gmail.com";
-        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzLFTtGjg46bwkJloEsP5rE6zUrLaZf2SPDBLZyABdVvWLjYyKaL3bBRe2qcV3paS6-/exec";
+        const WEB_APP_URL = CONFIG.WEB_APP_URL;
         const COUNTRIES = [
             // Key English-speaking countries
             { code: "+1", name: "United States", iso: "USA", placeholder: "XXX XXX XXXX" },
@@ -1298,6 +1305,12 @@
         }
 
         document.addEventListener('DOMContentLoaded', () => {
+            // --- Set reCAPTCHA site key ---
+            const recaptchaElement = document.querySelector('.g-recaptcha');
+            if (recaptchaElement) {
+                recaptchaElement.setAttribute('data-sitekey', CONFIG.RECAPTCHA_SITE_KEY);
+            }
+
             // --- Mobile Menu Toggle ---
             const mobileMenuButton = document.getElementById('mobile-menu-button');
             const mobileMenu = document.getElementById('mobile-menu');
@@ -2318,7 +2331,7 @@
          * @param {object} appsScriptResponse - The JSON response from the Google Apps Script.
          */
         async function sendConfirmationEmailWithAttachment(bookingData, appsScriptResponse) {
-            const renderUrl = 'https://wafa-dental-backend.onrender.com/send-confirmation';
+            const renderUrl = CONFIG.RENDER_URL;
             
             const emailPayload = {
                 clientName: `${bookingData.FirstName} ${bookingData.LastName}`,

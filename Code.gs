@@ -1,5 +1,5 @@
 // === CONFIGURATION ===
-const RESEND_API_KEY = "re_BtcZWuVZ_NJhAQBudfFufERALf1aXQQAk";
+const RESEND_API_KEY = PropertiesService.getScriptProperties().getProperty('RESEND_API_KEY');
 const SHEET_NAME = "WAFA Bookings";
 const EMAIL_QUEUE_SHEET_NAME = "Email Queue";
 const CALENDAR_ID = "wafadentalclinics@gmail.com";
