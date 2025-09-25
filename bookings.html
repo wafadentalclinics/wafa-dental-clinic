@@ -1653,7 +1653,6 @@
                     });
 
                     const resultText = await fetchResponse.text();
-                    console.log("Raw response from server:", resultText); // Diagnostic log
                     const result = JSON.parse(resultText);
 
                     if (result.success) {
