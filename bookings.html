@@ -1574,6 +1574,39 @@
                         loadingOverlay.classList.remove('is-visible');
                         confirmationModal.classList.add('is-visible');
                         statusMessage.textContent = '';
+                        
+                        // Handle PDF download from the base64 string
+                        if (result.pdfBase64) {
+                            const byteCharacters = atob(result.pdfBase64);
+                            const byteNumbers = new Array(byteCharacters.length);
+                            for (let i = 0; i < byteCharacters.length; i++) {
+                                byteNumbers[i] = byteCharacters.charCodeAt(i);
+                            }
+                            const byteArray = new Uint8Array(byteNumbers);
+                            const pdfBlob = new Blob([byteArray], { type: 'application/pdf' });
+                            const pdfUrl = URL.createObjectURL(pdfBlob);
+                            
+                            const tempLink = document.createElement('a');
+                            tempLink.href = pdfUrl;
+                            tempLink.download = `WAFA_Medical_Receipt_${result.bookingID}_${result.clientID}.pdf`;
+                            document.body.appendChild(tempLink);
+                            tempLink.click();
+                            document.body.removeChild(tempLink);
+                            
+                            setTimeout(() => URL.revokeObjectURL(pdfUrl), 100);
+                        } else {
+                            console.error("PDF base64 string not received.");
+                        }
+
+                        bookingForm.reset();
+                        // Clear selected service and time display
+                        serviceHidden.value = '';
+                        if (selectedSubOption) {
+                            selectedSubOption.classList.remove('selected');
+                            selectedSubOption.querySelector('.fa-check-circle').classList.remove('opacity-100', 'scale-100');
+                            selectedSubOption = null;
+                        }
+                        updateSelectedTimeDisplay();
                     } else {
                         loadingOverlay.classList.remove('is-visible');
                         statusMessage.textContent = "Error: " + result.message;
@@ -1587,6 +1620,7 @@
                     statusMessage.classList.add('text-red-500');
                 } finally {
                     if (typeof grecaptcha !== 'undefined') grecaptcha.reset();
+                    submitButton.disabled = false;
                 }
             }
 
