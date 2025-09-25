@@ -3,12 +3,21 @@ require('dotenv').config({ path: __dirname + '/.env' });
 
 const express = require('express');
 const fetch = require('node-fetch');
+const cors = require('cors');
 const { sendEmail, getAppointmentReminderTemplate } = require('./services/resendEmailService');
 const generateConfirmationPdf = require('./services/pdfService');
 
 // Initialize the Express application
 const app = express();
 const port = process.env.PORT || 3000;
+
+// CORS configuration
+const corsOptions = {
+  origin: 'https://wafadentalclinic.com',
+  optionsSuccessStatus: 200 // For legacy browser support
+};
+
+app.use(cors(corsOptions));
 
 // Middleware to parse JSON and URL-encoded bodies
 app.use(express.json());
