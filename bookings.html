@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Book an Appointment - Wafa Dental Clinic</title>
     <meta name="description" content="Schedule your appointment with Wafa Dental Clinic in Islamabad. Use our easy online booking form to find a convenient time for your dental needs.">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.tailwindcss.com https://www.google.com https://www.gstatic.com 'unsafe-inline'; style-src 'self' https://fonts.googleapis.com https://cdnjs.cloudflare.com 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data:; frame-src https://www.google.com; connect-src 'self' https://wafa-dental-backend.onrender.com;">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.tailwindcss.com https://www.google.com https://www.gstatic.com 'unsafe-inline'; style-src 'self' https://fonts.googleapis.com https://cdnjs.cloudflare.com 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data:; frame-src https://www.google.com; connect-src 'self' https://wafa-dental-backend.onrender.com https://script.google.com;">
     <meta name="referrer" content="no-referrer">
     <link rel="canonical" href="https://www.wafadentalclinic.com/bookings.html" />
 
@@ -1634,16 +1634,22 @@
                     RecaptchaResponse: recaptchaResponse // Send reCAPTCHA response to server
                 };
                 
-                // Google Apps Script expects application/x-www-form-urlencoded for e.parameter
-                const urlEncodedData = new URLSearchParams(data).toString();
+                // Send data as a JSON payload to avoid redirect issues with Google Apps Script
+                const payload = {
+                    parameter: data,
+                    // Adding context if needed by the script, though not strictly necessary for this fix
+                    context: {
+                        source: "WebApp"
+                    }
+                };
 
                 try {
                     const fetchResponse = await fetch(WEB_APP_URL, {
                         method: 'POST',
                         headers: {
-                            'Content-Type': 'application/x-www-form-urlencoded'
+                            'Content-Type': 'text/plain;charset=utf-8', // Use text/plain to avoid CORS preflight
                         },
-                        body: urlEncodedData
+                        body: JSON.stringify(payload)
                     });
 
                     const result = await fetchResponse.json();

@@ -8,7 +8,9 @@ const TIMEZONE = "Asia/Karachi";
 // === MAIN FUNCTION: HANDLE FORM SUBMISSION ===
 function doPost(e) {
   try {
-    const data = e.parameter;
+    // Parse the JSON payload from the request body
+    const postData = JSON.parse(e.postData.contents);
+    const data = postData.parameter;
     Logger.log("Received data for doPost: " + JSON.stringify(data));
 
     // Validate incoming data
