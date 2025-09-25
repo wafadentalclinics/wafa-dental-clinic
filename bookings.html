@@ -1582,6 +1582,9 @@
             }
 
             if (result.success) {
+                // Trigger the confirmation email to be sent from the backend
+                sendConfirmationEmailWithAttachment(payload.parameter, result);
+
                 // PDF download
                 if (result.pdfBase64) {
                     const byteCharacters = atob(result.pdfBase64);
