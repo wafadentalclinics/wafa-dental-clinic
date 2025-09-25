@@ -9,6 +9,16 @@ const EMAIL_QUEUE_SHEET_NAME = "Email Queue";
 const CALENDAR_ID = "wafadentalclinics@gmail.com";
 const TIMEZONE = "Asia/Karachi";
 
+// === MAIN FUNCTION: HANDLE OPTIONS REQUESTS (CORS PREFLIGHT) ===
+function doOptions(e) {
+  return ContentService.createTextOutput()
+    .withHeaders({
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'POST, GET, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type',
+    });
+}
+
 // === MAIN FUNCTION: HANDLE POST REQUESTS (FORM SUBMISSION) ===
 function doPost(e) {
   try {
@@ -64,7 +74,8 @@ function doPost(e) {
     };
     
     return ContentService.createTextOutput(JSON.stringify(successResponse))
-                         .setMimeType(ContentService.MimeType.JSON);
+                         .setMimeType(ContentService.MimeType.JSON)
+                         .withHeaders({'Access-Control-Allow-Origin': '*'});
 
   } catch (err) {
     Logger.log("CRITICAL Error in doPost: " + err.message + " Stack: " + err.stack);
@@ -73,7 +84,8 @@ function doPost(e) {
       message: "An internal error occurred: " + err.message 
     };
     return ContentService.createTextOutput(JSON.stringify(errorResponse))
-                         .setMimeType(ContentService.MimeType.JSON);
+                         .setMimeType(ContentService.MimeType.JSON)
+                         .withHeaders({'Access-Control-Allow-Origin': '*'});
   }
 }
 
@@ -88,7 +100,8 @@ function doGet(e) {
       const bookedSlots = getBookedSlotsCount_(sheet);
       
       return ContentService.createTextOutput(JSON.stringify(bookedSlots))
-                           .setMimeType(ContentService.MimeType.JSON);
+                           .setMimeType(ContentService.MimeType.JSON)
+                           .withHeaders({'Access-Control-Allow-Origin': '*'});
     } else {
       throw new Error("Invalid GET request action.");
     }
@@ -96,7 +109,8 @@ function doGet(e) {
     Logger.log("Error in doGet: " + err.message);
     const errorResponse = { success: false, message: err.message };
     return ContentService.createTextOutput(JSON.stringify(errorResponse))
-                         .setMimeType(ContentService.MimeType.JSON);
+                         .setMimeType(ContentService.MimeType.JSON)
+                         .withHeaders({'Access-Control-Allow-Origin': '*'});
   }
 }
 
