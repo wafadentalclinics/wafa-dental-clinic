@@ -1652,7 +1652,8 @@
                         body: JSON.stringify(payload)
                     });
 
-                    const result = await fetchResponse.json();
+                    const resultText = await fetchResponse.text();
+                    const result = JSON.parse(resultText);
 
                     if (result.success) {
                         // ** NEW: Send data to our backend for email attachment **
