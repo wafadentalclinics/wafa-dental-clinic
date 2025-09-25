@@ -1547,175 +1547,93 @@
             });
 
 
-            async function submitBookingForm(payload) {
-    statusMessage.textContent = '';
-    loadingOverlay.classList.add('is-visible');
+    
+    
+    
+    
+    
 
-    try {
-        const response = await fetch(WEB_APP_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-            body: JSON.stringify(payload)
-        });
+    async function submitBookingForm(payload) {
+        statusMessage.textContent = '';
+        loadingOverlay.classList.add('is-visible');
 
-        // Read response as text first to avoid JSON parsing errors from redirects
-        const text = await response.text();
-
-        let result;
         try {
-            result = JSON.parse(text);
-        } catch (err) {
-            console.error("Could not parse server response as JSON:", text);
-            throw new Error("Invalid server response");
-        }
-
-        if (result.success) {
-            sendConfirmationEmailWithAttachment(payload.parameter, result);
-            loadingOverlay.classList.remove('is-visible');
-            confirmationModal.classList.add('is-visible');
-            statusMessage.textContent = '';
-            
-            // Handle PDF download from the base64 string
-            if (result.pdfBase64) {
-                const byteCharacters = atob(result.pdfBase64);
-                const byteNumbers = new Array(byteCharacters.length);
-                for (let i = 0; i < byteCharacters.length; i++) {
-                    byteNumbers[i] = byteCharacters.charCodeAt(i);
-                }
-                const byteArray = new Uint8Array(byteNumbers);
-                const pdfBlob = new Blob([byteArray], { type: 'application/pdf' });
-                const pdfUrl = URL.createObjectURL(pdfBlob);
-                
-                const tempLink = document.createElement('a');
-                tempLink.href = pdfUrl;
-                tempLink.download = `WAFA_Medical_Receipt_${result.bookingID}_${result.clientID}.pdf`;
-                document.body.appendChild(tempLink);
-                tempLink.click();
-                document.body.removeChild(tempLink);
-                
-                setTimeout(() => URL.revokeObjectURL(pdfUrl), 100);
-            } else {
-                console.error("PDF base64 string not received.");
-            }
-
-            bookingForm.reset();
-            // Clear selected service and time display
-            serviceHidden.value = '';
-            if (selectedSubOption) {
-                selectedSubOption.classList.remove('selected');
-                selectedSubOption.querySelector('.fa-check-circle').classList.remove('opacity-100', 'scale-100');
-                selectedSubOption = null;
-            }
-            updateSelectedTimeDisplay();
-        } else {
-            loadingOverlay.classList.remove('is-visible');
-            statusMessage.textContent = "Error: " + result.message;
-            statusMessage.classList.add('text-red-500');
-        }
-
-    } catch (err) {
-        loadingOverlay.classList.remove('is-visible');
-        console.error("Error submitting booking:", err);
-        statusMessage.textContent = "Error: Could not connect to the booking service. Please try again.";
-        statusMessage.classList.add('text-red-500');
-    } finally {
-        if (typeof grecaptcha !== 'undefined') grecaptcha.reset();
-        submitButton.disabled = false;
-    }
-}
-
-            bookingForm.addEventListener('submit', async (e) => {
-                e.preventDefault();
-                
-                // Clear previous messages
-                statusMessage.textContent = '';
-                statusMessage.classList.remove('text-red-500', 'text-green-500');
-
-                // Get values from the new separate fields
-                const firstName = document.getElementById('firstName').value;
-                const lastName = document.getElementById('lastName').value;
-                const name = `${firstName} ${lastName}`;
-                const email = document.getElementById('email').value;
-                const countryCode = document.getElementById('countryCode').value;
-                const phoneNumber = document.getElementById('phoneNumber').value;
-                const service = document.getElementById('serviceHidden').value; // Get value from hidden input
-                const date = document.getElementById('dateInput').value; // Changed to dateInput
-                const bookingHour = document.getElementById('bookingHourHidden').value;
-                const bookingMinute = document.getElementById('bookingMinuteHidden').value;
-                const time = `${bookingHour}:${bookingMinute}`;
-                const notes = document.getElementById("Notes").value;
-
-                // Combine the country code and phone number
-                const phone = countryCode + ' ' + phoneNumber;
-                const recaptchaResponse = grecaptcha.getResponse();
-                const recaptchaErrorDiv = document.getElementById('recaptchaError');
-
-                // Basic validation
-                if (!firstName || !lastName || !email || !phone || !service || !date || !bookingHour || !bookingMinute) {
-                    statusMessage.textContent = 'Please fill out all fields.';
-                    statusMessage.classList.add('text-red-500');
-                    return;
-                }
-
-                // reCAPTCHA validation
-                if (recaptchaResponse.length === 0) {
-                    recaptchaErrorDiv.classList.remove('hidden');
-                    statusMessage.textContent = 'Please complete the reCAPTCHA.';
-                    statusMessage.classList.add('text-red-500');
-                    return;
-                } else {
-                    recaptchaErrorDiv.classList.add('hidden');
-                }
-
-                // Construct date string in YYYY-MM-DD format for consistent parsing
-                const [month, day, year] = date.split('/');
-                const formattedDate = `${year}-${month}-${day}`;
-                const selectedDate = new Date(`${formattedDate}T${bookingHour}:${bookingMinute}:00`);
-                const dayOfWeek = selectedDate.getDay(); // 0 for Sunday, 1 for Monday...
-
-                // Check for Sunday
-                if (dayOfWeek === 0) {
-                    statusMessage.textContent = 'Appointments are not available on Sundays.';
-                    statusMessage.classList.add('text-red-500');
-                    return;
-                }
-
-                // Check for valid time range (4:00 PM to 9:00 PM)
-                const startTime = 16; // 4:00 PM
-                const endTime = 21; // 9:00 PM
-                const selectedHour = parseInt(bookingHour, 10);
-                const selectedMinutes = parseInt(bookingMinute, 10);
-
-                if (selectedHour < startTime || selectedHour >= endTime || (selectedHour === endTime && selectedMinutes > 0)) {
-                    statusMessage.textContent = 'Please select a time between 4:00 PM and 9:00 PM.';
-                    statusMessage.classList.add('text-red-500');
-                    return;
-                }
-
-                // Disable submit button to prevent double submission
-                submitButton.disabled = true;
-
-                const data = { // Renamed to 'data' to match user's script
-                    FirstName: firstName,
-                    LastName: lastName,
-                    Email: email,
-                    Phone: phone,
-                    Service: service,
-                    Date: date,
-                    Time: time,
-                    Notes: notes,
-                    RecaptchaResponse: recaptchaResponse // Send reCAPTCHA response to server
-                };
-                
-                const payload = {
-                    parameter: data,
-                    context: {
-                        source: "WebApp"
-                    }
-                };
-
-                submitBookingForm(payload);
+            const response = await fetch(WEB_APP_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                body: JSON.stringify(payload)
             });
+
+            // Always read as text first
+            const text = await response.text();
+
+            // Sometimes GAS wraps the JSON in HTML, extract JSON string if needed
+            let jsonStart = text.indexOf('{');
+            let jsonEnd = text.lastIndexOf('}');
+            if (jsonStart === -1 || jsonEnd === -1) throw new Error("Invalid server response format");
+
+            const jsonText = text.substring(jsonStart, jsonEnd + 1);
+            let result;
+            try {
+                result = JSON.parse(jsonText);
+            } catch (err) {
+                console.error("Error parsing JSON from server:", jsonText);
+                throw new Error("Invalid server response");
+            }
+
+            if (result.success) {
+                // PDF download
+                if (result.pdfBase64) {
+                    const byteCharacters = atob(result.pdfBase64);
+                    const byteNumbers = Array.from(byteCharacters).map(c => c.charCodeAt(0));
+                    const byteArray = new Uint8Array(byteNumbers);
+                    const blob = new Blob([byteArray], { type: 'application/pdf' });
+                    const link = document.createElement('a');
+                    link.href = URL.createObjectURL(blob);
+                    link.download = `WAFA_Receipt_${result.bookingID}_${result.clientID}.pdf`;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    setTimeout(() => URL.revokeObjectURL(link.href), 100);
+                }
+
+                // Show confirmation modal
+                confirmationModal.classList.add('is-visible');
+                statusMessage.textContent = '';
+                bookingForm.reset();
+            } else {
+                statusMessage.textContent = "Error: " + (result.message || "Unknown error");
+                statusMessage.classList.add('text-red-500');
+            }
+        } catch (err) {
+            console.error("Frontend booking error:", err);
+            statusMessage.textContent = "Error: Could not connect to the booking service. Please try again.";
+            statusMessage.classList.add('text-red-500');
+        } finally {
+            loadingOverlay.classList.remove('is-visible');
+            submitButton.disabled = false;
+            if (typeof grecaptcha !== 'undefined') grecaptcha.reset();
+        }
+    }
+
+    bookingForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        submitButton.disabled = true;
+
+        const data = {
+            FirstName: document.getElementById('firstName').value,
+            LastName: document.getElementById('lastName').value,
+            Email: document.getElementById('email').value,
+            Phone: document.getElementById('countryCode').value + ' ' + document.getElementById('phoneNumber').value,
+            Service: document.getElementById('serviceHidden').value,
+            Date: document.getElementById('dateInput').value,
+            Time: document.getElementById('bookingHourHidden').value + ':' + document.getElementById('bookingMinuteHidden').value,
+            Notes: document.getElementById("Notes").value,
+            RecaptchaResponse: grecaptcha.getResponse()
+        };
+
+        submitBookingForm({ parameter: data, context: { source: "WebApp" } });
+    });
 
             // reCAPTCHA callback functions
             window.onRecaptchaSuccess = () => {
