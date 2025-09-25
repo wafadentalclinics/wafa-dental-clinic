@@ -1634,46 +1634,77 @@
                     RecaptchaResponse: recaptchaResponse // Send reCAPTCHA response to server
                 };
                 
-                // Google Apps Script expects application/x-www-form-urlencoded for e.parameter
-                const urlEncodedData = new URLSearchParams(data).toString();
+                const jsonData = JSON.stringify(data);
 
                 try {
                     const fetchResponse = await fetch(WEB_APP_URL, {
                         method: 'POST',
-                        mode: 'no-cors', // Added to handle CORS issues
                         headers: {
-                            'Content-Type': 'application/x-www-form-urlencoded'
+                            'Content-Type': 'application/json'
                         },
-                        body: urlEncodedData
+                        body: jsonData
                     });
 
-                    // Since we are using 'no-cors', we can't access the response directly.
-                    // We will assume success and proceed with the confirmation UI.
-                    // The backend will handle sending the email and logging any errors.
+                    const result = await fetchResponse.json();
 
-                    // Clear the status message
-                    statusMessage.textContent = '';
-                    statusMessage.classList.remove('text-gray-500');
+                    if (result.success) {
+                        try {
+                            sendConfirmationEmailWithAttachment(data, result);
+                        } catch (emailError) {
+                            console.error('Error sending confirmation email:', emailError);
+                        }
+                        // Clear the status message
+                        statusMessage.textContent = '';
+                        statusMessage.classList.remove('text-gray-500');
 
-                    // Hide loading overlay and show confirmation modal
-                    loadingOverlay.classList.remove('is-visible');
-                    confirmationModal.classList.add('is-visible');
+                        // Clear the status message
+                        statusMessage.textContent = '';
+                        statusMessage.classList.remove('text-gray-500');
 
-                    // We can't get the PDF from the response with 'no-cors',
-                    // so we will rely on the email for the PDF.
-                    // The user will be notified that the PDF will be sent via email.
+                        // Hide loading overlay and show confirmation modal
+                        loadingOverlay.classList.remove('is-visible');
+                        confirmationModal.classList.add('is-visible');
+                        
+                        // Handle PDF download from the base64 string
+                        if (result.pdfBase64) {
+                            const byteCharacters = atob(result.pdfBase64);
+                            const byteNumbers = new Array(byteCharacters.length);
+                            for (let i = 0; i < byteCharacters.length; i++) {
+                                byteNumbers[i] = byteCharacters.charCodeAt(i);
+                            }
+                            const byteArray = new Uint8Array(byteNumbers);
+                            const pdfBlob = new Blob([byteArray], { type: 'application/pdf' });
+                            const pdfUrl = URL.createObjectURL(pdfBlob);
+                            
+                            const tempLink = document.createElement('a');
+                            tempLink.href = pdfUrl;
+                            tempLink.download = `WAFA_Medical_Receipt_${result.bookingID}_${result.clientID}.pdf`;
+                            document.body.appendChild(tempLink);
+                            tempLink.click();
+                            document.body.removeChild(tempLink);
+                            
+                            setTimeout(() => URL.revokeObjectURL(pdfUrl), 100);
+                        } else {
+                            console.error("PDF base64 string not received.");
+                        }
 
-                    bookingForm.reset();
-                    if (typeof grecaptcha !== 'undefined') { grecaptcha.reset(); }
-                    // Clear selected service and time display
-                    serviceHidden.value = '';
-                    if (selectedSubOption) {
-                        selectedSubOption.classList.remove('selected');
-                        selectedSubOption.querySelector('.fa-check-circle').classList.remove('opacity-100', 'scale-100');
-                        selectedSubOption = null;
+                        bookingForm.reset();
+                        if (typeof grecaptcha !== 'undefined') { grecaptcha.reset(); }
+                        // Clear selected service and time display
+                        serviceHidden.value = '';
+                        if (selectedSubOption) {
+                            selectedSubOption.classList.remove('selected');
+                            selectedSubOption.querySelector('.fa-check-circle').classList.remove('opacity-100', 'scale-100');
+                            selectedSubOption = null;
+                        }
+                        updateSelectedTimeDisplay();
+
+                    } else {
+                        loadingOverlay.classList.remove('is-visible');
+                        statusMessage.textContent = "Error: " + result.message;
+                        statusMessage.classList.add('text-red-500');
+                        if (typeof grecaptcha !== 'undefined') { grecaptcha.reset(); }
                     }
-                    updateSelectedTimeDisplay();
-
                 } catch (error) {
                     loadingOverlay.classList.remove('is-visible');
                     console.error('Error submitting form:', error);
