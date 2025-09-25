@@ -1,107 +1,57 @@
 // === CONFIGURATION ===
-const SCRIPT_PROPERTIES = PropertiesService.getScriptProperties();
-const RESEND_API_KEY = SCRIPT_PROPERTIES.getProperty('RESEND_API_KEY');
-const RECAPTCHA_SECRET_KEY = SCRIPT_PROPERTIES.getProperty('RECAPTCHA_SECRET_KEY');
-
-const SHEET_URL = "https://docs.google.com/spreadsheets/d/19iITtL0e8U36frY1TIxx7wZoypPrMPzQLmlMaAPixaI/edit";
+const RESEND_API_KEY = PropertiesService.getScriptProperties().getProperty('RESEND_API_KEY');
 const SHEET_NAME = "WAFA Bookings";
 const EMAIL_QUEUE_SHEET_NAME = "Email Queue";
 const CALENDAR_ID = "wafadentalclinics@gmail.com";
 const TIMEZONE = "Asia/Karachi";
 
-// === MAIN FUNCTION: HANDLE POST REQUESTS (FORM SUBMISSION) ===
+// === MAIN FUNCTION: HANDLE FORM SUBMISSION ===
 function doPost(e) {
   try {
-    // 1. Parse Incoming Data
-    const postData = JSON.parse(e.postData.contents);
-    const data = postData.parameter;
+    const data = e.parameter;
     Logger.log("Received data for doPost: " + JSON.stringify(data));
 
-    // 2. Validate reCAPTCHA
-    if (!isRecaptchaValid_(data.RecaptchaResponse)) {
-      throw new Error("reCAPTCHA validation failed. Please try again.");
-    }
-
-    // 3. Validate Booking Data
-    if (!data.FirstName || !data.LastName || !data.Email || !data.Phone || !data.Service || !data.Date || !data.Time) {
-      throw new Error("Missing required booking information.");
-    }
-
-    // 4. Open Spreadsheet and Sheets
-    const spreadsheet = SpreadsheetApp.openByUrl(SHEET_URL);
+    const spreadsheet = SpreadsheetApp.openByUrl("https://docs.google.com/spreadsheets/d/19iITtL0e8U36frY1TIxx7wZoypPrMPzQLmlMaAPixaI/edit");
     const sheet = spreadsheet.getSheetByName(SHEET_NAME);
-    if (!sheet) {
-      throw new Error(`Sheet with name "${SHEET_NAME}" not found.`);
-    }
 
-    // 5. Generate IDs
     const clientId = generateDeterministicClientId_(data);
     const bookingID = generateBookingID_(sheet);
     const fullName = `${data.FirstName} ${data.LastName}`;
 
-    // 6. Create Calendar Event
-    const calendarEventId = createCalendarEvent_(bookingID, fullName, data);
+    const calendar = CalendarApp.getCalendarById(CALENDAR_ID);
+    const startTime = new Date(`${data.Date} ${data.Time}`);
+    const endTime = new Date(startTime.getTime() + 30 * 60000);
+    const calendarEvent = calendar.createEvent(
+      `${bookingID} - ${fullName} - ${data.Service}`,
+      startTime,
+      endTime,
+      { description: data.Notes || '' }
+    );
+    const calendarEventId = calendarEvent.getId();
     
-    // 7. Generate PDF
     const pdfResult = generatePremiumPDF_(bookingID, clientId, data);
 
-    // 8. Append Row to Spreadsheet
     sheet.appendRow([
       clientId, bookingID, fullName, data.Email, `'${data.Phone}`,
       data.Service, data.Date, data.Time, calendarEventId, 
       `https://drive.google.com/uc?export=download&id=${pdfResult.fileId}`, new Date()
     ]);
 
-    // 9. Queue Confirmation Email
     queueEmail_(spreadsheet, pdfResult.fileId, data, bookingID, clientId);
 
-    // 10. Return Success Response
-    const successResponse = {
+    return ContentService.createTextOutput(JSON.stringify({
       success: true,
       bookingID: bookingID,
       clientID: clientId,
       pdfBase64: pdfResult.base64
-    };
-    
-    // Return the JSON response correctly.
-    return ContentService.createTextOutput(JSON.stringify(successResponse))
-      .setMimeType(ContentService.MimeType.JSON);
+    })).setMimeType(ContentService.MimeType.JSON);
 
   } catch (err) {
     Logger.log("CRITICAL Error in doPost: " + err.message + " Stack: " + err.stack);
-    const errorResponse = { 
-      success: false, 
-      message: "An internal error occurred: " + err.message 
-    };
-    // Return the JSON error response correctly.
-    return ContentService.createTextOutput(JSON.stringify(errorResponse))
-      .setMimeType(ContentService.MimeType.JSON);
+    return ContentService.createTextOutput(JSON.stringify({ success: false, message: err.message }))
+                         .setMimeType(ContentService.MimeType.JSON);
   }
 }
-
-// === MAIN FUNCTION: HANDLE GET REQUESTS (FETCH BOOKED SLOTS) ===
-function doGet(e) {
-  try {
-    if (e.parameter.action === 'getBookedSlots') {
-      const spreadsheet = SpreadsheetApp.openByUrl(SHEET_URL);
-      const sheet = spreadsheet.getSheetByName(SHEET_NAME);
-      if (!sheet) throw new Error(`Sheet "${SHEET_NAME}" not found.`);
-      
-      const bookedSlots = getBookedSlotsCount_(sheet);
-      
-      return ContentService.createTextOutput(JSON.stringify(bookedSlots))
-        .setMimeType(ContentService.MimeType.JSON);
-    } else {
-      throw new Error("Invalid GET request action.");
-    }
-  } catch (err) {
-    Logger.log("Error in doGet: " + err.message);
-    const errorResponse = { success: false, message: err.message };
-    return ContentService.createTextOutput(JSON.stringify(errorResponse))
-      .setMimeType(ContentService.MimeType.JSON);
-  }
-}
-
 
 // === BACKGROUND FUNCTION: PROCESS THE EMAIL QUEUE ===
 function processEmailQueue() {
@@ -112,7 +62,7 @@ function processEmailQueue() {
   }
 
   try {
-    const spreadsheet = SpreadsheetApp.openByUrl(SHEET_URL);
+    const spreadsheet = SpreadsheetApp.openByUrl("https://docs.google.com/spreadsheets/d/19iITtL0e8U36frY1TIxx7wZoypPrMPzQLmlMaAPixaI/edit");
     const queueSheet = spreadsheet.getSheetByName(EMAIL_QUEUE_SHEET_NAME);
     if (!queueSheet || queueSheet.getLastRow() < 2) {
       Logger.log("Email queue is empty.");
@@ -182,61 +132,16 @@ function processEmailQueue() {
 
 // === HELPER FUNCTIONS ===
 
-function isRecaptchaValid_(token) {
-  if (!token) {
-    Logger.log("reCAPTCHA token is missing.");
-    return false;
-  }
-  try {
-    const response = UrlFetchApp.fetch("https://www.google.com/recaptcha/api/siteverify", {
-      method: "post",
-      payload: {
-        secret: RECAPTCHA_SECRET_KEY,
-        response: token
-      }
-    });
-    const result = JSON.parse(response.getContentText());
-    Logger.log("reCAPTCHA verification result: " + JSON.stringify(result));
-    return result.success;
-  } catch (e) {
-    Logger.log("Error verifying reCAPTCHA: " + e.toString());
-    return false;
-  }
-}
-
-function createCalendarEvent_(bookingID, fullName, data) {
-  try {
-    const calendar = CalendarApp.getCalendarById(CALENDAR_ID);
-    const startTime = new Date(`${data.Date} ${data.Time}`);
-    const endTime = new Date(startTime.getTime() + 30 * 60000); // 30-minute duration
-    const calendarEvent = calendar.createEvent(
-      `${bookingID} - ${fullName} - ${data.Service}`,
-      startTime,
-      endTime,
-      { description: data.Notes || '' }
-    );
-    return calendarEvent.getId();
-  } catch (calendarError) {
-    Logger.log("Calendar Error: " + calendarError.toString());
-    throw new Error("Failed to create calendar event. Please check calendar ID and permissions.");
-  }
-}
-
 function queueEmail_(spreadsheet, fileId, data, bookingID, clientId) {
-  try {
-    let sheet = spreadsheet.getSheetByName(EMAIL_QUEUE_SHEET_NAME);
-    if (!sheet) {
-      sheet = spreadsheet.insertSheet(EMAIL_QUEUE_SHEET_NAME);
-      sheet.appendRow(["File ID", "Recipient", "First Name", "Last Name", "Service", "Date", "Time", "Booking ID", "Client ID", "Status", "Attempts", "Last Response"]);
-    }
-    sheet.appendRow([
-      fileId, data.Email, data.FirstName, data.LastName, data.Service, data.Date, `'${data.Time}`,
-      bookingID, clientId, "QUEUED", 0, ""
-    ]);
-  } catch (e) {
-    Logger.log("Email Queue Error: " + e.toString());
-    // Decide if this should be a fatal error. For now, we log it but don't stop the process.
+  let sheet = spreadsheet.getSheetByName(EMAIL_QUEUE_SHEET_NAME);
+  if (!sheet) {
+    sheet = spreadsheet.insertSheet(EMAIL_QUEUE_SHEET_NAME);
+    sheet.appendRow(["File ID", "Recipient", "First Name", "Last Name", "Service", "Date", "Time", "Booking ID", "Client ID", "Status", "Attempts", "Last Response"]);
   }
+  sheet.appendRow([
+    fileId, data.Email, data.FirstName, data.LastName, data.Service, data.Date, `'${data.Time}`,
+    bookingID, clientId, "QUEUED", 0, ""
+  ]);
 }
 
 function generateDeterministicClientId_(data) {
@@ -260,9 +165,7 @@ function generateBookingID_(sheet) {
   if (lastRow > 1) {
     const lastBookingID = sheet.getRange(lastRow, 2).getValue();
     const parts = String(lastBookingID).split('-');
-    if (parts.length > 2 && parts[1] === dateStr) {
-        lastNum = parseInt(parts[2], 10);
-    }
+    if (parts.length > 2) lastNum = parseInt(parts[2], 10);
   }
   const nextNum = (lastNum + 1).toString().padStart(4, '0');
   return `WAFA-${dateStr}-${nextNum}`;
@@ -341,19 +244,14 @@ function generatePremiumPDF_(bookingID, clientID, data) {
     </body>
     </html>`;
   
-  try {
-    const blob = Utilities.newBlob(htmlContent, 'text/html', `${bookingID}.html`);
-    const pdf = blob.getAs('application/pdf').setName(`${bookingID}.pdf`);
-    const file = DriveApp.createFile(pdf);
-    return {
-      fileId: file.getId(),
-      base64: Utilities.base64Encode(pdf.getBytes()),
-      pdfBlob: pdf
-    };
-  } catch (pdfError) {
-    Logger.log("PDF Generation Error: " + pdfError.toString());
-    throw new Error("Failed to generate or save PDF. Please check Drive permissions.");
-  }
+  const blob = Utilities.newBlob(htmlContent, 'text/html', `${bookingID}.html`);
+  const pdf = blob.getAs('application/pdf').setName(`${bookingID}.pdf`);
+  const file = DriveApp.createFile(pdf);
+  return {
+    fileId: file.getId(),
+    base64: Utilities.base64Encode(pdf.getBytes()),
+    pdfBlob: pdf
+  };
 }
 
 function getBookedSlotsCount_(sheet) {
@@ -370,6 +268,24 @@ function getBookedSlotsCount_(sheet) {
     }
   }
   return bookedSlotsCount;
+}
+
+function doGet(e) {
+  try {
+    if (e.parameter.action === 'getBookedSlots') {
+      const spreadsheet = SpreadsheetApp.openByUrl("https://docs.google.com/spreadsheets/d/19iITtL0e8U36frY1TIxx7wZoypPrMPzQLmlMaAPixaI/edit");
+      const sheet = spreadsheet.getSheetByName(SHEET_NAME);
+      const bookedSlots = getBookedSlotsCount_(sheet);
+      return ContentService.createTextOutput(JSON.stringify(bookedSlots))
+                           .setMimeType(ContentService.MimeType.JSON);
+    } else {
+      throw new Error("Invalid GET request action.");
+    }
+  } catch (err) {
+    Logger.log("Error in doGet: " + err.message);
+    return ContentService.createTextOutput(JSON.stringify({ success: false, message: err.message }))
+                         .setMimeType(ContentService.MimeType.JSON);
+  }
 }
 
 function getEmailHtml_(bookingDetails) {

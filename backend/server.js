@@ -42,18 +42,20 @@ app.post('/send-confirmation', async (req, res) => {
   console.log('Received payload:', JSON.stringify(req.body, null, 2));
 
   // Destructure and validate the request body
-  const { clientName, clientEmail, service, date, time, bookingId, clientId, pdfBase64 } = req.body;
+  const { clientName, clientEmail, service, date, time, additionalInfo, bookingId, clientId } = req.body;
 
-  if (!clientName || !clientEmail || !service || !date || !time || !pdfBase64) {
+  if (!clientName || !clientEmail || !service || !date || !time) {
     console.error('Validation failed: Missing required booking information.');
     return res.status(400).json({ success: false, message: 'Missing required booking information.' });
   }
 
+  const bookingDetails = { clientName, clientEmail, service, date, time, additionalInfo, bookingId, clientId };
+
   try {
-    // 1. Decode the Base64 PDF data received from the frontend
-    console.log('Decoding PDF from Base64...');
-    const pdfBuffer = Buffer.from(pdfBase64, 'base64');
-    console.log('PDF decoded successfully. Buffer length:', pdfBuffer.length);
+    // 1. Generate the PDF confirmation using the backend service
+    console.log('Generating PDF e-receipt...');
+    const pdfBuffer = await generateConfirmationPdf(bookingDetails);
+    console.log('PDF generated successfully. Buffer length:', pdfBuffer.length);
 
     // 2. Prepare the email content
     const emailHtml = getAppointmentReminderTemplate({ name: clientName, appointmentDate: date, appointmentTime: time, service, bookingId, clientId });
