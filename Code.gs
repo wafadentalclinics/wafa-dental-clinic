@@ -8,13 +8,7 @@ const TIMEZONE = "Asia/Karachi";
 // === MAIN FUNCTION: HANDLE FORM SUBMISSION ===
 function doPost(e) {
   try {
-    // Handle both JSON and form data
-    let data;
-    if (e.postData.type === 'application/json') {
-      data = JSON.parse(e.postData.contents);
-    } else {
-      data = e.parameter;
-    }
+    const data = e.parameter;
     Logger.log("Received data for doPost: " + JSON.stringify(data));
 
     const spreadsheet = SpreadsheetApp.openByUrl("https://docs.google.com/spreadsheets/d/19iITtL0e8U36frY1TIxx7wZoypPrMPzQLmlMaAPixaI/edit");
